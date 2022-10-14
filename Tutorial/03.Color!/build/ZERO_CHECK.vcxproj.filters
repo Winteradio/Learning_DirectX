@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx12\Tutorial\Directx11\03.Color!\build\CMakeFiles\4cfc12bb1bf8f17ed6858ef2b6ba6a6d\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6FFBF60A-37D4-3BE8-A1F7-ACF8D5C8C155}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

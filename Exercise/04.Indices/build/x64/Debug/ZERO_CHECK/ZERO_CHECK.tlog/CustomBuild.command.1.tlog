@@ -1,0 +1,10 @@
+^C:\USERS\겨울엔군고구마한잔\ONEDRIVE - 한양대학교\바탕 화면\C++\DIRECTX11\EXERCISE\04.INDICES\BUILD\CMAKEFILES\2E4E183F5C811B346F66E92FDBC4FF23\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/Exercise/04.Indices" "-BC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/Exercise/04.Indices/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/Exercise/04.Indices/build/Example.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
