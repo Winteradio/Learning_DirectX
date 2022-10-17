@@ -1,40 +1,55 @@
 #include "System.h"
 
 
-
 SYSTEM::SYSTEM(){
 
 	if ( !Init() )
 	{
-		LOG_ERROR("Init System Object - Failed \n");
+		LOG_ERROR(" Failed - Init System Object \n ");
 	}
 	else
 	{
-		LOG_INFO("Init System Object - Succssed \n");
+		LOG_INFO(" Succssed - Init System Object \n");
 	}
 }
 
 
-
-SYSTEM::SYSTEM(const SYSTEM& Other)
+SYSTEM::SYSTEM(const SYSTEM* Other)
 {
-	*this = Other;
+	*this = *Other;
 }
-
 
 
 SYSTEM::~SYSTEM(){}
 
 
-
 bool SYSTEM::Init()
 {
 	// Windows Init
-	InitWindows();
+	if ( !InitWindows() )
+	{
+		LOG_ERROR(" Failed - Init Windows \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Succssed - Init Windows \n ");
+	}
 
-	return true;
+	// Create DXEngine Objects
+	m_DXEngine = new DXENGINE;
+	if ( !m_DXEngine )
+	{
+		LOG_ERROR(" Failed - Create DXENGINE \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Succssed - Create DXENGIN \n ");
+	}
+
+	return m_DXEngine->Init( m_Width, m_Height, m_hWnd );
 }
-
 
 
 void SYSTEM::Run()
@@ -67,40 +82,47 @@ void SYSTEM::Run()
 }
 
 
-
-void SYSTEM::Done()
+void SYSTEM::Release()
 {
-	LOG_INFO(" End Windows \n");
-	DoneWindows();
-}
+	// Release DXEngine Objects
+	if ( m_DXEngine )
+	{
+		m_DXEngine->Release();
+		delete m_DXEngine;
+		m_DXEngine = nullptr;
 
+		LOG_INFO(" Delete - DXENGINE \n");
+	}
+
+	ReleaseWindows();
+	LOG_INFO(" End - Windows \n");
+}
 
 
 bool SYSTEM::Frame()
 {
-	return true;
+	return m_DXEngine->Frame();
 }
 
 
-
-void SYSTEM::InitWindows()
+bool SYSTEM::InitWindows()
 {
 	// Other Pointer(->MSGHandle)
 	MSGHandle = this;
 
 	// Get Instance for this Program
-	this->m_hInstance = GetModuleHandle( NULL );
+	m_hInstance = GetModuleHandle( NULL );
 
 	// Set Windows' Name
-	this->m_WindowName = "Window_Name";
-	this->m_WindowTitle = "Window_Title";
+	m_WindowName = "Window_Name";
+	m_WindowTitle = "Window_Title";
 
 	// Set Windows' Size
-	this->m_Width = 800;
-	this->m_Height = 640;
+	m_Width = 800;
+	m_Height = 640;
 
 	// Set Windows' fullscreen value
-	this->m_Fullscreen = false;
+	m_FullScreen = false;
 
 	// Create WNDCLASSED Structure
 	WNDCLASSEX wcex;
@@ -121,51 +143,53 @@ void SYSTEM::InitWindows()
 	// Register Window CLass
 	if ( !RegisterClassEx( &wcex ) )
 	{
-		LOG_ERROR("Register Class - Failed \n");
+		LOG_ERROR(" Failed - Register Wnd Class \n ");
+		return false;
 	}
 	else
 	{
-		LOG_INFO("Register Class - Sucessed \n");
+		LOG_INFO(" Successed - Register Wnd Class \n ");
 	}
 
 	// Create Window
-	this->m_hWnd = CreateWindowEx( NULL,
-		this->m_WindowName, this->m_WindowTitle,
+	m_hWnd = CreateWindowEx( NULL,
+		m_WindowName, m_WindowTitle,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		this->m_Width, this->m_Height,
-		NULL, NULL, this->m_hInstance, NULL );
+		m_Width, m_Height,
+		NULL, NULL, m_hInstance, NULL );
 
 	if ( !m_hWnd )
 	{
-		LOG_ERROR("Create Window - Failed \n");
+		LOG_ERROR(" Failed - Create Window \n ");
+		return false;
 	}
 	else
 	{
-		LOG_INFO("Create Window - Successed \n");
+		LOG_INFO(" Successed - Create Window \n ");
 	}
 
 	// Show and Update Window
-	ShowWindow( this->m_hWnd, SW_SHOW );
-	UpdateWindow( this->m_hWnd );
+	ShowWindow( m_hWnd, SW_SHOW );
+	UpdateWindow( m_hWnd );
+
+	return true;
 }
 
 
-
-void SYSTEM::DoneWindows()
+void SYSTEM::ReleaseWindows()
 {
 	// Delete Windows
-	DestroyWindow( this->m_hWnd );
-	this->m_hWnd = nullptr;
+	DestroyWindow( m_hWnd );
+	m_hWnd = nullptr;
 
 	// Delete Instance for this Program
-	UnregisterClass( this->m_WindowName, this->m_hInstance );
-	this->m_hInstance = NULL;
+	UnregisterClass( m_WindowName, m_hInstance );
+	m_hInstance = NULL;
 
 	// Init Other Pointer
 	MSGHandle = NULL;
 }
-
 
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )

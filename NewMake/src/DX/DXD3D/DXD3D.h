@@ -5,22 +5,37 @@
 
 class DXD3D
 {
+
 	// Functions - Constructor and Destructor
 	public :
 
 		DXD3D();
-		DXD3D( const DXD3D& );
+		DXD3D( const DXD3D* );
 		~DXD3D();
 
 	// Functions - Basic Initialization, End and Action related Scene
 	public :
 
 		bool Init( int, int, bool, HWND, float, float );
-		void Done();
+		void Release();
 
 		void BeginScene( float, float, float, float );
 		void EndScene();
 
+	// Functions - Divide Init Functions
+	private :
+
+		bool InitSwapChain( int, int, HWND );
+		bool InitRenderTarget();
+		bool InitDepthStencil( int, int );
+		bool InitRasterizer();
+		void InitViewport( int, int );
+		void InitMatrix( int, int, float, float );
+
+		void InitPointer();
+
+	// Functions - Get private variables
+	public :
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetDeviceContext();
 
@@ -28,35 +43,22 @@ class DXD3D
 		void GetWorldMatrix( XMMATRIX& );
 		void GetOrthoMatrix( XMMATRIX& );
 
-		void GetVideoCardInfo( char*, int& );
-
-	// Functions - Divide Init Functions
-	private :
 
 	// Variables - Direct3D Device
 	private :
 
-		bool m_VSYNC_ENABLED = false;
+		IDXGISwapChain* m_SwapChain;
 
-		int m_VideoCardMemory = 0;
-		char m_VideoCardDesription[128] = {0};
-
-		IDXGISwapChain* m_SwapChain = nullptr;
-
-		ID3D11Device* m_Device = nullptr;
-		ID3D11DeviceContext* m_DeviceContext = nullptr;
-		ID3D11RenderTargetView* m_RenderTargetView = nullptr;
-		ID3D11Texture2D* m_Texture2D = nullptr;
-		ID3D11DepthStencilState* m_DepthStencilState = nullptr;
-		ID3D11DepthStencilView* m_DepthStencilView = nullptr;
-		ID3D11RasterizerState* m_RasterState = nullptr;
+		ID3D11Device* m_Device;
+		ID3D11DeviceContext* m_DeviceContext;
+		ID3D11RenderTargetView* m_RenderTargetView;
+		ID3D11Texture2D* m_DepthStencilBuffer;
+		ID3D11DepthStencilView* m_DepthStencilView;
+		ID3D11RasterizerState* m_RasterState;
 
 		XMMATRIX m_ProjectionMatrix;
 		XMMATRIX m_WorldMatrix;
 		XMMATRIX m_OrthoMatrix;
 };
-// Class 종료시 ;를 삽입하지 않을 시
-// Error
-// error C2533: 'DXD3D::{ctor}' : 생성자에서 반환 형식을 사용할 수 없습니다.
 
 #endif __DXD3D_H__

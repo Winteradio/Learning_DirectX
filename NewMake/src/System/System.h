@@ -3,6 +3,7 @@
 
 #include <Windows.h>
 
+#include "DXEngine.h"
 #include "Log.h"
 
 
@@ -12,22 +13,22 @@ class SYSTEM
 	public :
 
 		SYSTEM();
-		SYSTEM( const SYSTEM& );
+		SYSTEM( const SYSTEM* );
 		~SYSTEM();
 
 	// Functions - Running and Ending(Done)
 	public :
 
 		void Run();
-		void Done();
+		void Release();
 
 	// Functions - Basic Initialization and Run Frame
 	private :
 
 		bool Init();
 		bool Frame();
-		void InitWindows();
-		void DoneWindows();
+		bool InitWindows();
+		void ReleaseWindows();
 
 	// Variables
 	public :
@@ -48,6 +49,8 @@ class SYSTEM
 
 		// Setting for FullScreen
 		bool m_FullScreen;
+
+		DXENGINE* m_DXEngine = nullptr;
 };
 
 static LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );

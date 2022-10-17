@@ -1,0 +1,14 @@
+# 1
+Win API 기본 프레임 워크 구성
+-> main.cpp
+	-> System Class : Window 생성 및 Main Loop
+		-> Input Class : 사용자 입출력
+		-> DXEngine Class : Directx 사용
+
+# 2
+DirectX 초기화 관련 Class 추가
+-> main.cpp
+	-> System Class
+		-> Input Class
+		-> DXEngine Class
+			-> DXD3D : DirectX 11 초기화

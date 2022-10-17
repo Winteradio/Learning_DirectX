@@ -4,7 +4,6 @@
 #include "DXCommon.h"
 
 #include "DXD3D.h"
-#include "Log.h"
 
 // Variables - Globals
 const bool VSYNC_ENABLED = true;
@@ -19,7 +18,7 @@ class DXENGINE
 	public :
 
 		DXENGINE();
-		DXENGINE( const DXENGINE& );
+		DXENGINE( const DXENGINE* );
 		~DXENGINE();
 
 	// Functions - Basic Initialization and Run Frame & End
@@ -28,17 +27,19 @@ class DXENGINE
 		bool Init( int, int, HWND );
 
 		bool Frame();
-		void Done();
+		void Release();
 
 	// Functions - Render for each frames
 	private :
 
 		bool Render();
 
+		void InitPointer();
+
 	// Variables - DXD3D Object
 	private :
 
-		DXD3D* m_DXD3D = nullptr;
+		DXD3D* m_DXD3D;
 };
 
 #endif __DXENGINE_H__

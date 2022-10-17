@@ -9,7 +9,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 		Wnd->Run();
 	}
 
-	Wnd->Done();
+	Wnd->Release();
 	delete Wnd;
 	Wnd = nullptr;
 
