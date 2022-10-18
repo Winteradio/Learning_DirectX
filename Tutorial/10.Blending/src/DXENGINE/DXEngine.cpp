@@ -208,15 +208,22 @@ bool DXENGINE::InitScene()
 
 	this->VertexShader = ".\\..\\..\\shader\\VertexShader.hlsl";
 	this->PixelShader = ".\\..\\..\\shader\\PixelShader.hlsl";
-	this->Shader = ".\\..\\..\\shader\\Shader.fx";
+	this->Shader = ".\\..\\..\\shader\\Shader.hlsl";
 	this->Texture = ".\\..\\..\\textures\\braynzar.jpg";
 
-
+	ID3D10Blob* errorMessage = nullptr;
 // Compile Shaders from shader file
-	hr = D3DX11CompileFromFile( this->Shader, 0, 0, "VS", "vs_4_0", 0, 0, 0, &(this->m_VS_Buffer), 0, 0 );
+	hr = D3DX11CompileFromFile( this->Shader, 0, 0, "VS", "vs_4_0", 0, 0, 0, &(this->m_VS_Buffer), &errorMessage, 0 );
 	if ( FAILED( hr ) )
 	{
-		LOG_ERROR(" Compile From Vertex Shader file - Failed \n ");
+		if ( errorMessage )
+		{
+			LOG_ERROR(" Compile From Vertex Shader file - Failed \n ");
+		}
+		else
+		{
+			LOG_ERROR(" Not Found Vertex \n");
+		}
 		//return false;
 	}
 	else

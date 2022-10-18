@@ -14,16 +14,18 @@ DXSHADER::DXSHADER( const DXSHADER* Other )
 DXSHADER::~DXSHADER()
 {}
 
+
 bool DXSHADER::Init( ID3D11Device* Device )
 {
 	InitShaderDIR();
-	if ( !InitVertexShader( Device ) ){ return false; }
-	if ( !InitPixelShader( Device ) ){ return false; }
-	if ( !InitLayout( Device ) ){ return false; }
-	if ( !InitMatrixBuffer( Device ) ){ return false; }
+	if ( !InitVertexShader( Device ) ) { return false; }
+	if ( !InitPixelShader( Device ) ) { return false; }
+	if ( !InitLayout( Device ) ) { return false; }
+	if ( !InitMatrixBuffer( Device ) ) { return false; }
 
 	return true;
 }
+
 
 void DXSHADER::Release()
 {
@@ -35,26 +37,34 @@ void DXSHADER::Release()
 	InitPointer();
 }
 
+
 bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount, XMMATRIX world, XMMATRIX view, XMMATRIX proj )
 {
 	if ( !SetShaderParameters( DevContext, world, view, proj ) )
 	{
+		LOG_ERROR(" Failed - Set Shader Parameters \n ");
 		return false;
 	}
 
-	RenderShader( DevContext, indexCount );
+	DevContext->IASetInputLayout( m_Layout );
+
+	DevContext->VSSetShader( m_VertexShader, NULL, 0 );
+	DevContext->PSSetShader( m_PixelShader, NULL, 0 );
+
+	DevContext->DrawIndexed( indexCount, 0, 0 );
 
 	return true;
 }
 
-bool SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX world, XMMATRIX view, XMMATRIX proj )
+
+bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX world, XMMATRIX view, XMMATRIX proj )
 {
 	HRESULT hr;
 
 	// Transpose matrixes for using Shader
-	worldMatrix = XMMatrixTranspose(world);
-	viewMatrix = XMMatrixTranspose(view);
-	projMatrix = XMMatrixTranspose(proj);
+	world = XMMatrixTranspose(world);
+	view = XMMatrixTranspose(view);
+	proj = XMMatrixTranspose(proj);
 
 	// Lock for using Constant Buffer's Information
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -66,17 +76,13 @@ bool SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX world, XMMAT
 		LOG_ERROR(" Failed - Close Constant Buffer \n ");
 		return false;
 	}
-	else
-	{
-		LOG_INFO(" Succssed - Close Constant Buffer \n ");
-	}
 
 	// Get Pointer about Constant Buffer's Data
 	MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
 
-	dataPtr->world = worldMatrix;
-	dataPtr->view = viewMatrix;
-	dataPtr->proj = projMatrix;
+	dataPtr->world = world;
+	dataPtr->view = view;
+	dataPtr->projection = proj;
 
 	// Unlock Constant Buffer;
 	DevContext->Unmap( m_MatrixBuffer, 0 );
@@ -88,16 +94,6 @@ bool SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX world, XMMAT
 	DevContext->VSSetConstantBuffers( bufferNumer, 1, &m_MatrixBuffer );
 
 	return true;
-}
-
-void DXSHADER::RenderShader( ID3D11DeviceContext* DevContext, int indexCount )
-{
-	DevContext->IASetInputLayout( m_Layout );
-
-	DevContext->VSSetShader( m_VertexShader, NULL, 0 );
-	DevContext->PSSetShader( m_PixelShader, NULL, 0 );
-
-	DevContext->DrawIndexed( indexCount, 0, 0 );
 }
 
 
@@ -126,13 +122,12 @@ bool DXSHADER::InitVertexShader( ID3D11Device* Device )
 
 
 	// Compile Vertex Shader Code File
-	hr = D3DX11CompileFromFile( m_VSfile, 0, 0, "VS", "vs_4_0", 0, 0, 0, &m_VertexShaderBuffer, &errorMessage, 0 );
+	hr = D3DX11CompileFromFile( m_VSfile, 0, 0, "ColorVertexShader", "vs_5_0", 0, 0, 0, &m_VertexShaderBuffer, &errorMessage, 0 );
 	if ( FAILED( hr ) )
 	{
-		LOG_ERROR(" Failed - Compile %s \n ", m_VSfile );
-
 		if ( errorMessage )
 		{
+			LOG_ERROR(" Failed - Compile %s \n ", m_VSfile );
 			ShaderErrorMessage( errorMessage );
 		}
 		else
@@ -170,13 +165,12 @@ bool DXSHADER::InitPixelShader( ID3D11Device* Device )
 	ID3D10Blob* errorMessage = nullptr;
 
 	// Compile Pixel Shader Code File
-	hr = D3DX11CompileFromFile( m_PSfile, 0, 0, "PS", "ps_4_0", 0, 0, 0, &m_PixelShaderBuffer, &errorMessage, 0 );
+	hr = D3DX11CompileFromFile( m_PSfile, 0, 0, "ColorPixelShader", "ps_5_0", 0, 0, 0, &m_PixelShaderBuffer, &errorMessage, 0 );
 	if ( FAILED( hr ) )
 	{
-		LOG_ERROR(" Failed - Compile %s \n ", m_PSfile );
-
 		if ( errorMessage )
 		{
+			LOG_ERROR(" Failed - Compile %s \n ", m_PSfile );
 			ShaderErrorMessage( errorMessage );
 		}
 		else
@@ -206,6 +200,7 @@ bool DXSHADER::InitPixelShader( ID3D11Device* Device )
 
 	return true;
 }
+
 
 bool DXSHADER::InitLayout( ID3D11Device* Device )
 {

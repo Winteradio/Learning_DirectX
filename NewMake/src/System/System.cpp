@@ -1,11 +1,14 @@
 #include "System.h"
 
 
-SYSTEM::SYSTEM(){
+SYSTEM::SYSTEM()
+{
+	InitPointer();
 
 	if ( !Init() )
 	{
 		LOG_ERROR(" Failed - Init System Object \n ");
+		system("pause");
 	}
 	else
 	{
@@ -26,29 +29,11 @@ SYSTEM::~SYSTEM(){}
 bool SYSTEM::Init()
 {
 	// Windows Init
-	if ( !InitWindows() )
-	{
-		LOG_ERROR(" Failed - Init Windows \n ");
-		return false;
-	}
-	else
-	{
-		LOG_INFO(" Succssed - Init Windows \n ");
-	}
+	if ( !InitWindows() ) { return false; }
+	// DXENGINE Init
+	if ( !InitDXENGINE() ) { return false; }
 
-	// Create DXEngine Objects
-	m_DXEngine = new DXENGINE;
-	if ( !m_DXEngine )
-	{
-		LOG_ERROR(" Failed - Create DXENGINE \n ");
-		return false;
-	}
-	else
-	{
-		LOG_INFO(" Succssed - Create DXENGIN \n ");
-	}
-
-	return m_DXEngine->Init( m_Width, m_Height, m_hWnd );
+	return true;
 }
 
 
@@ -84,24 +69,25 @@ void SYSTEM::Run()
 
 void SYSTEM::Release()
 {
-	// Release DXEngine Objects
-	if ( m_DXEngine )
-	{
-		m_DXEngine->Release();
-		delete m_DXEngine;
-		m_DXEngine = nullptr;
+	// Delete Windows
+	DestroyWindow( m_hWnd );
 
-		LOG_INFO(" Delete - DXENGINE \n");
-	}
+	// Delete Instance for this Program
+	UnregisterClass( m_WindowName, m_hInstance );
 
-	ReleaseWindows();
-	LOG_INFO(" End - Windows \n");
+
+	m_DXENGINE->Release();
+	delete m_DXENGINE;
+
+	InitPointer();
+
+	LOG_INFO(" End - Program \n");
 }
 
 
 bool SYSTEM::Frame()
 {
-	return m_DXEngine->Frame();
+	return m_DXENGINE->Frame();
 }
 
 
@@ -173,22 +159,47 @@ bool SYSTEM::InitWindows()
 	ShowWindow( m_hWnd, SW_SHOW );
 	UpdateWindow( m_hWnd );
 
+	LOG_INFO(" Successed - Init Windows \n ");
+
 	return true;
 }
 
 
-void SYSTEM::ReleaseWindows()
+bool SYSTEM::InitDXENGINE()
 {
-	// Delete Windows
-	DestroyWindow( m_hWnd );
+	// Create DXENGINE Objects
+	m_DXENGINE = new DXENGINE;
+	if ( !m_DXENGINE )
+	{
+		LOG_ERROR(" Failed - Create DXENGINE \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Succssed - Create DXENGINE \n ");
+	}
+
+	// Init DXENGINE Objects
+	if ( !m_DXENGINE->Init( m_Width, m_Height, m_hWnd ) )
+	{
+		LOG_ERROR(" Failed - Init DXENGINE \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create DXENGINE \n ");
+	}
+
+	return true;
+}
+
+void SYSTEM::InitPointer()
+{
 	m_hWnd = nullptr;
-
-	// Delete Instance for this Program
-	UnregisterClass( m_WindowName, m_hInstance );
 	m_hInstance = NULL;
-
-	// Init Other Pointer
-	MSGHandle = NULL;
+	m_WindowName = nullptr;
+	m_WindowTitle = nullptr;
+	m_DXENGINE = nullptr;
 }
 
 

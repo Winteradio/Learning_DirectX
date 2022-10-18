@@ -4,6 +4,9 @@
 #include "DXCommon.h"
 
 #include "DXD3D.h"
+#include "DXCamera.h"
+#include "DXModel.h"
+#include "DXShader.h"
 
 // Variables - Globals
 const bool VSYNC_ENABLED = true;
@@ -29,6 +32,14 @@ class DXENGINE
 		bool Frame();
 		void Release();
 
+	// Functions - Divide Init Functions
+	private :
+
+		bool InitDXD3D( int, int, bool, HWND, float, float );
+		bool InitDXCAMERA();
+		bool InitDXMODEL();
+		bool InitDXSHADER();
+
 	// Functions - Render for each frames
 	private :
 
@@ -40,6 +51,9 @@ class DXENGINE
 	private :
 
 		DXD3D* m_DXD3D;
+		DXCAMERA* m_DXCAMERA;
+		DXMODEL* m_DXMODEL;
+		DXSHADER* m_DXSHADER;
 };
 
 #endif __DXENGINE_H__

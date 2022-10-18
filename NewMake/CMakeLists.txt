@@ -46,6 +46,7 @@ SET( SRC_DIR src )
 ###################################################
 
 SET( DX_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/DX )
+SET( DXCAMERA_DIR ${DX_DIR}/DXCamera )
 SET( DXD3D_DIR ${DX_DIR}/DXD3D )
 SET( DXENGINE_DIR ${DX_DIR}/DXEngine )
 SET( DXMODEL_DIR ${DX_DIR}/DXModel )
@@ -66,6 +67,7 @@ SET( SRCS
 	${LOG_DIR}/Log.h ${LOG_DIR}/Log.cpp
 
 	${DX_DIR}/DXCommon.h
+	${DXCAMERA_DIR}/DXCamera.h ${DXCAMERA_DIR}/DXCamera.cpp
 	${DXD3D_DIR}/DXD3D.h ${DXD3D_DIR}/DXD3D.cpp
 	${DXENGINE_DIR}/DXEngine.h ${DXENGINE_DIR}/DXEngine.cpp
 	${DXMODEL_DIR}/DXModel.h ${DXMODEL_DIR}/DXModel.cpp
@@ -80,6 +82,7 @@ SET( INCS
 	${TIMER_DIR}
 
 	${DX_DIR}
+	${DXCAMERA_DIR}
 	${DXD3D_DIR}
 	${DXENGINE_DIR}
 	${DXMODEL_DIR}
@@ -110,13 +113,13 @@ TARGET_INCLUDE_DIRECTORIES( ${PROJECT_NAME} PUBLIC ${DEP_INCLUDE_DIR} )
 TARGET_LINK_DIRECTORIES( ${PROJECT_NAME} PUBLIC ${DEP_LIB_DIR} )
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PUBLIC ${DEP_LIBS} )
 
-MESSAGE( STATUS " Setting Done ")
+MESSAGE( STATUS "Setting Done ")
 # ----------------------------------------------- #
 
 
 
 # ------ Set for Compiling and Dependency ------- #
-MESSAGE( STATUS " Setting for Compile and Dependency ")
+MESSAGE( STATUS "Setting for Compile and Dependency ")
 
 TARGET_COMPILE_DEFINITIONS( ${PROJECT_NAME} PUBLIC
 	WINDOW_NAME = "${WINDOW_NAME}"
@@ -126,5 +129,5 @@ TARGET_COMPILE_DEFINITIONS( ${PROJECT_NAME} PUBLIC
 
 ## ADD_DEPENDENCIES( ${PROJECT_NAME} ${DEP_LIST} )
 
-MESSAGE( STATUS " Setting Done ")
+MESSAGE( STATUS "Setting Done ")
 # ----------------------------------------------- #

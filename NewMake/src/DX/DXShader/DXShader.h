@@ -35,7 +35,6 @@ class DXSHADER
 	private :
 
 		bool SetShaderParameters( ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX );
-		void RenderShader( ID3D11DeviceContext*, int );
 
 		void ShaderErrorMessage( ID3D10Blob* );
 

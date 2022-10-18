@@ -28,7 +28,9 @@ class SYSTEM
 		bool Init();
 		bool Frame();
 		bool InitWindows();
-		void ReleaseWindows();
+		bool InitDXENGINE();
+
+		void InitPointer();
 
 	// Variables
 	public :
@@ -50,7 +52,7 @@ class SYSTEM
 		// Setting for FullScreen
 		bool m_FullScreen;
 
-		DXENGINE* m_DXEngine = nullptr;
+		DXENGINE* m_DXENGINE;
 };
 
 static LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );

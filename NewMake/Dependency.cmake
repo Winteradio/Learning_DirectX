@@ -38,7 +38,7 @@ SET( D11_INCLUDE_DIR
 SET( D11_LIB_DIR
 	"C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Lib\\x64"
 	)
-SET( D11_LIBS d3d11.lib d3dx11.lib d3dx10.lib dxgi.lib dxguid.lib )
+SET( D11_LIBS d3d11.lib d3dx11.lib d3dx10.lib dxgi.lib dxguid.lib d3dcompiler.lib )
 
 TARGET_INCLUDE_DIRECTORIES( ${PROJECT_NAME} PUBLIC ${WINDOWSDK_INCLUDE_DIR} ${D11_INCLUDE_DIR} )
 TARGET_LINK_DIRECTORIES( ${PROJECT_NAME} PUBLIC ${D11_LIB_DIR} )
