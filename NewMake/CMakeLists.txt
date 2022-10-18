@@ -47,7 +47,9 @@ SET( SRC_DIR src )
 
 SET( DX_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/DX )
 SET( DXD3D_DIR ${DX_DIR}/DXD3D )
-SET( DXENGINE_DIR ${DX_DIR}/DXENGINE )
+SET( DXENGINE_DIR ${DX_DIR}/DXEngine )
+SET( DXMODEL_DIR ${DX_DIR}/DXModel )
+SET( DXSHADER_DIR ${DX_DIR}/DXShader )
 
 SET( SYSTEM_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/System )
 
@@ -64,10 +66,10 @@ SET( SRCS
 	${LOG_DIR}/Log.h ${LOG_DIR}/Log.cpp
 
 	${DX_DIR}/DXCommon.h
-
 	${DXD3D_DIR}/DXD3D.h ${DXD3D_DIR}/DXD3D.cpp
-
 	${DXENGINE_DIR}/DXEngine.h ${DXENGINE_DIR}/DXEngine.cpp
+	${DXMODEL_DIR}/DXModel.h ${DXMODEL_DIR}/DXModel.cpp
+	${DXSHADER_DIR}/DXShader.h ${DXSHADER_DIR}/DXShader.cpp
 	)
 
 ## Header Files
@@ -80,6 +82,8 @@ SET( INCS
 	${DX_DIR}
 	${DXD3D_DIR}
 	${DXENGINE_DIR}
+	${DXMODEL_DIR}
+	${DXSHADER_DIR}
 	)
 
 ###################################################
