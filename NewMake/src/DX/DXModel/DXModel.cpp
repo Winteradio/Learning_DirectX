@@ -67,13 +67,13 @@ bool DXMODEL::InitVertex( ID3D11Device* Device )
 
 	// Set Vertex List Data
 	vertices[0].POS = XMFLOAT3( -1.0f, -1.0f, 0.0f );
-	vertices[0].COLOR = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
+	vertices[0].COLOR = XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f );
 
 	vertices[1].POS = XMFLOAT3( 0.0f, 1.0f, 0.0f );
-	vertices[1].COLOR = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
+	vertices[1].COLOR = XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f );
 
 	vertices[2].POS = XMFLOAT3( 1.0f, -1.0f, 0.0f );
-	vertices[2].COLOR = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
+	vertices[2].COLOR = XMFLOAT4( 0.0f, 1.0f, 0.0f, 1.0f );
 
 	// Describe VertexBuffer Structor that is static
 	D3D11_BUFFER_DESC vertexBufferDesc;

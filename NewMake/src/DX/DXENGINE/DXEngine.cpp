@@ -190,7 +190,7 @@ bool DXENGINE::InitDXSHADER()
 	}
 
 	// Init DXSHADER Object
-	if ( !m_DXSHADER->Init( m_DXD3D->GetDevice() ) )
+	if ( !m_DXSHADER->Init( m_DXD3D->GetDevice(), m_DXD3D->GetDeviceContext() ) )
 	{
 		LOG_ERROR(" Failed - Init DXSHADER \n ");
 		return false;

@@ -8,7 +8,6 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	{
 		Wnd->Run();
 	}
-	system("pause");
 
 	Wnd->Release();
 	delete Wnd;

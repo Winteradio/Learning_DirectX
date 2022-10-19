@@ -25,7 +25,7 @@ class DXSHADER
 	// Functions - Init, Release Object and Render
 	public :
 
-		bool Init( ID3D11Device* );
+		bool Init( ID3D11Device*, ID3D11DeviceContext* );
 		void Release();
 
 		bool Render( ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX );
@@ -43,8 +43,8 @@ class DXSHADER
 	private :
 
 		void InitShaderDIR();
-		bool InitVertexShader( ID3D11Device* );
-		bool InitPixelShader( ID3D11Device* );
+		bool InitVertexShader( ID3D11Device*, ID3D11DeviceContext* );
+		bool InitPixelShader( ID3D11Device*, ID3D11DeviceContext* );
 		bool InitLayout( ID3D11Device* );
 		bool InitMatrixBuffer( ID3D11Device* );
 

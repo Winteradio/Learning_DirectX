@@ -60,6 +60,7 @@ void SYSTEM::Run()
 		{
 			if (!Frame())
 			{
+				LOG_INFO(" Error during Run \n");
 				break;
 			}
 		}

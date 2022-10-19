@@ -1,6 +1,6 @@
-^C:\USERS\겨울엔군고구마한잔\ONEDRIVE - 한양대학교\바탕 화면\C++\DIRECTX12\TUTORIAL\DIRECTX11\03.COLOR!\BUILD\CMAKEFILES\4CFC12BB1BF8F17ED6858EF2B6BA6A6D\GENERATE.STAMP.RULE
+^C:\USERS\겨울엔군고구마한잔\ONEDRIVE - 한양대학교\바탕 화면\C++\DIRECTX11\TUTORIAL\03.COLOR!\BUILD\CMAKEFILES\597C117AA7BF8240A2254C24E4376F8A\GENERATE.STAMP.RULE
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx12/Tutorial/Directx11/03.Color!" "-BC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx12/Tutorial/Directx11/03.Color!/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx12/Tutorial/Directx11/03.Color!/build/Example.sln"
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/Tutorial/03.Color!" "-BC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/Tutorial/03.Color!/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/Tutorial/03.Color!/build/Example.sln"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

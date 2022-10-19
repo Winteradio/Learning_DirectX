@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx12/Tutorial/Directx11/03.Color!
+# Install script for directory: C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/Tutorial/03.Color!
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx12/Tutorial/Directx11/03.Color!/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/Tutorial/03.Color!/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

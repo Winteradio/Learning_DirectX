@@ -15,11 +15,11 @@ DXSHADER::~DXSHADER()
 {}
 
 
-bool DXSHADER::Init( ID3D11Device* Device )
+bool DXSHADER::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
 {
 	InitShaderDIR();
-	if ( !InitVertexShader( Device ) ) { return false; }
-	if ( !InitPixelShader( Device ) ) { return false; }
+	if ( !InitVertexShader( Device, DevContext ) ) { return false; }
+	if ( !InitPixelShader( Device, DevContext ) ) { return false; }
 	if ( !InitLayout( Device ) ) { return false; }
 	if ( !InitMatrixBuffer( Device ) ) { return false; }
 
@@ -47,10 +47,6 @@ bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount, XMMATRIX
 	}
 
 	DevContext->IASetInputLayout( m_Layout );
-
-	DevContext->VSSetShader( m_VertexShader, NULL, 0 );
-	DevContext->PSSetShader( m_PixelShader, NULL, 0 );
-
 	DevContext->DrawIndexed( indexCount, 0, 0 );
 
 	return true;
@@ -115,7 +111,7 @@ void DXSHADER::InitShaderDIR()
 }
 
 
-bool DXSHADER::InitVertexShader( ID3D11Device* Device )
+bool DXSHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
 {
 	HRESULT hr;
 	ID3D10Blob* errorMessage = nullptr;
@@ -155,11 +151,13 @@ bool DXSHADER::InitVertexShader( ID3D11Device* Device )
 		LOG_INFO(" SUccssed - Create Vertex Shader from Buffer \n ");
 	}
 
+	DevContext->VSSetShader( m_VertexShader, NULL, 0 );
+
 	return true;
 }
 
 
-bool DXSHADER::InitPixelShader( ID3D11Device* Device )
+bool DXSHADER::InitPixelShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
 {
 	HRESULT hr;
 	ID3D10Blob* errorMessage = nullptr;
@@ -197,6 +195,8 @@ bool DXSHADER::InitPixelShader( ID3D11Device* Device )
 	{
 		LOG_INFO(" Successed - Create Pixel Shader from Buffer \n ");
 	}
+
+	DevContext->PSSetShader( m_PixelShader, NULL, 0 );
 
 	return true;
 }
