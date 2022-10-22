@@ -4,7 +4,16 @@
 struct MDPARTICLE
 {
 	MDPARTICLE();
-	MDPARTICLE( float X, float Y, float Z, float R, float G, float B );
+	MDPARTICLE( float X, float Y, float Z, float R, float G, float B )
+	{
+		POS.x = X;
+		POS.y = Y;
+		POS.z = Z;
+
+		COLOR.x = R;
+		COLOR.y = G;
+		COLOR.z = B;
+	};
 	~MDPARTICLE();
 
 	XMFLOAT MASS;
