@@ -20,6 +20,7 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 {
 	if ( !InitDXD3D( Width, Height, VSYNC_ENABLED, hWnd, SCREEN_DEPTH, SCREEN_NEAR ) ) { return false; }
 	if ( !InitDXCAMERA() ) { return false; }
+	if ( !InitDXLIGHT() ) { return true; }
 	if ( !InitDXMODEL() ) { return false; }
 	if ( !InitDXSHADER() ) { return false; }
 
@@ -41,6 +42,7 @@ void DXENGINE::Release()
 
 	delete m_DXD3D;
 	delete m_DXCAMERA;
+	delete m_DXLIGHT;
 	delete m_DXMODEL;
 	delete m_DXSHADER;
 
@@ -68,7 +70,7 @@ bool DXENGINE::Render()
 	m_DXMODEL->Render( m_DXD3D->GetDeviceContext() );
 
 	// Render using Shader
-	hr = m_DXSHADER->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix );
+	hr = m_DXSHADER->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_DXLIGHT->GetDirection(), m_DXLIGHT->GetDiffuseColor() );
 	if ( !hr )
 	{
 		LOG_ERROR(" Failed - Render using Shader \n ");
@@ -86,6 +88,7 @@ void DXENGINE::InitPointer()
 {
 	m_DXD3D = nullptr;
 	m_DXCAMERA = nullptr;
+	m_DXLIGHT= nullptr;
 	m_DXMODEL= nullptr;
 	m_DXSHADER = nullptr;
 }
@@ -135,6 +138,28 @@ bool DXENGINE::InitDXCAMERA()
 	{
 		LOG_INFO(" Successed - Create DXCAMERA \n ");
 	}
+
+	return true;
+}
+
+
+bool DXENGINE::InitDXLIGHT()
+{
+	// Create DXLIGHT Object
+	m_DXLIGHT = new DXLIGHT;
+
+	if ( !m_DXLIGHT )
+	{
+		LOG_ERROR(" Failed - Create DXLIGHT \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create DXLIGHT \n ");
+	}
+
+	m_DXLIGHT->SetDiffuseColor( 1.0f, 0.0f, 1.0f, 1.0f );
+	m_DXLIGHT->SetDirection( 0.0f, 0.0f, 1.0f );
 
 	return true;
 }

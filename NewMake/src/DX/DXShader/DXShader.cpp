@@ -22,6 +22,7 @@ bool DXSHADER::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
 	if ( !InitPixelShader( Device, DevContext ) ) { return false; }
 	if ( !InitLayout( Device ) ) { return false; }
 	if ( !InitMatrixBuffer( Device ) ) { return false; }
+	if ( !InitLightBuffer( Device ) ) { return false; }
 
 	return true;
 }
@@ -33,19 +34,19 @@ void DXSHADER::Release()
 	m_PixelShader->Release();
 	m_Layout->Release();
 	m_MatrixBuffer->Release();
+	m_LightBuffer->Release();
 
 	InitPointer();
 }
 
 
-bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount, XMMATRIX world, XMMATRIX view, XMMATRIX proj )
+bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount, XMMATRIX world, XMMATRIX view, XMMATRIX proj, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor )
 {
-	if ( !SetShaderParameters( DevContext, world, view, proj ) )
+	if ( !SetShaderParameters( DevContext, world, view, proj, lightDirection, diffuseColor ) )
 	{
 		LOG_ERROR(" Failed - Set Shader Parameters \n ");
 		return false;
 	}
-
 	DevContext->IASetInputLayout( m_Layout );
 	DevContext->DrawIndexed( indexCount, 0, 0 );
 
@@ -53,7 +54,7 @@ bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount, XMMATRIX
 }
 
 
-bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX world, XMMATRIX view, XMMATRIX proj )
+bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX world, XMMATRIX view, XMMATRIX proj, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor )
 {
 	HRESULT hr;
 
@@ -89,13 +90,35 @@ bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX wo
 	// Set Vertex Shader using Constant Buffer's Setting Value
 	DevContext->VSSetConstantBuffers( bufferNumer, 1, &m_MatrixBuffer );
 
+	hr = DevContext->Map( m_LightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource );
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - Close Constant Buffer \n ");
+		return false;
+	}
+
+	// Get Pointer about Constant Buffer's Data
+	LightBufferType* dataPtr2 = (LightBufferType*)mappedResource.pData;
+
+	dataPtr2->diffuseColor = diffuseColor;
+	dataPtr2->lightDirection = lightDirection;
+
+	// Unlock Constant Buffer;
+	DevContext->Unmap( m_LightBuffer, 0 );
+
+	// Set Constant Buffer's Information in Vertex Shader
+	bufferNumer = 0;
+
+	// Set Pixel Shader using Constant Buffer's Setting Value
+	DevContext->PSSetConstantBuffers( bufferNumer, 1, &m_LightBuffer );
+
 	return true;
 }
 
 
 void DXSHADER::ShaderErrorMessage( ID3D10Blob* errorMessage )
 {
-	OutputDebugStringA(reinterpret_cast<const char*>( errorMessage->GetBufferPointer() ) ) ;
+	LOG_ERROR("%s \n",(char*)( errorMessage->GetBufferPointer() ) ) ;
 
 
 	errorMessage->Release();
@@ -148,7 +171,7 @@ bool DXSHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevC
 	}
 	else
 	{
-		LOG_INFO(" SUccssed - Create Vertex Shader from Buffer \n ");
+		LOG_INFO(" Succssed - Create Vertex Shader from Buffer \n ");
 	}
 
 	DevContext->VSSetShader( m_VertexShader, NULL, 0 );
@@ -207,7 +230,7 @@ bool DXSHADER::InitLayout( ID3D11Device* Device )
 	HRESULT hr;
 
 	// Create Layout for Vertex Input
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
 
     polygonLayout[0].SemanticName = "POSITION";
     polygonLayout[0].SemanticIndex = 0;
@@ -224,6 +247,14 @@ bool DXSHADER::InitLayout( ID3D11Device* Device )
     polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
     polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
     polygonLayout[1].InstanceDataStepRate = 0;
+
+    polygonLayout[2].SemanticName = "NORMAL";
+    polygonLayout[2].SemanticIndex = 0;
+    polygonLayout[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+    polygonLayout[2].InputSlot = 0;
+    polygonLayout[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+    polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+    polygonLayout[2].InstanceDataStepRate = 0;
 
     UINT numElements = ARRAYSIZE( polygonLayout );
 
@@ -277,6 +308,35 @@ bool DXSHADER::InitMatrixBuffer( ID3D11Device* Device )
     return true;
 }
 
+bool DXSHADER::InitLightBuffer( ID3D11Device* Device )
+{
+	HRESULT hr;
+
+	// Create Light Buffer in Pixel Shader
+	D3D11_BUFFER_DESC lightBufferDesc;
+	ZeroMemory( &lightBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
+
+	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	lightBufferDesc.ByteWidth = sizeof( LightBufferType );
+	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightBufferDesc.MiscFlags = 0;
+	lightBufferDesc.StructureByteStride = 0;
+
+	hr = Device->CreateBuffer( &lightBufferDesc, NULL, &m_LightBuffer );
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - Create Light Buffer \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Light Buffer \n ");
+	}
+
+	return true;
+}
+
 
 void DXSHADER::InitPointer()
 {
@@ -286,6 +346,7 @@ void DXSHADER::InitPointer()
 	m_PixelShader = nullptr;
 	m_Layout = nullptr;
 	m_MatrixBuffer = nullptr;
+	m_LightBuffer = nullptr;
 
 	m_VSfile = nullptr;
 	m_PSfile = nullptr;

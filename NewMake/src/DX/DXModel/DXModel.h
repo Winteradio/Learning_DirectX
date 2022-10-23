@@ -13,6 +13,7 @@ class DXMODEL
 	{
 		XMFLOAT3 POS;
 		XMFLOAT4 COLOR;
+		XMFLOAT3 NORMAL;
 	};
 
 	// Functions - Constructor and Destructor

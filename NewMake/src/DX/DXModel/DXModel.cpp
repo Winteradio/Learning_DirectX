@@ -250,9 +250,9 @@ void DXMODEL::InitPointer()
 	Blue = 0.0f;
 	Green = 0.0f;
 
-	temp_R = 0.0001f;
-	temp_B = 0.0001f;
-	temp_G = 0.0001f;
+	temp_R = 0.0005f;
+	temp_B = -0.0002f;
+	temp_G = 0.0003f;
 }
 
 

@@ -5,6 +5,7 @@
 
 #include "DXD3D.h"
 #include "DXCamera.h"
+#include "DXLight.h"
 #include "DXModel.h"
 #include "DXShader.h"
 
@@ -37,6 +38,7 @@ class DXENGINE
 
 		bool InitDXD3D( int, int, bool, HWND, float, float );
 		bool InitDXCAMERA();
+		bool InitDXLIGHT();
 		bool InitDXMODEL();
 		bool InitDXSHADER();
 
@@ -52,6 +54,7 @@ class DXENGINE
 
 		DXD3D* m_DXD3D;
 		DXCAMERA* m_DXCAMERA;
+		DXLIGHT* m_DXLIGHT;
 		DXMODEL* m_DXMODEL;
 		DXSHADER* m_DXSHADER;
 };

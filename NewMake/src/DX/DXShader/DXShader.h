@@ -5,7 +5,7 @@
 
 class DXSHADER
 {
-	// Structor - MatrixBufferType
+	// Structor - MatrixBufferType and LightBufferType
 	private:
 
 		struct MatrixBufferType
@@ -13,6 +13,13 @@ class DXSHADER
 			XMMATRIX world;
 			XMMATRIX view;
 			XMMATRIX projection;
+		};
+
+		struct LightBufferType
+		{
+			XMFLOAT4 diffuseColor;
+			XMFLOAT3 lightDirection;
+			float padding;
 		};
 
 	// Functions - Constructor and Destructor
@@ -28,13 +35,13 @@ class DXSHADER
 		bool Init( ID3D11Device*, ID3D11DeviceContext* );
 		void Release();
 
-		bool Render( ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX );
+		bool Render( ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT3, XMFLOAT4 );
 
 
 	// Functions - Render and etc...
 	private :
 
-		bool SetShaderParameters( ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX );
+		bool SetShaderParameters( ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT3, XMFLOAT4 );
 
 		void ShaderErrorMessage( ID3D10Blob* );
 
@@ -47,6 +54,7 @@ class DXSHADER
 		bool InitPixelShader( ID3D11Device*, ID3D11DeviceContext* );
 		bool InitLayout( ID3D11Device* );
 		bool InitMatrixBuffer( ID3D11Device* );
+		bool InitLightBuffer( ID3D11Device* );
 
 		void InitPointer();
 
@@ -60,6 +68,7 @@ class DXSHADER
 		ID3D11PixelShader* m_PixelShader;
 		ID3D11InputLayout* m_Layout;
 		ID3D11Buffer* m_MatrixBuffer;
+		ID3D11Buffer* m_LightBuffer;
 
 		const char* m_VSfile;
 		const char* m_PSfile;

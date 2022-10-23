@@ -36,3 +36,19 @@ DirectX 초기화 관련 Class 추가
 				-> MDParticle Class : 입자 관련 구조체
 			-> DXShader Class : Shader 관련
 			-> DXPhysics Class : 물리 연산 관련
+
+
+# 4
+간단한 조명 만들기 - 동적 리소스 사용 / MDParticle, DXPhysics 추가 예정
+-> main.cpp
+	-> System Class
+		-> Input Class
+		-> DXEngine Class
+			-> DXD3D Class : DirectX 초기화 관련
+			-> DXCamera Class : Camera 관련
+			-> DXModel Class : Model 생성 ( Vertex, Index )
+				-> MDParticle Class : 입자 관련 구조체
+			-> DXShader Class : Shader 관련
+				-> Light 적용할 수 있게 변경
+			-> DXPhysics Class : 물리 연산 관련
+			-> DXLight Class : Diffuse Light, Light Position 설정 관련

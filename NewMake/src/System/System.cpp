@@ -63,6 +63,10 @@ void SYSTEM::Run()
 				LOG_INFO(" Error during Run \n");
 				break;
 			}
+			else
+			{
+				LOG_INFO(" Running ... \n ");
+			}
 		}
 	}
 }
