@@ -35,9 +35,9 @@ PixelInputType ColorVertexShader( VertexInputType input )
 	output.position = mul( output.position, viewMatrix );
 	output.position = mul( output.position, projectionMatrix );
 
-	output.normal = mul( input.normal, (float3x3)worldMatrix );
-	output.normal = normalize( output.normal );
+	//output.normal = mul( input.normal, (float3x3)worldMatrix );
+	output.normal = normalize( input.normal );
 	output.color = input.color;
 
 	return output;
-}
+};

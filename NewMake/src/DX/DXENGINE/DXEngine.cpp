@@ -24,13 +24,22 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 	if ( !InitDXMODEL() ) { return false; }
 	if ( !InitDXSHADER() ) { return false; }
 
+	rotation = 0.0f;
+
 	return true;
 }
 
 
 bool DXENGINE::Frame()
 {
-	return Render();
+
+	rotation += (float)XM_PI * 0.0001f;
+	if ( rotation > 360.0f )
+	{
+		rotation -= 360.0f;
+	}
+
+	return Render( rotation );
 }
 
 
@@ -50,7 +59,7 @@ void DXENGINE::Release()
 }
 
 
-bool DXENGINE::Render()
+bool DXENGINE::Render( float rotation )
 {
 	bool hr;
 
@@ -65,6 +74,8 @@ bool DXENGINE::Render()
 	m_DXD3D->GetWorldMatrix( worldMatrix );
 	m_DXCAMERA->GetViewMatrix( viewMatrix );
 	m_DXD3D->GetProjectionMatrix( projectionMatrix );
+
+	worldMatrix = XMMatrixRotationY( rotation );
 
 	// Ready for Drawing tha need Model Vertex and Index buffer for Graphics pipeline
 	m_DXMODEL->Render( m_DXD3D->GetDeviceContext() );

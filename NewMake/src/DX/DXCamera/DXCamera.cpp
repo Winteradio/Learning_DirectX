@@ -77,8 +77,8 @@ void DXCAMERA::Render()
 
 	// Set View Matrix using Camera Vectors
 
-	posVector = XMVectorSet( 0.0f, 0.0f, -5.0f, 0.0f );
-	lookAtVector = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
+	posVector = XMVectorSet( 3.0f, 3.0f, 3.0f, 0.0f );
+	lookAtVector = XMVectorSet( -1.0f, -1.0f, -1.0f, 0.0f );
 	upVector = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 
 	m_ViewMatrix = XMMatrixLookAtLH( posVector, lookAtVector, upVector );

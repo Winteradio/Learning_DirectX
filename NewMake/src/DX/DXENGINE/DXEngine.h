@@ -45,7 +45,7 @@ class DXENGINE
 	// Functions - Render for each frames
 	private :
 
-		bool Render();
+		bool Render( float );
 
 		void InitPointer();
 
@@ -57,6 +57,8 @@ class DXENGINE
 		DXLIGHT* m_DXLIGHT;
 		DXMODEL* m_DXMODEL;
 		DXSHADER* m_DXSHADER;
+
+		float rotation;
 };
 
 #endif __DXENGINE_H__
