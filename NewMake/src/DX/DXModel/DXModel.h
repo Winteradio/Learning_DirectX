@@ -28,12 +28,20 @@ class DXMODEL
 		bool Init( ID3D11Device* );
 		void Release();
 		void Render( ID3D11DeviceContext* );
+		bool Update( ID3D11DeviceContext* );
 
 	// Functions - Divide Init Function
 	private :
 
-		bool InitVertex( ID3D11Device* );
-		bool InitIndex( ID3D11Device* );
+		bool SetVertex();
+		bool SetIndex();
+
+		bool InitVertexBuffer( ID3D11Device* );
+		bool InitIndexBuffer( ID3D11Device* );
+
+		bool UpdateVertexBuffer( ID3D11DeviceContext* );
+		bool UpdateIndexBuffer( ID3D11DeviceContext* );
+
 		void InitPointer();
 
 	// Functions - Get
@@ -48,6 +56,16 @@ class DXMODEL
 		ID3D11Buffer* m_IndexBuffer;
 		int m_VertexCount;
 		int m_IndexCount;
+		VertexType* m_Vertices;
+		UINT* m_Indices;
+
+		float Red;
+		float Green;
+		float Blue;
+
+		float temp_R;
+		float temp_G;
+		float temp_B;
 };
 
 #endif

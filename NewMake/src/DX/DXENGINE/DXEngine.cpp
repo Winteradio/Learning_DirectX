@@ -74,10 +74,6 @@ bool DXENGINE::Render()
 		LOG_ERROR(" Failed - Render using Shader \n ");
 		return false;
 	}
-	else
-	{
-		LOG_INFO(" Successed - Render using Shader \n ");
-	}
 
 	// Print Buffor on Monitor
 	m_DXD3D->EndScene();
