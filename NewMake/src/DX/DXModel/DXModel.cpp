@@ -74,7 +74,7 @@ bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 bool DXMODEL::SetVertex()
 {
 	// Set Vertex Count;
-	m_VertexCount = 3;
+	m_VertexCount = 8;
 
 	// Create Vertex List
 	m_Vertices = new VertexType[ m_VertexCount ];
@@ -85,15 +85,37 @@ bool DXMODEL::SetVertex()
 	}
 
 	// Set Vertex List Data
-	m_Vertices[0].POS = XMFLOAT3( -1.0f, -1.0f, 0.0f );
+	m_Vertices[0].POS = XMFLOAT3( -1.0f, -1.0f, -1.0f );
 	m_Vertices[0].COLOR = XMFLOAT4( Red, 0.0f, 0.0f, 1.0f );
+	m_Vertices[0].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
 
-	m_Vertices[1].POS = XMFLOAT3( 0.0f, 1.0f, 0.0f );
+	m_Vertices[1].POS = XMFLOAT3( -1.0f, +1.0f, -1.0f );
 	m_Vertices[1].COLOR = XMFLOAT4( 0.0f, 0.0f, Blue, 1.0f );
+	m_Vertices[1].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
 
-	m_Vertices[2].POS = XMFLOAT3( 1.0f, -1.0f, 0.0f );
+	m_Vertices[2].POS = XMFLOAT3( +1.0f, +1.0f, -1.0f );
 	m_Vertices[2].COLOR = XMFLOAT4( 0.0f, Green, 0.0f, 1.0f );
+	m_Vertices[2].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
 
+	m_Vertices[3].POS = XMFLOAT3( +1.0f, -1.0f, -1.0f );
+	m_Vertices[3].COLOR = XMFLOAT4( Red, 0.0f, 0.0f, 1.0f );
+	m_Vertices[3].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
+
+	m_Vertices[4].POS = XMFLOAT3( -1.0f, -1.0f, +1.0f );
+	m_Vertices[4].COLOR = XMFLOAT4( 0.0f, 0.0f, Blue, 1.0f );
+	m_Vertices[4].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
+
+	m_Vertices[5].POS = XMFLOAT3( -1.0f, +1.0f, +1.0f );
+	m_Vertices[5].COLOR = XMFLOAT4( 0.0f, Green, 0.0f, 1.0f );
+	m_Vertices[5].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
+
+	m_Vertices[6].POS = XMFLOAT3( +1.0f, +1.0f, +1.0f );
+	m_Vertices[6].COLOR = XMFLOAT4( Red, 0.0f, 0.0f, 1.0f );
+	m_Vertices[6].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
+
+	m_Vertices[7].POS = XMFLOAT3( +1.0f, -1.0f, +1.0f );
+	m_Vertices[7].COLOR = XMFLOAT4( 0.0f, 0.0f, Blue, 1.0f );
+	m_Vertices[7].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
 	return true;
 }
 
@@ -101,7 +123,7 @@ bool DXMODEL::SetVertex()
 bool DXMODEL::SetIndex()
 {
 	// Set Index Count;
-	m_IndexCount = 3;
+	m_IndexCount = 36;
 
 	// Create Index List
 	m_Indices = new UINT[ m_IndexCount ];
@@ -111,9 +133,53 @@ bool DXMODEL::SetIndex()
 		return false;
 	}
 
+	// front face
 	m_Indices[0] = 0;
 	m_Indices[1] = 1;
 	m_Indices[2] = 2;
+	m_Indices[3] = 0;
+	m_Indices[4] = 2;
+	m_Indices[5] = 3;
+
+	// back face
+	m_Indices[6] = 4;
+	m_Indices[7] = 6;
+	m_Indices[8] = 5;
+	m_Indices[9] = 4;
+	m_Indices[10] = 7;
+	m_Indices[11] = 6;
+
+	// left face
+	m_Indices[12] = 4;
+	m_Indices[13] = 5;
+	m_Indices[14] = 1;
+	m_Indices[15] = 4;
+	m_Indices[16] = 1;
+	m_Indices[17] = 0;
+
+	// right face
+	m_Indices[18] = 3;
+	m_Indices[19] = 2;
+	m_Indices[20] = 6;
+	m_Indices[21] = 3;
+	m_Indices[22] = 6;
+	m_Indices[23] = 7;
+
+	// top face
+	m_Indices[24] = 1;
+	m_Indices[25] = 5;
+	m_Indices[26] = 6;
+	m_Indices[27] = 1;
+	m_Indices[28] = 6;
+	m_Indices[29] = 2;
+
+	// bottom face
+	m_Indices[30] = 4;
+	m_Indices[31] = 0;
+	m_Indices[32] = 3;
+	m_Indices[33] = 4;
+	m_Indices[34] = 3;
+	m_Indices[35] = 7;
 
 	return true;
 }
@@ -251,8 +317,8 @@ void DXMODEL::InitPointer()
 	Green = 0.0f;
 
 	temp_R = 0.0005f;
-	temp_B = -0.0002f;
-	temp_G = 0.0003f;
+	temp_B = 0.0005f;
+	temp_G = 0.0005f;
 }
 
 
