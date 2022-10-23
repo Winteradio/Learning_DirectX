@@ -52,3 +52,26 @@ DirectX 초기화 관련 Class 추가
 				-> Light 적용할 수 있게 변경
 			-> DXPhysics Class : 물리 연산 관련
 			-> DXLight Class : Diffuse Light, Light Position 설정 관련
+
+
+-> 조명 관련
+
+ Normal Vector : 주어진 Object에서 나오는 방향
+ Light Vector : 빛 벡터
+ Light Intensity : 채도
+ 	-> Light Intensity = dot( Normal Vector * ( -1.0f ) , Light Vector )
+ 	-> 주어진 Object에 빛이 가해지는 정도 ( 0 ~ 1 )
+
+ Diffuse Light : 분산광
+ 	-> 물체의 표면에서 분산되어 눈으로 바로 들어오는 빛
+ 	-> 각도에 따라 밝기가 다름
+ 		-> Light Intensity
+ 	-> Color = material Color * ( Light color * Light Intensity )
+ Ambient Light : 주변광
+  	-> 수많은 반사를 거쳐서 광원이 불분명한 빛
+ 	-> 물체를 덮고 있는 빛이며, 일정한 밝기와 색을 표현
+ 	-> Color = material Color * Ambient Light Color
+ Specular Light : 반사광
+ 	-> 분산광과 달리 한방향으로 완전히 반사되는 빛
+ 	-> 반사되는 부분은 흰색의 광으로 보임
+ Total Light : 실질적인 Object의 빛의 밝기
