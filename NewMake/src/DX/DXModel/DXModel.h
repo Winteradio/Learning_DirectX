@@ -3,10 +3,6 @@
 
 #include "DXCommon.h"
 
-#define COORDINATE_1 100
-#define COORDINATE_2 200
-#define COORDINATE_3 300
-
 class DXMODEL
 {
 	struct VertexType
@@ -14,6 +10,12 @@ class DXMODEL
 		XMFLOAT3 POS;
 		XMFLOAT4 COLOR;
 		XMFLOAT3 NORMAL;
+	};
+
+	struct ModelType
+	{
+		float X, Y, Z;
+		float NX, NY, NZ;
 	};
 
 	// Functions - Constructor and Destructor
@@ -45,6 +47,8 @@ class DXMODEL
 
 		void InitPointer();
 
+		bool LoadModel();
+
 	// Functions - Get
 	public :
 
@@ -67,6 +71,9 @@ class DXMODEL
 		float temp_R;
 		float temp_G;
 		float temp_B;
+
+		ModelType* m_Model;
+		const char* m_ModelFile;
 };
 
 #endif

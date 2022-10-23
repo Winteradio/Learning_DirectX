@@ -1,5 +1,10 @@
 #include "DXModel.h"
 
+#include <string>
+#include <fstream>
+
+using namespace std;
+
 
 DXMODEL::DXMODEL()
 {
@@ -18,6 +23,7 @@ DXMODEL::~DXMODEL(){};
 
 bool DXMODEL::Init( ID3D11Device* Device )
 {
+	if ( !LoadModel() ) { return false; }
 	if ( !SetVertex() ) { return  false; }
 	if ( !InitVertexBuffer( Device ) ) { return false; }
 	if ( !SetIndex() ) { return false; }
@@ -33,6 +39,11 @@ void DXMODEL::Release()
 	m_IndexBuffer->Release();
 
 	InitPointer();
+
+	if ( m_Model )
+	{
+		delete[] m_Model;
+	}
 }
 
 
@@ -56,9 +67,9 @@ void DXMODEL::Render( ID3D11DeviceContext* DevContext )
 
 bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 {
-	if ( Red < 0.0f || Red > 1.0f ) { temp_R *= -1; }
-	if ( Blue < 0.0f || Blue > 1.0f ) { temp_B *= -1; }
-	if ( Green < 0.0f || Green > 1.0f ) { temp_G *= -1; }
+	if ( Red < 0.05f || Red > 0.95f ) { temp_R *= -1; }
+	if ( Blue < 0.05f || Blue > 0.95f ) { temp_B *= -1; }
+	if ( Green < 0.05f || Green > 0.95f ) { temp_G *= -1; }
 	Red += temp_R;
 	Blue += temp_B;
 	Green += temp_G;
@@ -73,9 +84,6 @@ bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 
 bool DXMODEL::SetVertex()
 {
-	// Set Vertex Count;
-	m_VertexCount = 8;
-
 	// Create Vertex List
 	m_Vertices = new VertexType[ m_VertexCount ];
 	if ( !m_Vertices )
@@ -84,47 +92,32 @@ bool DXMODEL::SetVertex()
 		return false;
 	}
 
-	// Set Vertex List Data
-	m_Vertices[0].POS = XMFLOAT3( -1.0f, -1.0f, -1.0f );
-	m_Vertices[0].COLOR = XMFLOAT4( Red, 0.0f, 0.0f, 1.0f );
-	m_Vertices[0].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
+	XMFLOAT4 Color;
+	for ( int I = 0; I < m_VertexCount; I++ )
+	{
+		if ( (I / 3) % 3 == 0 )
+		{
+			Color = XMFLOAT4( Red, 0.5f, 0.5f, 1.0f );
+		}
+		else if ( (I / 3) % 3 == 1 )
+		{
+			Color = XMFLOAT4( 0.5f, Green, 0.5f, 1.0f );
+		}
+		else if ( (I / 3) % 3 == 2 )
+		{
+			Color = XMFLOAT4( 0.5f, 0.5f, Blue, 1.0f );
+		}
+		m_Vertices[ I ].POS = XMFLOAT3( m_Model[ I ].X, m_Model[ I ].Y, m_Model[ I ].Z );
+		m_Vertices[ I ].NORMAL = XMFLOAT3( m_Model[ I ].NX, m_Model[ I ].NY, m_Model[ I ].NZ );
+		m_Vertices[ I ].COLOR = Color;
+	}
 
-	m_Vertices[1].POS = XMFLOAT3( -1.0f, +1.0f, -1.0f );
-	m_Vertices[1].COLOR = XMFLOAT4( 0.0f, 0.0f, Blue, 1.0f );
-	m_Vertices[1].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-
-	m_Vertices[2].POS = XMFLOAT3( +1.0f, +1.0f, -1.0f );
-	m_Vertices[2].COLOR = XMFLOAT4( 0.0f, Green, 0.0f, 1.0f );
-	m_Vertices[2].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-
-	m_Vertices[3].POS = XMFLOAT3( +1.0f, -1.0f, -1.0f );
-	m_Vertices[3].COLOR = XMFLOAT4( Red, 0.0f, 0.0f, 1.0f );
-	m_Vertices[3].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-
-	m_Vertices[4].POS = XMFLOAT3( -1.0f, -1.0f, +1.0f );
-	m_Vertices[4].COLOR = XMFLOAT4( 0.0f, 0.0f, Blue, 1.0f );
-	m_Vertices[4].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-
-	m_Vertices[5].POS = XMFLOAT3( -1.0f, +1.0f, +1.0f );
-	m_Vertices[5].COLOR = XMFLOAT4( 0.0f, Green, 0.0f, 1.0f );
-	m_Vertices[5].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-
-	m_Vertices[6].POS = XMFLOAT3( +1.0f, +1.0f, +1.0f );
-	m_Vertices[6].COLOR = XMFLOAT4( Red, 0.0f, 0.0f, 1.0f );
-	m_Vertices[6].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-
-	m_Vertices[7].POS = XMFLOAT3( +1.0f, -1.0f, +1.0f );
-	m_Vertices[7].COLOR = XMFLOAT4( 0.0f, 0.0f, Blue, 1.0f );
-	m_Vertices[7].NORMAL = XMFLOAT3( 0.0f, 0.0f, -1.0f );
 	return true;
 }
 
 
 bool DXMODEL::SetIndex()
 {
-	// Set Index Count;
-	m_IndexCount = 36;
-
 	// Create Index List
 	m_Indices = new UINT[ m_IndexCount ];
 	if ( !m_Indices )
@@ -133,53 +126,10 @@ bool DXMODEL::SetIndex()
 		return false;
 	}
 
-	// front face
-	m_Indices[0] = 0;
-	m_Indices[1] = 1;
-	m_Indices[2] = 2;
-	m_Indices[3] = 0;
-	m_Indices[4] = 2;
-	m_Indices[5] = 3;
-
-	// back face
-	m_Indices[6] = 4;
-	m_Indices[7] = 6;
-	m_Indices[8] = 5;
-	m_Indices[9] = 4;
-	m_Indices[10] = 7;
-	m_Indices[11] = 6;
-
-	// left face
-	m_Indices[12] = 4;
-	m_Indices[13] = 5;
-	m_Indices[14] = 1;
-	m_Indices[15] = 4;
-	m_Indices[16] = 1;
-	m_Indices[17] = 0;
-
-	// right face
-	m_Indices[18] = 3;
-	m_Indices[19] = 2;
-	m_Indices[20] = 6;
-	m_Indices[21] = 3;
-	m_Indices[22] = 6;
-	m_Indices[23] = 7;
-
-	// top face
-	m_Indices[24] = 1;
-	m_Indices[25] = 5;
-	m_Indices[26] = 6;
-	m_Indices[27] = 1;
-	m_Indices[28] = 6;
-	m_Indices[29] = 2;
-
-	// bottom face
-	m_Indices[30] = 4;
-	m_Indices[31] = 0;
-	m_Indices[32] = 3;
-	m_Indices[33] = 4;
-	m_Indices[34] = 3;
-	m_Indices[35] = 7;
+	for ( int I = 0; I < m_IndexCount; I++ )
+	{
+		m_Indices[ I ] = I;
+	}
 
 	return true;
 }
@@ -312,13 +262,88 @@ void DXMODEL::InitPointer()
 	m_Vertices = nullptr;
 	m_Indices = nullptr;
 
-	Red = 0.0f;
-	Blue = 0.0f;
-	Green = 0.0f;
+	m_Model = nullptr;
+
+	Red = 0.5f;
+	Blue = 0.5f;
+	Green = 0.5f;
 
 	temp_R = 0.0005f;
 	temp_B = 0.0005f;
 	temp_G = 0.0005f;
+}
+
+bool DXMODEL::LoadModel()
+{
+	// Set Model File Directory
+	m_ModelFile = ".\\..\\..\\src\\DX\\DXModel\\MDBox.txt";
+
+	// Open Model Text file
+	ifstream fin( m_ModelFile );
+
+	// Check the whether file is opened
+	if ( fin.fail() )
+	{
+		LOG_ERROR(" Failed - Open Model File %s \n ", m_ModelFile );
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Open Model File %s \n ", m_ModelFile);
+	}
+
+	// Get Value of VertexCount before Data
+	char input;
+	fin.get( input );
+	for (int I = 0; I < 999; I ++)
+	{
+		LOG_INFO(" %c \n ", input );
+		if ( input == ':')
+		{
+			break;
+		}
+		fin.get( input );
+	}
+	// Read Vertex Count
+	fin >> m_VertexCount;
+	LOG_INFO("%d \n", m_VertexCount );
+
+	// Set Index Count is same as Vertex Count
+	m_IndexCount = m_VertexCount;
+
+	// Create ModelType array
+	m_Model = new ModelType[ m_VertexCount ];
+	if ( !m_Model )
+	{
+		LOG_ERROR(" Failed - Create ModelType Array \n ");
+		return false;
+	}
+
+
+	// Get Value of Data Before the file is end
+	fin.get( input );
+	for (int I = 0; I < 999; I ++)
+	{
+		if ( input == ':')
+		{
+			break;
+		}
+		fin.get( input );
+	}
+	fin.get( input );
+	fin.get( input ); // Move to the Next line
+
+	// Get Vertex Data
+	for ( int I = 0 ; I < m_VertexCount; I++ )
+	{
+		fin >> m_Model[I].X >> m_Model[I].Y >> m_Model[I].Z;
+		fin >> m_Model[I].NX >> m_Model[I].NY >> m_Model[I].NZ;
+	}
+
+	// Close Model File
+	fin.close();
+
+	return true;
 }
 
 
