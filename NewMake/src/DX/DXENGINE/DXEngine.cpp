@@ -81,7 +81,10 @@ bool DXENGINE::Render( float rotation )
 	m_DXMODEL->Render( m_DXD3D->GetDeviceContext() );
 
 	// Render using Shader
-	hr = m_DXSHADER->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_DXLIGHT->GetDirection(), m_DXLIGHT->GetDiffuseColor() );
+	hr = m_DXSHADER->Render(
+		m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(),
+		worldMatrix, viewMatrix, projectionMatrix,
+		m_DXLIGHT->GetDirection(), m_DXLIGHT->GetDiffuseColor(), m_DXLIGHT->GetAmbientColor() );
 	if ( !hr )
 	{
 		LOG_ERROR(" Failed - Render using Shader \n ");
@@ -169,8 +172,9 @@ bool DXENGINE::InitDXLIGHT()
 		LOG_INFO(" Successed - Create DXLIGHT \n ");
 	}
 
-	m_DXLIGHT->SetDiffuseColor( 1.0f, 0.0f, 1.0f, 1.0f );
-	m_DXLIGHT->SetDirection( 0.0f, 0.0f, 1.0f );
+	m_DXLIGHT->SetAmbientColor( 0.15f, 0.15f, 0.15f, 1.0f );
+	m_DXLIGHT->SetDiffuseColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	m_DXLIGHT->SetDirection( -1.0f, -1.0f, 0.0f );
 
 	return true;
 }

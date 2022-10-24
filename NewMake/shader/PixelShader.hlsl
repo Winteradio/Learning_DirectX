@@ -3,6 +3,7 @@
 // Globals
 cbuffer LightBuffer
 {
+	float4 ambientColor;
 	float4 diffuseColor;
 	float3 lightDirection;
 	float padding;
@@ -23,10 +24,16 @@ float4 ColorPixelShader( PixelInputType input ) : SV_TARGET
 	float3 lightDir;
 	float lightIntensity;
 
+	Color = ambientColor;
 	lightDir = -lightDirection;
 	lightIntensity = saturate( dot( input.normal, lightDir ) );
 
-	Color = saturate( diffuseColor * lightIntensity );
+	if ( lightIntensity > 0.0f )
+	{
+		Color += ( diffuseColor * lightIntensity );
+	}
+
+	Color = saturate( Color );
 	Color = input.color * Color;
 	return Color;
 };

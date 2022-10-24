@@ -55,8 +55,6 @@ SET( DXPHYSICS_DIR ${DX_DIR}/DXPhysics )
 SET( DXSHADER_DIR ${DX_DIR}/DXShader )
 
 SET( DM_DIR ${DXMODEL_DIR} )
-SET( MDPARTICLE_DIR ${DM_DIR}/MDParticle )
-SET( MDBOX_DIR ${DM_DIR}/MDBox )
 
 SET( SYSTEM_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/System )
 
@@ -80,9 +78,6 @@ SET( SRCS
  	${DXMODEL_DIR}/DXModel.h ${DXMODEL_DIR}/DXModel.cpp
 	${DXPHYSICS_DIR}/DXPhysics.h ${DXPHYSICS_DIR}/DXPhysics.cpp
 	${DXSHADER_DIR}/DXShader.h ${DXSHADER_DIR}/DXShader.cpp
-
-	${MDPARTICLE_DIR}/MDParticle.h ${MDPARTICLE_DIR}/MDParticle.cpp
-	${MDBOX_DIR}/MDBox.h ${MDBOX_DIR}/MDBox.cpp
 	)
 
 ## Header Files
@@ -100,9 +95,6 @@ SET( INCS
 	${DXMODEL_DIR}
 	${DXPHYSICS_DIR}
 	${DXSHADER_DIR}
-
-	${MDPARTICLE_DIR}
-	${MDBOX_DIR}
 	)
 
 ###################################################

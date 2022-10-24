@@ -40,9 +40,9 @@ void DXSHADER::Release()
 }
 
 
-bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount, XMMATRIX world, XMMATRIX view, XMMATRIX proj, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor )
+bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount, XMMATRIX world, XMMATRIX view, XMMATRIX proj, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor )
 {
-	if ( !SetShaderParameters( DevContext, world, view, proj, lightDirection, diffuseColor ) )
+	if ( !SetShaderParameters( DevContext, world, view, proj, lightDirection, diffuseColor, ambientColor ) )
 	{
 		LOG_ERROR(" Failed - Set Shader Parameters \n ");
 		return false;
@@ -54,7 +54,7 @@ bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount, XMMATRIX
 }
 
 
-bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX world, XMMATRIX view, XMMATRIX proj, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor )
+bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX world, XMMATRIX view, XMMATRIX proj, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor )
 {
 	HRESULT hr;
 
@@ -100,8 +100,10 @@ bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX wo
 	// Get Pointer about Constant Buffer's Data
 	LightBufferType* dataPtr2 = (LightBufferType*)mappedResource.pData;
 
+	dataPtr2->ambientColor = ambientColor;
 	dataPtr2->diffuseColor = diffuseColor;
 	dataPtr2->lightDirection = lightDirection;
+	dataPtr2->padding = 0.0f;
 
 	// Unlock Constant Buffer;
 	DevContext->Unmap( m_LightBuffer, 0 );

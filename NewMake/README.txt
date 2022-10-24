@@ -38,7 +38,7 @@ DirectX 초기화 관련 Class 추가
 			-> DXPhysics Class : 물리 연산 관련
 
 
-# 4
+# 5
 간단한 조명 만들기 - 동적 리소스 사용 / MDParticle, DXPhysics 추가 예정
 -> main.cpp
 	-> System Class
@@ -75,3 +75,24 @@ DirectX 초기화 관련 Class 추가
  	-> 분산광과 달리 한방향으로 완전히 반사되는 빛
  	-> 반사되는 부분은 흰색의 광으로 보임
  Total Light : 실질적인 Object의 빛의 밝기
+
+
+ # 6
+3차원 박스 만들기 / MDParticle, DXPhysics 추가 예정
+-> main.cpp
+	-> System Class
+		-> Input Class
+		-> DXEngine Class
+			-> DXD3D Class : DirectX 초기화 관련
+			-> DXCamera Class : Camera 관련
+			-> DXModel Class : Model 생성 ( Vertex, Index )
+				-> MDParticle Class : 입자 관련 구조체
+			-> DXShader Class : Shader 관련
+				-> Light 적용할 수 있게 변경
+			-> DXPhysics Class : 물리 연산 관련
+			-> DXLight Class : Diffuse Light, Light Position 설정 관련
+
+-> Normal Vector
+	-> final Normal Vector = World Matrix * Normal Vector
+	-> World가 이동 혹은 회전함에 따라 최종 Normal Vector가 달라짐
+	-> 이러한 Normal Vector는 Light로 표현되는 Color에도 영향을 끼

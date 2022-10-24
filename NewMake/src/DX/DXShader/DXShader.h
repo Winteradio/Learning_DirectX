@@ -17,6 +17,7 @@ class DXSHADER
 
 		struct LightBufferType
 		{
+			XMFLOAT4 ambientColor;
 			XMFLOAT4 diffuseColor;
 			XMFLOAT3 lightDirection;
 			float padding;
@@ -35,13 +36,13 @@ class DXSHADER
 		bool Init( ID3D11Device*, ID3D11DeviceContext* );
 		void Release();
 
-		bool Render( ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT3, XMFLOAT4 );
+		bool Render( ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT3, XMFLOAT4, XMFLOAT4 );
 
 
 	// Functions - Render and etc...
 	private :
 
-		bool SetShaderParameters( ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT3, XMFLOAT4 );
+		bool SetShaderParameters( ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT3, XMFLOAT4, XMFLOAT4 );
 
 		void ShaderErrorMessage( ID3D10Blob* );
 
