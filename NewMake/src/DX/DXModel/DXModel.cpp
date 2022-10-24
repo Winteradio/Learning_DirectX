@@ -276,7 +276,7 @@ void DXMODEL::InitPointer()
 bool DXMODEL::LoadModel()
 {
 	// Set Model File Directory
-	m_ModelFile = ".\\..\\..\\src\\DX\\DXModel\\MDBox.txt";
+	m_ModelFile = ".\\..\\..\\src\\DX\\DXModel\\MDText\\MDBox.txt";
 
 	// Open Model Text file
 	ifstream fin( m_ModelFile );
