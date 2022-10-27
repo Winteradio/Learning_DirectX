@@ -55,6 +55,7 @@ SET( DXPHYSICS_DIR ${DX_DIR}/DXPhysics )
 SET( DXSHADER_DIR ${DX_DIR}/DXShader )
 
 SET( DM_DIR ${DXMODEL_DIR} )
+SET( MDTEXTURE_DIR ${DXMODEL_DIR}/MDTexture )
 
 SET( SYSTEM_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/System )
 
@@ -78,6 +79,8 @@ SET( SRCS
  	${DXMODEL_DIR}/DXModel.h ${DXMODEL_DIR}/DXModel.cpp
 	${DXPHYSICS_DIR}/DXPhysics.h ${DXPHYSICS_DIR}/DXPhysics.cpp
 	${DXSHADER_DIR}/DXShader.h ${DXSHADER_DIR}/DXShader.cpp
+
+	${MDTEXTURE_DIR}/MDTexture.h ${MDTEXTURE_DIR}/MDTexture.cpp
 	)
 
 ## Header Files
@@ -95,6 +98,8 @@ SET( INCS
 	${DXMODEL_DIR}
 	${DXPHYSICS_DIR}
 	${DXSHADER_DIR}
+
+	${MDTEXTURE_DIR}
 	)
 
 ###################################################
