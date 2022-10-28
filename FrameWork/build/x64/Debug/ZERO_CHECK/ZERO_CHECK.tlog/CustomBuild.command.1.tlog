@@ -1,6 +1,6 @@
-^C:\USERS\겨울엔군고구마한잔\ONEDRIVE - 한양대학교\바탕 화면\C++\DIRECTX11\NEWMAKE\BUILD\CMAKEFILES\9CCFF410D7D7332B962060BFEB6BA53F\GENERATE.STAMP.RULE
+^C:\USERS\겨울엔군고구마한잔\ONEDRIVE - 한양대학교\바탕 화면\C++\DIRECTX11\FRAMEWORK\BUILD\CMAKEFILES\9C0F7DB3002AD9AD1066B7E6E245B690\GENERATE.STAMP.RULE
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/NewMake" "-BC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/NewMake/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/NewMake/build/Example.sln"
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/FrameWork" "-BC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/FrameWork/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/FrameWork/build/Example.sln"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

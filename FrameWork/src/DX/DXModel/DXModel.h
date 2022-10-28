@@ -2,7 +2,7 @@
 #define __DXMODEL_H__
 
 #include "DXCommon.h"
-#include "MDTexture.h"
+#include "DXTexture.h"
 
 class DXMODEL
 {
@@ -30,7 +30,7 @@ class DXMODEL
 	// Functions - Init, Release Object and Render
 	public :
 
-		bool Init( ID3D11Device* );
+		bool Init( ID3D11Device*, const char*, const char* );
 		void Release();
 		void Render( ID3D11DeviceContext* );
 		bool Update( ID3D11DeviceContext* );
@@ -49,8 +49,8 @@ class DXMODEL
 
 		void InitPointer();
 
-		bool LoadTexture( ID3D11Device* );
-		bool LoadModel();
+		bool LoadTexture( ID3D11Device*, const char* );
+		bool LoadModel( const char* );
 
 	// Functions - Get
 	public :
@@ -71,9 +71,8 @@ class DXMODEL
 		UINT* m_Indices;
 
 		ModelType* m_Model;
-		const char* m_ModelFile;
 
-		MDTEXTURE* m_Texture;
+		DXTEXTURE* m_Texture;
 };
 
 #endif

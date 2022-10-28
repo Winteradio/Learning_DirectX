@@ -24,38 +24,26 @@ void DXCAMERA::Render()
 	float pitch, yaw, roll;
 	XMMATRIX rotationMatrix;
 
-
-	/////////////////////
-	// Up Vector
-	/////////////////////
 	// Set Up Vector
 	Up.x = 0.0f;
 	Up.y = 1.0f;
 	Up.z = 0.0f;
 
+	upVector = XMLoadFloat3( &Up );
 
-	/////////////////////
-	// Position Vector
-	/////////////////////
+
 	// Set Camera Position in 3D World
-	SetPosition( 0.0f, 0.0f, -5.0f );
 	Pos = m_Position;
 
+	posVector = XMLoadFloat3( &m_Position );
 
-	/////////////////////
-	// LookAt Vector
-	/////////////////////
+
 	// Set LookAt Vector
-	LookAt.x = 0.0f;
-	LookAt.y = 0.0f;
+	LookAt.x = -1.0f;
+	LookAt.y = -1.0f;
 	LookAt.z = -1.0f;
 
-
-	// Load Vector to XMVECTOR Structor
-	upVector = XMLoadFloat3( &Up );
-	posVector = XMLoadFloat3( &Pos );
 	lookAtVector = XMLoadFloat3( &LookAt );
-
 
 	/////////////////////
 	// Rotation Matrix
@@ -76,11 +64,6 @@ void DXCAMERA::Render()
 	lookAtVector = XMVectorAdd( posVector, lookAtVector );
 
 	// Set View Matrix using Camera Vectors
-
-	posVector = XMVectorSet( 3.0f, 3.0f, 3.0f, 0.0f );
-	lookAtVector = XMVectorSet( -1.0f, -1.0f, -1.0f, 0.0f );
-	upVector = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
-
 	m_ViewMatrix = XMMatrixLookAtLH( posVector, lookAtVector, upVector );
 }
 

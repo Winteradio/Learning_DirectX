@@ -21,6 +21,7 @@ bool DXSHADER::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
 	if ( !InitVertexShader( Device, DevContext ) ) { return false; }
 	if ( !InitPixelShader( Device, DevContext ) ) { return false; }
 	if ( !InitLayout( Device ) ) { return false; }
+	if ( !InitSampleState( Device ) ) { return false; }
 	if ( !InitMatrixBuffer( Device ) ) { return false; }
 	if ( !InitLightBuffer( Device ) ) { return false; }
 	if ( !InitCameraBuffer( Device ) ) { return false; }
@@ -33,7 +34,11 @@ void DXSHADER::Release()
 {
 	m_VertexShader->Release();
 	m_PixelShader->Release();
+
 	m_Layout->Release();
+
+	m_SampleState->Release();
+
 	m_MatrixBuffer->Release();
 	m_LightBuffer->Release();
 	m_CameraBuffer->Release();
@@ -42,21 +47,32 @@ void DXSHADER::Release()
 }
 
 
-bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount, XMMATRIX world, XMMATRIX view, XMMATRIX proj, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor, XMFLOAT4 specularColor, float specularPower, XMFLOAT3 cameraPosition )
+bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount,
+	XMMATRIX world, XMMATRIX view, XMMATRIX proj,
+	ID3D11ShaderResourceView* textureView,
+	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor, XMFLOAT4 specularColor, float specularPower, XMFLOAT3 cameraPosition )
 {
-	if ( !SetShaderParameters( DevContext, world, view, proj, lightDirection, diffuseColor, ambientColor, specularColor, specularPower, cameraPosition ) )
+	if ( !SetShaderParameters(
+		DevContext,
+		world, view, proj,
+		textureView,
+		lightDirection, diffuseColor, ambientColor, specularColor, specularPower, cameraPosition ) )
 	{
 		LOG_ERROR(" Failed - Set Shader Parameters \n ");
 		return false;
 	}
 	DevContext->IASetInputLayout( m_Layout );
+	DevContext->PSSetSamplers( 0, 1, &m_SampleState );
 	DevContext->DrawIndexed( indexCount, 0, 0 );
 
 	return true;
 }
 
 
-bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX world, XMMATRIX view, XMMATRIX proj, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor, XMFLOAT4 specularColor, float specularPower, XMFLOAT3 cameraPosition )
+bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext,
+	XMMATRIX world, XMMATRIX view, XMMATRIX proj,
+	ID3D11ShaderResourceView* textureView,
+	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor, XMFLOAT4 specularColor, float specularPower, XMFLOAT3 cameraPosition )
 {
 	HRESULT hr;
 
@@ -95,6 +111,7 @@ bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX wo
 	// Set Vertex Shader using Constant Buffer's Setting Value
 	DevContext->VSSetConstantBuffers( bufferNumer, 1, &m_MatrixBuffer );
 
+
 	////////////////
 	// CAMERA BUFFER
 	////////////////
@@ -115,7 +132,8 @@ bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX wo
 	bufferNumer = 1;
 
 	DevContext->VSSetConstantBuffers( bufferNumer, 1 , &m_CameraBuffer );
-	DevContext->PSSetConstantBuffers( 0, 1, &m_CameraBuffer );
+	DevContext->PSSetShaderResources( 0, 1, &textureView );
+
 
 	////////////////
 	// LIGHT BUFFER
@@ -149,6 +167,7 @@ bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext, XMMATRIX wo
 }
 
 
+
 void DXSHADER::ShaderErrorMessage( ID3D10Blob* errorMessage )
 {
 	LOG_ERROR("%s \n",(char*)( errorMessage->GetBufferPointer() ) ) ;
@@ -159,12 +178,14 @@ void DXSHADER::ShaderErrorMessage( ID3D10Blob* errorMessage )
 }
 
 
+
 void DXSHADER::InitShaderDIR()
 {
 	// Set Shader Files Directory in CHAR Type
 	m_VSfile = ".\\..\\..\\shader\\VertexShader.hlsl";
 	m_PSfile = ".\\..\\..\\shader\\PixelShader.hlsl";
 }
+
 
 
 bool DXSHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
@@ -211,6 +232,7 @@ bool DXSHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevC
 
 	return true;
 }
+
 
 
 bool DXSHADER::InitPixelShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
@@ -273,9 +295,9 @@ bool DXSHADER::InitLayout( ID3D11Device* Device )
     polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
     polygonLayout[0].InstanceDataStepRate = 0;
 
-    polygonLayout[1].SemanticName = "COLOR";
+    polygonLayout[1].SemanticName = "TEXCOORD";
     polygonLayout[1].SemanticIndex = 0;
-    polygonLayout[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
     polygonLayout[1].InputSlot = 0;
     polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
     polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
@@ -310,6 +332,37 @@ bool DXSHADER::InitLayout( ID3D11Device* Device )
 
     return true;
 }
+
+bool DXSHADER::InitSampleState( ID3D11Device* Device )
+{
+	HRESULT hr;
+
+	// Describe the Sample State
+	D3D11_SAMPLER_DESC sampleDesc;
+	ZeroMemory( &sampleDesc, sizeof( D3D11_SAMPLER_DESC ) );
+
+	sampleDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampleDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampleDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampleDesc.MinLOD = 0;
+	sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	hr = Device->CreateSamplerState( &sampleDesc, &m_SampleState );
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - Create Sample State for Texture \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Sample State for Texture \n ");
+	}
+
+	return true;
+}
+
 
 
 bool DXSHADER::InitMatrixBuffer( ID3D11Device* Device )
@@ -406,7 +459,10 @@ void DXSHADER::InitPointer()
 	m_VertexShader = nullptr;
 	m_PixelShaderBuffer = nullptr;
 	m_PixelShader = nullptr;
+
 	m_Layout = nullptr;
+	m_SampleState = nullptr;
+
 	m_MatrixBuffer = nullptr;
 	m_LightBuffer = nullptr;
 	m_CameraBuffer = nullptr;

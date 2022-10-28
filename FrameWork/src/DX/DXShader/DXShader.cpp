@@ -15,11 +15,10 @@ DXSHADER::~DXSHADER()
 {}
 
 
-bool DXSHADER::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
+bool DXSHADER::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* VSfileDIR, const char* PSfileDIR )
 {
-	InitShaderDIR();
-	if ( !InitVertexShader( Device, DevContext ) ) { return false; }
-	if ( !InitPixelShader( Device, DevContext ) ) { return false; }
+	if ( !InitVertexShader( Device, DevContext, VSfileDIR ) ) { return false; }
+	if ( !InitPixelShader( Device, DevContext, PSfileDIR ) ) { return false; }
 	if ( !InitLayout( Device ) ) { return false; }
 	if ( !InitSampleState( Device ) ) { return false; }
 	if ( !InitMatrixBuffer( Device ) ) { return false; }
@@ -37,7 +36,7 @@ void DXSHADER::Release()
 
 	m_Layout->Release();
 
-	m_SampleState->Release();
+	m_SamplerState->Release();
 
 	m_MatrixBuffer->Release();
 	m_LightBuffer->Release();
@@ -62,7 +61,9 @@ bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount,
 		return false;
 	}
 	DevContext->IASetInputLayout( m_Layout );
-	DevContext->PSSetSamplers( 0, 1, &m_SampleState );
+	DevContext->VSSetShader( m_VertexShader, NULL, 0 );
+	DevContext->PSSetShader( m_PixelShader, NULL, 0 );
+	DevContext->PSSetSamplers( 0, 1, &m_SamplerState );
 	DevContext->DrawIndexed( indexCount, 0, 0 );
 
 	return true;
@@ -178,41 +179,31 @@ void DXSHADER::ShaderErrorMessage( ID3D10Blob* errorMessage )
 }
 
 
-
-void DXSHADER::InitShaderDIR()
-{
-	// Set Shader Files Directory in CHAR Type
-	m_VSfile = ".\\..\\..\\shader\\VertexShader.hlsl";
-	m_PSfile = ".\\..\\..\\shader\\PixelShader.hlsl";
-}
-
-
-
-bool DXSHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
+bool DXSHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* VSfileDIR )
 {
 	HRESULT hr;
 	ID3D10Blob* errorMessage = nullptr;
 
 
 	// Compile Vertex Shader Code File
-	hr = D3DX11CompileFromFile( m_VSfile, 0, 0, "ColorVertexShader", "vs_5_0", 0, 0, 0, &m_VertexShaderBuffer, &errorMessage, 0 );
+	hr = D3DX11CompileFromFile( VSfileDIR, 0, 0, "ColorVertexShader", "vs_5_0", 0, 0, 0, &m_VertexShaderBuffer, &errorMessage, 0 );
 	if ( FAILED( hr ) )
 	{
 		if ( errorMessage )
 		{
-			LOG_ERROR(" Failed - Compile %s \n ", m_VSfile );
+			LOG_ERROR(" Failed - Compile %s \n ", VSfileDIR );
 			ShaderErrorMessage( errorMessage );
 		}
 		else
 		{
-			LOG_ERROR(" Failed - Find %s \n ", m_VSfile );
+			LOG_ERROR(" Failed - Find %s \n ", VSfileDIR );
 		}
 
 		return false;
 	}
 	else
 	{
-		LOG_INFO(" Succssed - Compile %s \n ", m_VSfile );
+		LOG_INFO(" Succssed - Compile %s \n ", VSfileDIR );
 	}
 
 
@@ -228,37 +219,35 @@ bool DXSHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevC
 		LOG_INFO(" Succssed - Create Vertex Shader from Buffer \n ");
 	}
 
-	DevContext->VSSetShader( m_VertexShader, NULL, 0 );
-
 	return true;
 }
 
 
 
-bool DXSHADER::InitPixelShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext )
+bool DXSHADER::InitPixelShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* PSfileDIR )
 {
 	HRESULT hr;
 	ID3D10Blob* errorMessage = nullptr;
 
 	// Compile Pixel Shader Code File
-	hr = D3DX11CompileFromFile( m_PSfile, 0, 0, "ColorPixelShader", "ps_5_0", 0, 0, 0, &m_PixelShaderBuffer, &errorMessage, 0 );
+	hr = D3DX11CompileFromFile( PSfileDIR, 0, 0, "ColorPixelShader", "ps_5_0", 0, 0, 0, &m_PixelShaderBuffer, &errorMessage, 0 );
 	if ( FAILED( hr ) )
 	{
 		if ( errorMessage )
 		{
-			LOG_ERROR(" Failed - Compile %s \n ", m_PSfile );
+			LOG_ERROR(" Failed - Compile %s \n ", PSfileDIR );
 			ShaderErrorMessage( errorMessage );
 		}
 		else
 		{
-			LOG_ERROR(" Failed - Find %s \n ", m_PSfile );
+			LOG_ERROR(" Failed - Find %s \n ", PSfileDIR );
 		}
 
 		return false;
 	}
 	else
 	{
-		LOG_INFO(" Succssed - Compile %s \n ", m_PSfile );
+		LOG_INFO(" Succssed - Compile %s \n ", PSfileDIR );
 	}
 
 
@@ -273,8 +262,6 @@ bool DXSHADER::InitPixelShader( ID3D11Device* Device, ID3D11DeviceContext* DevCo
 	{
 		LOG_INFO(" Successed - Create Pixel Shader from Buffer \n ");
 	}
-
-	DevContext->PSSetShader( m_PixelShader, NULL, 0 );
 
 	return true;
 }
@@ -346,10 +333,17 @@ bool DXSHADER::InitSampleState( ID3D11Device* Device )
 	sampleDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampleDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	sampleDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampleDesc.MipLODBias = 0.0f;
+	sampleDesc.MaxAnisotropy = 1;
+	sampleDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	sampleDesc.BorderColor[0] = 0;
+	sampleDesc.BorderColor[1] = 0;
+	sampleDesc.BorderColor[2] = 0;
+	sampleDesc.BorderColor[3] = 0;
 	sampleDesc.MinLOD = 0;
 	sampleDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	hr = Device->CreateSamplerState( &sampleDesc, &m_SampleState );
+	hr = Device->CreateSamplerState( &sampleDesc, &m_SamplerState );
 	if ( FAILED( hr ) )
 	{
 		LOG_ERROR(" Failed - Create Sample State for Texture \n ");
@@ -461,12 +455,9 @@ void DXSHADER::InitPointer()
 	m_PixelShader = nullptr;
 
 	m_Layout = nullptr;
-	m_SampleState = nullptr;
+	m_SamplerState = nullptr;
 
 	m_MatrixBuffer = nullptr;
 	m_LightBuffer = nullptr;
 	m_CameraBuffer = nullptr;
-
-	m_VSfile = nullptr;
-	m_PSfile = nullptr;
 }

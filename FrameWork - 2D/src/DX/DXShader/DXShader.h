@@ -43,13 +43,19 @@ class DXSHADER
 		bool Init( ID3D11Device*, ID3D11DeviceContext* );
 		void Release();
 
-		bool Render( ID3D11DeviceContext*, int, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT3, XMFLOAT4, XMFLOAT4, XMFLOAT4, float, XMFLOAT3 );
+		bool Render( ID3D11DeviceContext*, int,
+			XMMATRIX, XMMATRIX, XMMATRIX,
+			ID3D11ShaderResourceView*,
+			XMFLOAT3, XMFLOAT4, XMFLOAT4, XMFLOAT4, float, XMFLOAT3 );
 
 
 	// Functions - Render and etc...
 	private :
 
-		bool SetShaderParameters( ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, XMFLOAT3, XMFLOAT4, XMFLOAT4, XMFLOAT4, float, XMFLOAT3 );
+		bool SetShaderParameters( ID3D11DeviceContext*,
+			XMMATRIX, XMMATRIX, XMMATRIX,
+			ID3D11ShaderResourceView*,
+			XMFLOAT3, XMFLOAT4, XMFLOAT4, XMFLOAT4, float, XMFLOAT3 );
 
 		void ShaderErrorMessage( ID3D10Blob* );
 
@@ -61,6 +67,7 @@ class DXSHADER
 		bool InitVertexShader( ID3D11Device*, ID3D11DeviceContext* );
 		bool InitPixelShader( ID3D11Device*, ID3D11DeviceContext* );
 		bool InitLayout( ID3D11Device* );
+		bool InitSampleState( ID3D11Device* );
 		bool InitMatrixBuffer( ID3D11Device* );
 		bool InitLightBuffer( ID3D11Device* );
 		bool InitCameraBuffer( ID3D11Device * );
@@ -73,9 +80,14 @@ class DXSHADER
 
 		ID3D10Blob* m_VertexShaderBuffer;
 		ID3D11VertexShader* m_VertexShader;
+
 		ID3D10Blob* m_PixelShaderBuffer;
 		ID3D11PixelShader* m_PixelShader;
+
 		ID3D11InputLayout* m_Layout;
+
+		ID3D11SamplerState* m_SampleState;
+
 		ID3D11Buffer* m_MatrixBuffer;
 		ID3D11Buffer* m_LightBuffer;
 		ID3D11Buffer* m_CameraBuffer;

@@ -19,22 +19,22 @@ cbuffer CameraBuffer
 struct VertexInputType
 {
 	float4 position : POSITION;
-	float4 color : COLOR;
+	float2 tex : TEXCOORD0;
 	float3 normal : NORMAL;
 };
 
 struct PixelInputType
 {
 	float4 position : SV_POSITION;
-	float4 color : COLOR;
-	float3 normal : NORMAL0;
-	float3 viewDirection : NORMAL1;
+	float2 tex : TEXCOORD0;
+	float3 normal : NORMAL;
+	float3 viewDirection : TEXCOORD1;
 };
 
 // Vertex Shader
 PixelInputType ColorVertexShader( VertexInputType input )
 {
-	PixelInputType output;
+	PixelInputType output = (PixelInputType)0;
 
 	input.position.w = 1.0f;
 
@@ -42,12 +42,14 @@ PixelInputType ColorVertexShader( VertexInputType input )
 	output.position = mul( output.position, viewMatrix );
 	output.position = mul( output.position, projectionMatrix );
 
+	output.tex = input.tex;
+
 	output.normal = mul( input.normal, (float3x3)worldMatrix );
 	output.normal = normalize( output.normal );
 
-	output.color = input.color;
 
 	float4 worldPosition = mul( input.position, worldMatrix );
+
 	output.viewDirection = cameraPosition.xyz - worldPosition.xyz;
 
 	output.viewDirection = normalize( output.viewDirection );

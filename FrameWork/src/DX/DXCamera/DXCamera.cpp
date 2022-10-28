@@ -39,9 +39,9 @@ void DXCAMERA::Render()
 
 
 	// Set LookAt Vector
-	LookAt.x = -1.0f;
-	LookAt.y = -1.0f;
-	LookAt.z = -1.0f;
+	LookAt.x = 0.0f;
+	LookAt.y = 0.0f;
+	LookAt.z = 1.0f;
 
 	lookAtVector = XMLoadFloat3( &LookAt );
 

@@ -2,20 +2,14 @@
 #define __DXMODEL_H__
 
 #include "DXCommon.h"
+#include "MDTexture.h"
 
 class DXMODEL
 {
 	struct VertexType
 	{
 		XMFLOAT3 POS;
-		XMFLOAT4 COLOR;
-		XMFLOAT3 NORMAL;
-	};
-
-	struct ModelType
-	{
-		float X, Y, Z;
-		float NX, NY, NZ;
+		XMFLOAT2 TEXTURE;
 	};
 
 	// Functions - Constructor and Destructor
@@ -28,10 +22,10 @@ class DXMODEL
 	// Functions - Init, Release Object and Render
 	public :
 
-		bool Init( ID3D11Device* );
+		bool Init( ID3D11Device*, int ,int , char*, int ,int );
 		void Release();
-		void Render( ID3D11DeviceContext* );
-		bool Update( ID3D11DeviceContext* );
+		void Render( ID3D11DeviceContext*, int );
+		bool Update( ID3D11DeviceContext*, int );
 
 	// Functions - Divide Init Function
 	private :
@@ -47,33 +41,31 @@ class DXMODEL
 
 		void InitPointer();
 
-		bool LoadModel();
+		bool LoadTexture( ID3D11Device*, char* );
 
 	// Functions - Get
 	public :
 
 		int GetIndexCount();
+		ID3D11ShaderResourceView* GetTexture();
 
-	// Variables
+	// Variable
 	private :
 
 		ID3D11Buffer* m_VertexBuffer;
 		ID3D11Buffer* m_IndexBuffer;
+
 		int m_VertexCount;
 		int m_IndexCount;
-		VertexType* m_Vertices;
-		UINT* m_Indices;
 
-		float Red;
-		float Green;
-		float Blue;
+		MDTEXTURE* m_Texture;
 
-		float temp_R;
-		float temp_G;
-		float temp_B;
-
-		ModelType* m_Model;
-		const char* m_ModelFile;
+		int m_ScreenWidth;
+		int m_ScreenHeight;
+		int m_BitmapWidth;
+		int m_BitmapHeight;
+		int m_PreviousPosX;
+		int m_PreviousPosY;
 };
 
 #endif

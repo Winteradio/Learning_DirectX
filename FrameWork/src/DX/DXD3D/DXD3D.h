@@ -31,6 +31,7 @@ class DXD3D
 		bool InitRasterizer();
 		void InitViewport( int, int );
 		void InitMatrix( int, int, float, float );
+		bool InitBlend();
 
 		void InitPointer();
 
@@ -43,6 +44,12 @@ class DXD3D
 		void GetWorldMatrix( XMMATRIX& );
 		void GetOrthoMatrix( XMMATRIX& );
 
+		void TurnZBufferOn();
+		void TurnZBufferOff();
+
+		void TurnOnAlphaBlending();
+		void TurnOffAlphaBlending();
+
 
 	// Variables - Direct3D Device
 	private :
@@ -52,9 +59,16 @@ class DXD3D
 		ID3D11Device* m_Device;
 		ID3D11DeviceContext* m_DeviceContext;
 		ID3D11RenderTargetView* m_RenderTargetView;
+
 		ID3D11Texture2D* m_DepthStencilBuffer;
+		ID3D11DepthStencilState* m_DepthEnabledStencilState;
+		ID3D11DepthStencilState* m_DepthDisabledStencilState;
 		ID3D11DepthStencilView* m_DepthStencilView;
+
 		ID3D11RasterizerState* m_RasterState;
+
+		ID3D11BlendState* m_AlphaEnabledBlendingState;
+		ID3D11BlendState* m_AlphaDisabledBlendingState;
 
 		XMMATRIX m_ProjectionMatrix;
 		XMMATRIX m_WorldMatrix;

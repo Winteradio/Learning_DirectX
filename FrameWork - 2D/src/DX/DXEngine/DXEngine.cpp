@@ -84,6 +84,7 @@ bool DXENGINE::Render( float rotation )
 	hr = m_DXSHADER->Render(
 		m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(),
 		worldMatrix, viewMatrix, projectionMatrix,
+		m_DXMODEL->GetTexture(),
 		m_DXLIGHT->GetDirection(), m_DXLIGHT->GetDiffuseColor(), m_DXLIGHT->GetAmbientColor(), m_DXLIGHT->GetSpecularColor(), m_DXLIGHT->GetSpecularPower(), m_DXCAMERA->GetPosition() );
 	if ( !hr )
 	{
@@ -153,6 +154,7 @@ bool DXENGINE::InitDXCAMERA()
 		LOG_INFO(" Successed - Create DXCAMERA \n ");
 	}
 
+	m_DXCAMERA->SetPosition( 3.0f, 3.0f, 3.0f );
 	return true;
 }
 
@@ -172,11 +174,11 @@ bool DXENGINE::InitDXLIGHT()
 		LOG_INFO(" Successed - Create DXLIGHT \n ");
 	}
 
-	m_DXLIGHT->SetAmbientColor( 0.15f, 0.15f, 0.15f, 1.0f );
+	m_DXLIGHT->SetAmbientColor( 0.5f, 0.5f, 0.5f, 1.0f );
 	m_DXLIGHT->SetDiffuseColor( 0.75f, 0.75f, 0.75f, 1.0f );
-	m_DXLIGHT->SetDirection( -1.0f, -1.0f, 0.0f );
+	m_DXLIGHT->SetDirection( -1.0f, 1.0f, 1.0f );
 	m_DXLIGHT->SetSpecularColor( 1.0f, 1.0f, 1.0f, 1.0f );
-	m_DXLIGHT->SetSpecularPower( 200.0f );
+	m_DXLIGHT->SetSpecularPower( 32.0f );
 
 	return true;
 }

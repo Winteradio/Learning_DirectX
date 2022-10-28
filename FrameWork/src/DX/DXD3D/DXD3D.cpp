@@ -24,6 +24,8 @@ bool DXD3D::Init( int Width, int Height, bool VSYNC, HWND hWnd, float SCREEN_DEP
 
 	if ( !InitDepthStencil( Width, Height ) ) { return false; }
 
+	if ( !InitBlend() ) { return false; }
+
 	InitViewport( Width, Height );
 	InitMatrix( Width, Height, SCREEN_DEPTH, SCREEN_NEAR );
 
@@ -182,8 +184,64 @@ bool DXD3D::InitDepthStencil( int Width, int Height )
 		LOG_INFO(" Succssed - Create Depth/Stencil buffer \n ");
 	}
 
+	// Create Depth/Stencil State
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory( &depthStencilDesc, sizeof( D3D11_DEPTH_STENCIL_DESC ) );
+
+	depthStencilDesc.DepthEnable = true;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	depthStencilDesc.StencilEnable = true;
+	depthStencilDesc.StencilReadMask = 0xFF;
+	depthStencilDesc.StencilWriteMask = 0xFF;
+
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	hr = m_Device->CreateDepthStencilState( &depthStencilDesc, &m_DepthEnabledStencilState );
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - Create Enabled Depth/Stencil State \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Enabled Depth/Stencil State \n ");
+	}
+
+	depthStencilDesc.DepthEnable = false;
+
+	hr = m_Device->CreateDepthStencilState( &depthStencilDesc, &m_DepthDisabledStencilState );
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - Create Disabled Depth/Stencil State \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Disabled Depth/Stencil State \n ");
+	}
+
+	m_DeviceContext->OMSetDepthStencilState( m_DepthEnabledStencilState, 1 );
+
+
 	// Create Depth/Stencil View
-	hr = m_Device->CreateDepthStencilView( m_DepthStencilBuffer, NULL, &m_DepthStencilView );
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
+	ZeroMemory( &depthStencilViewDesc, sizeof( D3D11_DEPTH_STENCIL_VIEW_DESC ) );
+
+	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthStencilViewDesc.Texture2D.MipSlice = 0;
+
+	hr = m_Device->CreateDepthStencilView( m_DepthStencilBuffer, &depthStencilViewDesc, &m_DepthStencilView );
 	if ( FAILED ( hr ) )
 	{
 		LOG_ERROR(" Failed - Create Depth/Stencil View \n ");
@@ -284,6 +342,54 @@ void DXD3D::InitPointer()
 		ID3D11RasterizerState* m_RasterState = nullptr;
 }
 
+bool DXD3D::InitBlend()
+{
+	HRESULT hr;
+
+	D3D11_BLEND_DESC blendStateDesc;
+	ZeroMemory( &blendStateDesc, sizeof( D3D11_BLEND_DESC ) );
+
+	D3D11_RENDER_TARGET_BLEND_DESC renderTargetblendDesc;
+	ZeroMemory( &renderTargetblendDesc, sizeof( D3D11_RENDER_TARGET_BLEND_DESC ) );
+
+	renderTargetblendDesc.BlendEnable = true;
+	renderTargetblendDesc.SrcBlend = D3D11_BLEND_ONE;
+	renderTargetblendDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	renderTargetblendDesc.BlendOp = D3D11_BLEND_OP_ADD;
+	renderTargetblendDesc.SrcBlendAlpha = D3D11_BLEND_ONE;
+	renderTargetblendDesc.DestBlendAlpha = D3D11_BLEND_ZERO;
+	renderTargetblendDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	renderTargetblendDesc.RenderTargetWriteMask = 0x0f;
+
+	blendStateDesc.RenderTarget[0] = renderTargetblendDesc;
+
+	hr = m_Device->CreateBlendState( &blendStateDesc, &m_AlphaEnabledBlendingState);
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - Create Enabled Blend State \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Enabled Blend State \n ");
+	}
+
+	blendStateDesc.RenderTarget[0].BlendEnable = false;
+
+	hr = m_Device->CreateBlendState( &blendStateDesc, &m_AlphaDisabledBlendingState );
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - Create Disabled Blend State \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Disabled Blend State \n ");
+	}
+
+	return true;
+}
+
 
 ID3D11Device* DXD3D::GetDevice() { return m_Device; }
 
@@ -295,3 +401,20 @@ void DXD3D::GetWorldMatrix( XMMATRIX& WorldMatrix ) { WorldMatrix = m_WorldMatri
 
 void DXD3D::GetOrthoMatrix( XMMATRIX& OrthoMatrix ) { OrthoMatrix = m_OrthoMatrix; }
 
+void DXD3D::TurnZBufferOn() { m_DeviceContext->OMSetDepthStencilState( m_DepthEnabledStencilState, 1 ); }
+
+void DXD3D::TurnZBufferOff() { m_DeviceContext->OMSetDepthStencilState( m_DepthDisabledStencilState, 1 ); }
+
+void DXD3D::TurnOnAlphaBlending()
+{
+	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+	m_DeviceContext->OMSetBlendState( m_AlphaEnabledBlendingState, blendFactor, 0xffffffff );
+}
+
+void DXD3D::TurnOffAlphaBlending()
+{
+	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+	m_DeviceContext->OMSetBlendState( m_AlphaDisabledBlendingState, blendFactor, 0xffffffff );
+}

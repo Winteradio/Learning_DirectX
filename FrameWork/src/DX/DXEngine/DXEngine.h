@@ -8,6 +8,7 @@
 #include "DXLight.h"
 #include "DXModel.h"
 #include "DXShader.h"
+#include "DXText.h"
 
 // Variables - Globals
 const bool VSYNC_ENABLED = true;
@@ -36,11 +37,14 @@ class DXENGINE
 	// Functions - Divide Init Functions
 	private :
 
+		void InitFileDIR();
+
 		bool InitDXD3D( int, int, bool, HWND, float, float );
 		bool InitDXCAMERA();
 		bool InitDXLIGHT();
-		bool InitDXMODEL();
-		bool InitDXSHADER();
+		bool InitDXMODEL( const char*, const char* );
+		bool InitDXSHADER( const char*, const char* );
+		bool InitDXTEXT( int, int, const char*, const char*, const char*, const char* );
 
 	// Functions - Render for each frames
 	private :
@@ -57,8 +61,20 @@ class DXENGINE
 		DXLIGHT* m_DXLIGHT;
 		DXMODEL* m_DXMODEL;
 		DXSHADER* m_DXSHADER;
+		DXTEXT* m_DXTEXT;
 
 		float rotation;
+
+		const char* m_LVSfileDIR;
+		const char* m_LPSfileDIR;
+		const char* m_LIMGfileDIR;
+
+		const char* m_MDfileDIR;
+
+		const char* m_TVSfileDIR;
+		const char* m_TPSfileDIR;
+		const char* m_TFontfileDIR;
+		const char* m_TDDSfileDIR;
 };
 
 #endif __DXENGINE_H__

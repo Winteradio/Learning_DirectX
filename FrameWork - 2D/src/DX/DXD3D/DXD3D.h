@@ -43,6 +43,9 @@ class DXD3D
 		void GetWorldMatrix( XMMATRIX& );
 		void GetOrthoMatrix( XMMATRIX& );
 
+		void TurnZBufferOn();
+		void TurnZBufferOff();
+
 
 	// Variables - Direct3D Device
 	private :
@@ -59,6 +62,8 @@ class DXD3D
 		XMMATRIX m_ProjectionMatrix;
 		XMMATRIX m_WorldMatrix;
 		XMMATRIX m_OrthoMatrix;
+
+		ID3D11DepthStencilState* m_DepthSteniclStateDisabled;
 };
 
 #endif __DXD3D_H__

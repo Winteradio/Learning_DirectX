@@ -53,9 +53,14 @@ SET( DXLIGHT_DIR ${DX_DIR}/DXLight )
 SET( DXMODEL_DIR ${DX_DIR}/DXModel )
 SET( DXPHYSICS_DIR ${DX_DIR}/DXPhysics )
 SET( DXSHADER_DIR ${DX_DIR}/DXShader )
+SET( DXTEXTURE_DIR ${DX_DIR}/DXTexture )
+SET( DXTEXT_DIR ${DX_DIR}/DXText )
 
 SET( DM_DIR ${DXMODEL_DIR} )
-SET( MDTEXTURE_DIR ${DXMODEL_DIR}/MDTexture )
+
+SET( DXT_DIR ${DXTEXT_DIR} )
+SET( DXTFONT_DIR ${DXT_DIR}/DXT_Font )
+SET( DXTSHADER_DIR ${DXT_DIR}/DXT_Shader )
 
 SET( SYSTEM_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/System )
 
@@ -79,8 +84,11 @@ SET( SRCS
  	${DXMODEL_DIR}/DXModel.h ${DXMODEL_DIR}/DXModel.cpp
 	${DXPHYSICS_DIR}/DXPhysics.h ${DXPHYSICS_DIR}/DXPhysics.cpp
 	${DXSHADER_DIR}/DXShader.h ${DXSHADER_DIR}/DXShader.cpp
+	${DXTEXTURE_DIR}/DXTexture.h ${DXTEXTURE_DIR}/DXTexture.cpp
+	${DXTEXT_DIR}/DXText.h ${DXTEXT_DIR}/DXText.cpp
 
-	${MDTEXTURE_DIR}/MDTexture.h ${MDTEXTURE_DIR}/MDTexture.cpp
+	${DXTFONT_DIR}/DXT_Font.h ${DXTFONT_DIR}/DXT_Font.cpp
+	${DXTSHADER_DIR}/DXT_Shader.h ${DXTSHADER_DIR}/DXT_Shader.cpp
 	)
 
 ## Header Files
@@ -98,8 +106,12 @@ SET( INCS
 	${DXMODEL_DIR}
 	${DXPHYSICS_DIR}
 	${DXSHADER_DIR}
+	${DXTEXTURE_DIR}
+	${DXTEXT_DIR}
 
-	${MDTEXTURE_DIR}
+	${DXT_DIR}
+	${DXTFONT_DIR}
+	${DXTSHADER_DIR}
 	)
 
 ###################################################

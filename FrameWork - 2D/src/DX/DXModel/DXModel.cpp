@@ -21,9 +21,22 @@ DXMODEL::DXMODEL( const DXMODEL* Other )
 DXMODEL::~DXMODEL(){};
 
 
-bool DXMODEL::Init( ID3D11Device* Device )
+bool DXMODEL::Init( ID3D11Device* Device,
+	int screenWidth, int screenHeight,
+	char* textureFile,
+	int bitmapWidth, int bitmapHeight )
 {
-	if ( !LoadModel() ) { return false; }
+	m_ScreenWidth = screenWidth;
+	m_ScreenHeight = screenHeight;
+
+	m_BitmapWidth = bitmapWidth;
+	m_BitmapHeight = bitmapHeight;
+
+	m_PreviousPosX = -1;
+	m_PreviousPosY = -1;
+
+	if ( !LoadTexture( Device, textureFile ) ) { return false; }
+
 	if ( !SetVertex() ) { return  false; }
 	if ( !InitVertexBuffer( Device ) ) { return false; }
 	if ( !SetIndex() ) { return false; }
@@ -38,6 +51,8 @@ void DXMODEL::Release()
 	m_VertexBuffer->Release();
 	m_IndexBuffer->Release();
 
+	m_Texture->Release();
+
 	InitPointer();
 
 	if ( m_Model )
@@ -47,9 +62,9 @@ void DXMODEL::Release()
 }
 
 
-void DXMODEL::Render( ID3D11DeviceContext* DevContext )
+void DXMODEL::Render( ID3D11DeviceContext* DevContext, int positionX, int positionY )
 {
-	Update( DevContext );
+	Update( DevContext, positionX, positionY );
 
 	// Set Vertex Type of Degree and offset
 	UINT stride = sizeof( VertexType );
@@ -65,17 +80,41 @@ void DXMODEL::Render( ID3D11DeviceContext* DevContext )
 	DevContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 }
 
-bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
+bool DXMODEL::Update( ID3D11DeviceContext* DevContext, int positionX, int positionY )
 {
-	if ( Red < 0.05f || Red > 0.95f ) { temp_R *= -1; }
-	if ( Blue < 0.05f || Blue > 0.95f ) { temp_B *= -1; }
-	if ( Green < 0.05f || Green > 0.95f ) { temp_G *= -1; }
-	Red += temp_R;
-	Blue += temp_B;
-	Green += temp_G;
+	float left, right, top, bottom;
 
-	SetVertex();
-	SetIndex();
+	if ( ( positionX == m_PreviousPosX ) && ( positionY == m_PreviousPosY ) )
+	{
+		return true;
+	}
+
+	m_PreviousPosX = positionX;
+	m_PreviousPosY = positionY;
+
+	left = (float)( ( m_ScreenWidth / 2 ) * ( -1 ) ) + (float)positionX;
+	right = left + (float)m_BitmapWidth;
+	top = (float)( m_ScreenHeight / 2 ) - (float)positionY;
+	bottom = top - (float)m_BitmapHeight;
+
+	m_Vertices[0].POS = XMFLOAT3( left, top, 0.0f );
+	m_Vertices[0].TEXTURE = XMFLOAT2( 0.0f, 0.0f );
+
+	m_Vertices[1].POS = XMFLOAT3( right, bottom, 0.0f );
+	m_Vertices[1].TEXTURE = XMFLOAT2( 1.0f, 1.0f );
+
+	m_Vertices[2].POS = XMFLOAT3( left, bottom, 0.0f );
+	m_Vertices[2].TEXTURE = XMFLOAT2( 0.0f, 0.0f );
+
+	m_Vertices[3].POS = XMFLOAT3( left, top, 0.0f );
+	m_Vertices[3].TEXTURE = XMFLOAT2( 0.0f, 0.0f );
+
+	m_Vertices[4].POS = XMFLOAT3( right, top, 0.0f );
+	m_Vertices[4].TEXTURE = XMFLOAT2( 1.0f, 0.0f );
+
+	m_Vertices[5].POS = XMFLOAT3( right, bottom, 0.0f );
+	m_Vertices[5].TEXTURE = XMFLOAT2( 1.0f, 1.0f );
+
 	if ( !UpdateVertexBuffer( DevContext ) ) { return false; }
 	if ( !UpdateIndexBuffer( DevContext ) ) { return false; }
 
@@ -84,6 +123,8 @@ bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 
 bool DXMODEL::SetVertex()
 {
+	m_VertexCount = 6;
+
 	// Create Vertex List
 	m_Vertices = new VertexType[ m_VertexCount ];
 	if ( !m_Vertices )
@@ -92,32 +133,14 @@ bool DXMODEL::SetVertex()
 		return false;
 	}
 
-	XMFLOAT4 Color;
-	for ( int I = 0; I < m_VertexCount; I++ )
-	{
-		if ( (I / 3) % 3 == 0 )
-		{
-			Color = XMFLOAT4( Red, 0.5f, 0.5f, 1.0f );
-		}
-		else if ( (I / 3) % 3 == 1 )
-		{
-			Color = XMFLOAT4( 0.5f, Green, 0.5f, 1.0f );
-		}
-		else if ( (I / 3) % 3 == 2 )
-		{
-			Color = XMFLOAT4( 0.5f, 0.5f, Blue, 1.0f );
-		}
-		m_Vertices[ I ].POS = XMFLOAT3( m_Model[ I ].X, m_Model[ I ].Y, m_Model[ I ].Z );
-		m_Vertices[ I ].NORMAL = XMFLOAT3( m_Model[ I ].NX, m_Model[ I ].NY, m_Model[ I ].NZ );
-		m_Vertices[ I ].COLOR = Color;
-	}
-
 	return true;
 }
 
 
 bool DXMODEL::SetIndex()
 {
+	m_IndexCount = m_VertexCount;
+
 	// Create Index List
 	m_Indices = new UINT[ m_IndexCount ];
 	if ( !m_Indices )
@@ -262,89 +285,39 @@ void DXMODEL::InitPointer()
 	m_Vertices = nullptr;
 	m_Indices = nullptr;
 
+	m_Texture = nullptr;
+
 	m_Model = nullptr;
-
-	Red = 0.5f;
-	Blue = 0.5f;
-	Green = 0.5f;
-
-	temp_R = 0.0005f;
-	temp_B = 0.0005f;
-	temp_G = 0.0005f;
 }
 
-bool DXMODEL::LoadModel()
+
+bool DXMODEL::LoadTexture( ID3D11Device* Device )
 {
-	// Set Model File Directory
-	m_ModelFile = ".\\..\\..\\src\\DX\\DXModel\\MDText\\MDBox.txt";
+	m_Texture = new MDTEXTURE();
 
-	// Open Model Text file
-	ifstream fin( m_ModelFile );
-
-	// Check the whether file is opened
-	if ( fin.fail() )
+	if ( !m_Texture )
 	{
-		LOG_ERROR(" Failed - Open Model File %s \n ", m_ModelFile );
+		LOG_ERROR(" Failed - Create Texture Object \n ");
 		return false;
 	}
 	else
 	{
-		LOG_INFO(" Successed - Open Model File %s \n ", m_ModelFile);
+		LOG_INFO(" Successed - Create Texture Object \n ");
 	}
 
-	// Get Value of VertexCount before Data
-	char input;
-	fin.get( input );
-	for (int I = 0; I < 999; I ++)
+	if ( !m_Texture->Init( Device ) )
 	{
-		LOG_INFO(" %c \n ", input );
-		if ( input == ':')
-		{
-			break;
-		}
-		fin.get( input );
-	}
-	// Read Vertex Count
-	fin >> m_VertexCount;
-	LOG_INFO("%d \n", m_VertexCount );
-
-	// Set Index Count is same as Vertex Count
-	m_IndexCount = m_VertexCount;
-
-	// Create ModelType array
-	m_Model = new ModelType[ m_VertexCount ];
-	if ( !m_Model )
-	{
-		LOG_ERROR(" Failed - Create ModelType Array \n ");
+		LOG_ERROR(" Failed - Init Texture Object \n ");
 		return false;
 	}
-
-
-	// Get Value of Data Before the file is end
-	fin.get( input );
-	for (int I = 0; I < 999; I ++)
+	else
 	{
-		if ( input == ':')
-		{
-			break;
-		}
-		fin.get( input );
+		LOG_INFO(" Successed - Init Texture Object \n ");
 	}
-	fin.get( input );
-	fin.get( input ); // Move to the Next line
-
-	// Get Vertex Data
-	for ( int I = 0 ; I < m_VertexCount; I++ )
-	{
-		fin >> m_Model[I].X >> m_Model[I].Y >> m_Model[I].Z;
-		fin >> m_Model[I].NX >> m_Model[I].NY >> m_Model[I].NZ;
-	}
-
-	// Close Model File
-	fin.close();
 
 	return true;
 }
 
-
 int DXMODEL::GetIndexCount() { return m_IndexCount; }
+
+ID3D11ShaderResourceView* DXMODEL::GetTexture() { return m_Texture->GetTexture(); }
