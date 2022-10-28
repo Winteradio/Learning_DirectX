@@ -64,6 +64,8 @@ class DXENGINE
 		DXTEXT* m_DXTEXT;
 
 		float rotation;
+		float move;
+		float move_temp;
 
 		const char* m_LVSfileDIR;
 		const char* m_LPSfileDIR;

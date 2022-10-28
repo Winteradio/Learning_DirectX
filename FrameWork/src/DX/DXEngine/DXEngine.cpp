@@ -28,6 +28,8 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 	if ( !InitDXTEXT( Width, Height, m_TFontfileDIR, m_TDDSfileDIR, m_TVSfileDIR, m_TPSfileDIR ) ) { return false; }
 
 	rotation = 0.0f;
+	move = 0.0f;
+	move_temp = 0.001f;
 
 	return true;
 }
@@ -35,13 +37,19 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 
 bool DXENGINE::Frame()
 {
-	m_DXCAMERA->SetPosition( 0.0f, 0.0f, -10.0f );
-
 	rotation += (float)XM_PI * 0.0001f;
 	if ( rotation > 360.0f )
 	{
 		rotation -= 360.0f;
 	}
+
+	move += move_temp;
+	if ( move <= -2.5f || move >= 2.5f )
+	{
+		move_temp *= -1.0f;
+	}
+
+	m_DXCAMERA->SetPosition( 0.0f, move, -10.0f );
 
 	return Render( rotation );
 }
@@ -101,9 +109,6 @@ bool DXENGINE::Render( float rotation )
 	}
 
 	m_DXD3D->GetWorldMatrix( worldMatrix );
-	m_DXD3D->GetOrthoMatrix( orthoMatrix );
-
-
 	m_DXD3D->TurnZBufferOff();
 	m_DXD3D->TurnOnAlphaBlending();
 
