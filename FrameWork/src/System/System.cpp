@@ -30,6 +30,8 @@ bool SYSTEM::Init()
 {
 	// Windows Init
 	if ( !InitWindows() ) { return false; }
+	// Input IDInit
+	if ( !InitKMINPUT() ) { return false; }
 	// DXENGINE Init
 	if ( !InitDXENGINE() ) { return false; }
 
@@ -76,7 +78,6 @@ void SYSTEM::Release()
 	// Delete Instance for this Program
 	UnregisterClass( m_WindowName, m_hInstance );
 
-
 	m_DXENGINE->Release();
 	delete m_DXENGINE;
 
@@ -88,14 +89,23 @@ void SYSTEM::Release()
 
 bool SYSTEM::Frame()
 {
-	return m_DXENGINE->Frame();
+	int mouseX = g_KMINPUT->GetMouse()->PosX;
+	int mouseY = g_KMINPUT->GetMouse()->PosY;
+
+	if ( !m_DXENGINE->Frame( mouseX, mouseY ) )
+	{
+		LOG_ERROR(" Failed - Frame DXENGINE \n ");
+		return false;
+	}
+
+	return true;
 }
 
 
 bool SYSTEM::InitWindows()
 {
 	// Other Pointer(->MSGHandle)
-	MSGHandle = this;
+	//MSGHandle = this;
 
 	// Get Instance for this Program
 	m_hInstance = GetModuleHandle( NULL );
@@ -166,6 +176,34 @@ bool SYSTEM::InitWindows()
 }
 
 
+bool SYSTEM::InitKMINPUT()
+{
+	// Create KMINPUT Objects
+	g_KMINPUT = new KMINPUT;
+	if ( !g_KMINPUT )
+	{
+		LOG_ERROR(" Failed - Create KMINPUT \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create KMINPUT \n ");
+	}
+
+	// Init INPUT Objects
+	if ( !g_KMINPUT->Init( m_Width, m_Height ) )
+	{
+		LOG_ERROR(" Failed - Init KMINPUT \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Init KMINPUT \n ");
+	}
+	return true;
+}
+
+
 bool SYSTEM::InitDXENGINE()
 {
 	// Create DXENGINE Objects
@@ -201,29 +239,12 @@ void SYSTEM::InitPointer()
 	m_WindowName = nullptr;
 	m_WindowTitle = nullptr;
 	m_DXENGINE = nullptr;
+
+	g_KMINPUT = nullptr;
 }
 
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
-	switch ( message )
-	{
-		case WM_KEYDOWN :
-		{
-			if ( wParam == VK_ESCAPE )
-			{
-				LOG_INFO("Pushed Exit Key \n");
-				DestroyWindow( hWnd );
-				return 0;
-			}
-		}
-
-		case WM_DESTROY :
-		{
-			PostQuitMessage( 0 );
-			return 0;
-		}
-	}
-
-	return DefWindowProc( hWnd, message, wParam, lParam );
+	return g_KMINPUT->MessageHandler( hWnd, message, wParam, lParam );
 }

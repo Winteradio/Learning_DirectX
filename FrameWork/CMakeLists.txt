@@ -64,7 +64,7 @@ SET( DXTSHADER_DIR ${DXT_DIR}/DXT_Shader )
 
 SET( SYSTEM_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/System )
 
-SET( INPUT_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/Input )
+SET( INPUT_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/KMInput )
 SET( LOG_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/Log )
 SET( TIMER_DIR ${CMAKE_SOURCE_DIR}/${SRC_DIR}/Timer )
 
@@ -73,6 +73,8 @@ SET( SRCS
 	${SRC_DIR}/main.cpp
 
 	${SYSTEM_DIR}/System.h ${SYSTEM_DIR}/System.cpp
+
+	${INPUT_DIR}/KMInput.h ${INPUT_DIR}/KMInput.cpp
 
 	${LOG_DIR}/Log.h ${LOG_DIR}/Log.cpp
 
@@ -95,6 +97,7 @@ SET( SRCS
 SET( INCS
 	${SYSTEM_DIR}
 
+	${INPUT_DIR}
 	${LOG_DIR}
 	${TIMER_DIR}
 

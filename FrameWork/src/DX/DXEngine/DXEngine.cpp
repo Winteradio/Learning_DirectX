@@ -35,8 +35,14 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 }
 
 
-bool DXENGINE::Frame()
+bool DXENGINE::Frame(int mouseX, int mouseY)
 {
+	if ( !m_DXTEXT->SetMousePosition( mouseX, mouseY, m_DXD3D->GetDeviceContext() ) )
+	{
+		LOG_ERROR(" Failed - Print Mouse Position \n ");
+		return false;
+	}
+
 	rotation += (float)XM_PI * 0.0001f;
 	if ( rotation > 360.0f )
 	{

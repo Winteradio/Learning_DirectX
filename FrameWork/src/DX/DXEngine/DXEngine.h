@@ -31,7 +31,7 @@ class DXENGINE
 
 		bool Init( int, int, HWND );
 
-		bool Frame();
+		bool Frame( int, int );
 		void Release();
 
 	// Functions - Divide Init Functions

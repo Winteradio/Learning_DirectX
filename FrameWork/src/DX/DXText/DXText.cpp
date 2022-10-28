@@ -82,6 +82,37 @@ bool DXTEXT::Render( ID3D11DeviceContext* DevContext, XMMATRIX worldMatrix, XMMA
 }
 
 
+bool DXTEXT::SetMousePosition( int mouseX, int mouseY, ID3D11DeviceContext* DevContext )
+{
+	// Mouse X
+	char tempString[16] = {0,};
+	_itoa_s( mouseX, tempString, 10 );
+
+	char mouseString[16] = {0,};
+	strcpy_s( mouseString, "Mouse X: " );
+	strcat_s( mouseString, tempString );
+
+	if ( !UpdateSentence( m_Sentence1, mouseString, 20, 30, 1.0f, 1.0f, 1.0f, DevContext ) )
+	{
+		LOG_ERROR(" Failed - Update Mouse X \n ");
+		return false;
+	}
+
+	// Mouse Y
+	_itoa_s( mouseY, tempString, 10 );
+
+	strcpy_s( mouseString, "Mouse Y: " );
+	strcat_s( mouseString, tempString );
+
+	if ( !UpdateSentence( m_Sentence2, mouseString, 20, 60, 1.0f, 1.0f, 1.0f, DevContext ) )
+	{
+		LOG_ERROR(" Failed - Update Mouse Y \n ");
+		return false;
+	}
+
+	return true;
+}
+
 
 bool DXTEXT::InitFont( ID3D11Device* Device, const char* FontfileDIR, const char* TexfileDIR )
 {
@@ -292,10 +323,6 @@ bool DXTEXT::UpdateSentence( SentenceType* sentence, char* text,
 	{
 		LOG_ERROR(" Failed - Create Vertex for Sentence \n ");
 		return false;
-	}
-	else
-	{
-		LOG_INFO(" Successed - Create Vertex for Sentence \n ");
 	}
 
 	memset( vertices, 0, ( sizeof( VertexType) * (sentence->vertexCount ) ) );

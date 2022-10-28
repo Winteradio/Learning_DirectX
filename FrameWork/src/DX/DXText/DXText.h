@@ -41,6 +41,7 @@ class DXTEXT
 			const char*, const char*);
 		void Release();
 		bool Render( ID3D11DeviceContext*, XMMATRIX, XMMATRIX );
+		bool SetMousePosition( int, int, ID3D11DeviceContext* );
 
 	private :
 
