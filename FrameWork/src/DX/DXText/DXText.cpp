@@ -15,8 +15,10 @@ DXTEXT::DXTEXT( const DXTEXT* Other )
 DXTEXT::~DXTEXT() {}
 
 
-
-bool DXTEXT::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext, int screenWidth, int screenHeight, XMMATRIX baseViewMatrix, const char* FontfileDIR, const char* TexfileDIR, const char* VSfileDIR, const char* PSfileDIR )
+bool DXTEXT::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext,
+	int screenWidth, int screenHeight, XMMATRIX baseViewMatrix,
+	const char* FontfileDIR, const char* TexfileDIR,
+	const char* VSfileDIR, const char* PSfileDIR )
 {
 	m_ScreenWidth = screenWidth;
 	m_ScreenHeight = screenHeight;
@@ -28,9 +30,6 @@ bool DXTEXT::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext, int sc
 
 	if ( !InitSentence( &m_Sentence1, 16, Device ) ) { return false; }
 	if ( !InitSentence( &m_Sentence2, 16, Device ) ) { return false; }
-
-	if ( !UpdateSentence( m_Sentence1, " Hello ", 100, 100, 1.0f, 1.0f, 1.0f, DevContext) ) { return false; }
-	if ( !UpdateSentence( m_Sentence2, " GoodBye ", 100, 200, 1.0f, 1.0f, 0.0f, DevContext ) ) { return false; }
 
 	return true;
 }
