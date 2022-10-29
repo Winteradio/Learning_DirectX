@@ -40,7 +40,7 @@ class DXSHADER
 	// Functions - Init, Release Object and Render
 	public :
 
-		bool Init( ID3D11Device*, ID3D11DeviceContext* );
+		bool Init( ID3D11Device*, ID3D11DeviceContext*, const char*, const char* );
 		void Release();
 
 		bool Render( ID3D11DeviceContext*, int,
@@ -63,9 +63,8 @@ class DXSHADER
 	// Functions - Divide Init Functions
 	private :
 
-		void InitShaderDIR();
-		bool InitVertexShader( ID3D11Device*, ID3D11DeviceContext* );
-		bool InitPixelShader( ID3D11Device*, ID3D11DeviceContext* );
+		bool InitVertexShader( ID3D11Device*, ID3D11DeviceContext*, const char* );
+		bool InitPixelShader( ID3D11Device*, ID3D11DeviceContext*, const char* );
 		bool InitLayout( ID3D11Device* );
 		bool InitSampleState( ID3D11Device* );
 		bool InitMatrixBuffer( ID3D11Device* );
@@ -86,14 +85,11 @@ class DXSHADER
 
 		ID3D11InputLayout* m_Layout;
 
-		ID3D11SamplerState* m_SampleState;
+		ID3D11SamplerState* m_SamplerState;
 
 		ID3D11Buffer* m_MatrixBuffer;
 		ID3D11Buffer* m_LightBuffer;
 		ID3D11Buffer* m_CameraBuffer;
-
-		const char* m_VSfile;
-		const char* m_PSfile;
 };
 
 

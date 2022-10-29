@@ -4,6 +4,7 @@
 #include <Windows.h>
 
 #include "DXEngine.h"
+#include "KMInput.h"
 #include "Log.h"
 
 
@@ -28,6 +29,7 @@ class SYSTEM
 		bool Init();
 		bool Frame();
 		bool InitWindows();
+		bool InitKMINPUT();
 		bool InitDXENGINE();
 
 		void InitPointer();
@@ -57,6 +59,6 @@ class SYSTEM
 
 static LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
-static SYSTEM* MSGHandle = 0;
+static KMINPUT* g_KMINPUT;
 
 #endif __SYSTEM_H__

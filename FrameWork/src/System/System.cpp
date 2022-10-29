@@ -84,6 +84,13 @@ void SYSTEM::Release()
 	// Delete Instance for this Program
 	UnregisterClass( m_WindowName, m_hInstance );
 
+	m_SUBCPU->Release();
+	delete m_SUBCPU;
+
+	delete m_SUBFPS;
+	delete m_SUBINPUT;
+	delete m_SUBTIMER;
+
 	m_DXENGINE->Release();
 	delete m_DXENGINE;
 
@@ -95,10 +102,16 @@ void SYSTEM::Release()
 
 bool SYSTEM::Frame()
 {
-	int mouseX = g_SUBINPUT->GetMouse()->PosX;
-	int mouseY = g_SUBINPUT->GetMouse()->PosY;
+	// Update Sub System
+	m_SUBCPU->Frame();
+	m_SUBFPS->Frame();
+	m_SUBTIMER->Frame();
 
-	if ( !m_DXENGINE->Frame( mouseX, mouseY ) )
+	// Update Mouse Position
+	int mouseX = m_SUBINPUT->GetMouse()->PosX;
+	int mouseY = m_SUBINPUT->GetMouse()->PosY;
+
+	if ( !m_DXENGINE->Frame( m_SUBFPS->GetFPS(), m_SUBCPU->GetCPUPercent(), m_SUBTIMER->GetTime(), mouseX, mouseY ) )
 	{
 		LOG_ERROR(" Failed - Frame DXENGINE \n ");
 		return false;
@@ -206,13 +219,97 @@ bool SYSTEM::InitSUBINPUT()
 	{
 		LOG_INFO(" Successed - Init SUBINPUT \n ");
 	}
+
+	m_SUBINPUT = g_SUBINPUT;
+
 	return true;
 }
 
 
-bool SYSTEM::InitSUBCPU() { return true; }
-bool SYSTEM::InitSUBFPS() { return true; }
-bool SYSTEM::InitSUBTIMER() { return true; }
+bool SYSTEM::InitSUBCPU()
+{
+	// Create SUBCPU Object
+	m_SUBCPU = new SUBCPU;
+	if ( !m_SUBCPU )
+	{
+		LOG_ERROR(" Failed - Create SUBCPU \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create SUBCPU \n ");
+	}
+
+	// Init SUBCPU Object
+	if ( !m_SUBCPU->Init() )
+	{
+		LOG_ERROR(" Failed - Init SUBCPU \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Init SUBCPU \n ");
+	}
+	return true;
+}
+
+
+bool SYSTEM::InitSUBFPS()
+{
+	// Create SUBFPS Object
+	m_SUBFPS = new SUBFPS;
+	if ( !m_SUBFPS )
+	{
+		LOG_ERROR(" Failed - Create SUBFPS \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create SUBFPS \n ");
+	}
+
+	// Init SUBFPS Object
+	if ( !m_SUBFPS->Init() )
+	{
+		LOG_ERROR(" Failed - Init SUBFPS \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Init SUBFPS \n ");
+	}
+
+	return true;
+}
+
+
+bool SYSTEM::InitSUBTIMER()
+{
+	// Create SUBTIMER Object
+	m_SUBTIMER = new SUBTIMER;
+	if ( !m_SUBTIMER )
+	{
+		LOG_ERROR(" Failed - Create SUBTIMER \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create SUBTIMER \n ");
+	}
+
+	// Init SUBTIMER Object
+	if ( !m_SUBTIMER->Init() )
+	{
+		LOG_ERROR(" Failed - Init SUBTIMER \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Init SUBTIMER \n ");
+	}
+
+	return true;
+}
 
 
 bool SYSTEM::InitDXENGINE()
@@ -251,7 +348,10 @@ void SYSTEM::InitPointer()
 	m_WindowTitle = nullptr;
 	m_DXENGINE = nullptr;
 
-	g_SUBINPUT = nullptr;
+	m_SUBCPU = nullptr;
+	m_SUBFPS = nullptr;
+	m_SUBINPUT = nullptr;
+	m_SUBTIMER = nullptr;
 }
 
 

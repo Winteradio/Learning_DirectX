@@ -25,15 +25,14 @@ bool DXTEXT::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext,
 
 	m_BaseViewMatrix = baseViewMatrix;
 
+	m_SenCount = 4;
+
 	if ( !InitFont( Device, FontfileDIR, TexfileDIR ) ) { return false; }
 	if ( !InitFontShader( Device, DevContext, VSfileDIR, PSfileDIR ) ) { return false; }
-
-	if ( !InitSentence( &m_Sentence1, 16, Device ) ) { return false; }
-	if ( !InitSentence( &m_Sentence2, 16, Device ) ) { return false; }
+	if ( !InitSentence( Device, 16 ) ) { return false; }
 
 	return true;
 }
-
 
 
 void DXTEXT::Release()
@@ -41,47 +40,47 @@ void DXTEXT::Release()
 	m_Font->Release();
 	m_FontShader->Release();
 
-	ReleaseSentence( &m_Sentence1 );
-	ReleaseSentence( &m_Sentence2 );
+	for ( int I = 0; I < m_SenCount; I++ )
+	{
+		ReleaseSentence( m_SentenceList[ I ] );
+	}
+
+	delete[] m_SentenceList;
 
 	InitPointer();
 }
 
 
-
-void DXTEXT::ReleaseSentence( SentenceType** sentence )
+void DXTEXT::ReleaseSentence( SentenceType*& sentence )
 {
-	if ( *sentence )
-	{
-		if ( (*sentence)->vertexBuffer )
-		{
-			(*sentence)->vertexBuffer->Release();
-			(*sentence)->vertexBuffer = 0;
-		}
-
-		if ( (*sentence)->indexBuffer )
-		{
-			(*sentence)->indexBuffer->Release();
-			(*sentence)->indexBuffer = 0;
-		}
-
-		delete *sentence;
-		*sentence = nullptr;
-	}
+	sentence->vertexBuffer->Release();
+	sentence->indexBuffer->Release();
+	sentence = nullptr;
 }
-
 
 
 bool DXTEXT::Render( ID3D11DeviceContext* DevContext, XMMATRIX worldMatrix, XMMATRIX orthoMatrix )
 {
-	if ( !RenderSentence( DevContext, m_Sentence1, worldMatrix, orthoMatrix ) ) { return false; }
-	if ( !RenderSentence( DevContext, m_Sentence2, worldMatrix, orthoMatrix ) ) { return false; }
+	for ( int I = 0; I < m_SenCount; I++ )
+	{
+		if ( !RenderSentence( DevContext, m_SentenceList[ I ], worldMatrix, orthoMatrix ) ) { return false; }
+	}
 
 	return true;
 }
 
 
-bool DXTEXT::SetMousePosition( int mouseX, int mouseY, ID3D11DeviceContext* DevContext )
+bool DXTEXT::Frame( ID3D11DeviceContext* DevContext, int mouseX, int mouseY, int CPU, int FPS )
+{
+	if ( !SetMousePosition( DevContext, m_SentenceList[0], m_SentenceList[1], mouseX, mouseY ) ) { return false; }
+	if ( !SetCPU( DevContext, m_SentenceList[2], CPU ) ) { return false; }
+	if ( !SetFPS( DevContext, m_SentenceList[3], FPS ) ) { return false; }
+
+	return true;
+}
+
+
+bool DXTEXT::SetMousePosition( ID3D11DeviceContext* DevContext, SentenceType*& sentence1, SentenceType*& sentence2, int mouseX, int mouseY )
 {
 	// Mouse X
 	char tempString[16] = {0,};
@@ -91,7 +90,7 @@ bool DXTEXT::SetMousePosition( int mouseX, int mouseY, ID3D11DeviceContext* DevC
 	strcpy_s( mouseString, "Mouse X: " );
 	strcat_s( mouseString, tempString );
 
-	if ( !UpdateSentence( m_Sentence1, mouseString, 20, 30, 1.0f, 1.0f, 1.0f, DevContext ) )
+	if ( !UpdateSentence( DevContext, sentence1, mouseString, 200, 30, 1.0f, 1.0f, 1.0f ) )
 	{
 		LOG_ERROR(" Failed - Update Mouse X \n ");
 		return false;
@@ -103,9 +102,49 @@ bool DXTEXT::SetMousePosition( int mouseX, int mouseY, ID3D11DeviceContext* DevC
 	strcpy_s( mouseString, "Mouse Y: " );
 	strcat_s( mouseString, tempString );
 
-	if ( !UpdateSentence( m_Sentence2, mouseString, 20, 60, 1.0f, 1.0f, 1.0f, DevContext ) )
+	if ( !UpdateSentence( DevContext, sentence2, mouseString, 200, 60, 1.0f, 1.0f, 1.0f) )
 	{
 		LOG_ERROR(" Failed - Update Mouse Y \n ");
+		return false;
+	}
+
+	return true;
+}
+
+
+bool DXTEXT::SetFPS( ID3D11DeviceContext* DevContext, SentenceType*& sentence, int FPS )
+{
+	// FPS
+	char tempString[16] = {0,};
+	_itoa_s( FPS, tempString, 10 );
+
+	char FPSString[16] = {0,};
+	strcpy_s( FPSString, "FPS : " );
+	strcat_s( FPSString, tempString );
+
+	if ( !UpdateSentence( DevContext, sentence, FPSString, 20, 30, 1.0f, 1.0f, 1.0f ) )
+	{
+		LOG_ERROR(" Failed - Update Mouse X \n ");
+		return false;
+	}
+
+	return true;
+}
+
+
+bool DXTEXT::SetCPU( ID3D11DeviceContext* DevContext, SentenceType*& sentence, int CPU )
+{
+	// CPUPercent
+	char tempString[16] = {0,};
+	_itoa_s( CPU, tempString, 10 );
+
+	char CPUString[16] = {0,};
+	strcpy_s( CPUString, "CPU : " );
+	strcat_s( CPUString, tempString );
+
+	if ( !UpdateSentence( DevContext, sentence, CPUString, 20, 60, 1.0f, 1.0f, 1.0f ) )
+	{
+		LOG_ERROR(" Failed - Update CPU Percent \n ");
 		return false;
 	}
 
@@ -171,137 +210,49 @@ bool DXTEXT::InitFontShader( ID3D11Device* Device, ID3D11DeviceContext* DevConte
 }
 
 
-
-bool DXTEXT::InitSentence( SentenceType** sentence, int maxLength, ID3D11Device* Device )
+bool DXTEXT::InitSentence( ID3D11Device* Device, int maxLength )
 {
-	HRESULT hr;
-
-	*sentence = new SentenceType;
-	if ( !*sentence )
+	m_SentenceList = new SentenceType*[ m_SenCount ];
+	if ( !m_SentenceList )
 	{
-		LOG_ERROR(" Failed - Create Sentence \n ");
+		LOG_ERROR(" Failed - Create Sentence Pointer List \n ");
 		return false;
 	}
 	else
 	{
-		LOG_INFO(" Succeessed - Create Sentence \n ");
+		LOG_INFO(" Successed - Create Sentence Pointer List \n ");
 	}
 
-	(*sentence)->vertexBuffer = nullptr;
-	(*sentence)->indexBuffer = nullptr;
-	(*sentence)->maxLength = maxLength;
-	(*sentence)->vertexCount = 6 * maxLength;
-	(*sentence)->indexCount = (*sentence)->vertexCount;
-
-
-	////////////////
-	// VERTEX BUFFER
-	////////////////
-	VertexType* vertices = new VertexType[ (*sentence)->vertexCount ];
-	if ( !vertices )
+	for ( int I = 0; I < m_SenCount; I++ )
 	{
-		LOG_ERROR(" Failed - Create Vertex for Sentence \n ");
-		return false;
+		m_SentenceList[ I ] = new SentenceType;
+
+		if ( !m_SentenceList[ I ] )
+		{
+			LOG_ERROR(" Failed - Create Sentence \n ");
+			return false;
+		}
+
+		m_SentenceList[ I ]->vertexBuffer = nullptr;
+		m_SentenceList[ I ]->indexBuffer = nullptr;
+		m_SentenceList[ I ]->vertexCount = 6 * maxLength;
+		m_SentenceList[ I ]->indexCount = 6 * maxLength;
+		m_SentenceList[ I ]->maxLength = maxLength;
+		m_SentenceList[ I ]->Red = 0.0f;
+		m_SentenceList[ I ]->Green = 0.0f;
+		m_SentenceList[ I ]->Blue = 0.0f;
+
+		if ( !InitVertexBuffer( Device, m_SentenceList[ I ] ) ) { return false; }
+		if ( !InitIndexBuffer( Device, m_SentenceList[ I ] ) ) { return false; }
 	}
-	else
-	{
-		LOG_INFO(" Successed - Create Vertex for Sentence \n ");
-	}
-
-	memset( vertices, 0, ( sizeof( VertexType ) * (*sentence)->vertexCount ) );
-
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	ZeroMemory( &vertexBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
-
-	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	vertexBufferDesc.ByteWidth = sizeof( VertexType ) * (*sentence)->vertexCount;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA vertexData;
-	ZeroMemory( &vertexData, sizeof( D3D11_SUBRESOURCE_DATA ) );
-
-	vertexData.pSysMem = vertices;
-	vertexData.SysMemPitch = 0;
-	vertexData.SysMemSlicePitch = 0;
-
-	hr = Device->CreateBuffer( &vertexBufferDesc, &vertexData, &(*sentence)->vertexBuffer );
-	if ( FAILED( hr ) )
-	{
-		LOG_ERROR(" Failed - Create Vertex Buffer \n ");
-		return false;
-	}
-	else
-	{
-		LOG_INFO(" Successed - Create Vertex Buffer \n ");
-	}
-
-
-	////////////////
-	// INDEX BUFFER
-	////////////////
-	UINT* indices = new UINT[ (*sentence)->indexCount ];
-	if ( !indices )
-	{
-		LOG_ERROR(" Failed - Create Index for Sentence \n ");
-		return false;
-	}
-	else
-	{
-		LOG_INFO(" Successed - Create Index for Sentence \n ");
-	}
-
-	for ( int I = 0; I < (*sentence)->indexCount; I++ )
-	{
-		indices[ I ] = I;
-	}
-
-	D3D11_BUFFER_DESC indexBufferDesc;
-	ZeroMemory( &indexBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
-
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof( UINT ) * (*sentence)->indexCount;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	indexBufferDesc.StructureByteStride = 0;
-
-
-	D3D11_SUBRESOURCE_DATA indexData;
-	ZeroMemory( &indexData, sizeof( D3D11_SUBRESOURCE_DATA ) );
-
-	indexData.pSysMem = indices;
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
-
-	hr = Device->CreateBuffer( &indexBufferDesc, &indexData, &(*sentence)->indexBuffer );
-	if ( FAILED( hr ) )
-	{
-		LOG_ERROR(" Failed - Create Index Buffer \n ");
-		return false;
-	}
-	else
-	{
-		LOG_INFO(" Successed - Create Index Buffer \n ");
-	}
-
-	delete[] vertices;
-	vertices = nullptr;
-
-	delete[] indices;
-	indices = nullptr;
 
 	return true;
 }
 
 
-
-bool DXTEXT::UpdateSentence( SentenceType* sentence, char* text,
+bool DXTEXT::UpdateSentence( ID3D11DeviceContext* DevContext, SentenceType*& sentence, char* text,
 	int positionX, int positionY,
-	float red, float blue ,float green,
-	ID3D11DeviceContext* DevContext )
+	float red, float blue ,float green )
 {
 	HRESULT hr;
 
@@ -309,14 +260,15 @@ bool DXTEXT::UpdateSentence( SentenceType* sentence, char* text,
 	sentence->Blue = blue;
 	sentence->Green = green;
 
+	// Check text length that is over maximum
 	int numLetters = (int)strlen(text);
-
 	if ( numLetters > sentence->maxLength )
 	{
 		LOG_ERROR(" Over the maxLength : %d that has Numbers of letters %d \n ", sentence->maxLength, numLetters );
 		return false;
 	}
 
+	// Update vertex
 	VertexType* vertices = new VertexType[ sentence->vertexCount ];
 	if ( !vertices )
 	{
@@ -375,12 +327,126 @@ bool DXTEXT::RenderSentence( ID3D11DeviceContext* DevContext, SentenceType* sent
 }
 
 
+bool DXTEXT::InitVertexBuffer( ID3D11Device* Device, SentenceType*& sentence )
+{
+	HRESULT hr;
+
+	VertexType* vertices = new VertexType[ sentence->vertexCount ];
+
+	if ( !vertices )
+	{
+		LOG_ERROR(" Failed - Create Vertex for sentence\n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Vertex for sentence\n ");
+	}
+
+	memset( vertices, 0, ( sizeof( VertexType ) * sentence->vertexCount ) );
+
+	// Describe vertex buffer;
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	ZeroMemory( &vertexBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
+
+	vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	vertexBufferDesc.ByteWidth = sizeof( VertexType ) * sentence->vertexCount;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
+
+	// Describe vertex data
+	D3D11_SUBRESOURCE_DATA vertexData;
+	ZeroMemory( &vertexData, sizeof( D3D11_SUBRESOURCE_DATA ) );
+
+	vertexData.pSysMem = vertices;
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+	// Create vertex buffer on sentence
+	hr = Device->CreateBuffer( &vertexBufferDesc, &vertexData, &sentence->vertexBuffer );
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - Create Vertex Buffer \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Vertex Buffer \n ");
+	}
+
+	delete[] vertices;
+	vertices = nullptr;
+
+	return true;
+}
+
+
+bool DXTEXT::InitIndexBuffer( ID3D11Device* Device, SentenceType*& sentence )
+{
+	HRESULT hr;
+
+	UINT* indices = new UINT[ sentence->indexCount ];
+
+	if ( !indices )
+	{
+		LOG_ERROR(" Failed - Create Index for sentence \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Index for sentence \n ");
+	}
+
+	for ( int J = 0; J < sentence->indexCount; J++ )
+	{
+		indices[ J ] = J;
+	}
+
+	// Describe index buffer
+	D3D11_BUFFER_DESC indexBufferDesc;
+	ZeroMemory( &indexBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
+
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.ByteWidth = sizeof( UINT ) * sentence->indexCount;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
+
+	// Describe index Data
+	D3D11_SUBRESOURCE_DATA indexData;
+	ZeroMemory( &indexData, sizeof( D3D11_SUBRESOURCE_DATA ) );
+
+	indexData.pSysMem = indices;
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
+
+	// Create index buffer on sentence
+	hr = Device->CreateBuffer( &indexBufferDesc, &indexData, &sentence->indexBuffer );
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - Create Index Buffer \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Index Buffer \n ");
+	}
+
+	delete[] indices;
+	indices = nullptr;
+
+	return true;
+}
+
+
 void DXTEXT::InitPointer()
 {
 	m_Font = nullptr;
 	m_FontShader = nullptr;
 
-	m_Sentence1 = nullptr;
-	m_Sentence2 = nullptr;
+	m_SentenceList = nullptr;
 }
 

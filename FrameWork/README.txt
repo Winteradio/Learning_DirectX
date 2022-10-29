@@ -186,3 +186,69 @@ DirectX 초기화 관련 Class 추가
 			-> SUBINPUT - User Input 관리
 			-> SUBLOG - Log 출력 도우미
 			-> SUBTIMER - Time 계산
+
+# 8
+--> DXTEXT에서 Sentence 생성 & Update 관련하여 밑의 내용 공부하자
+	매개변수(parameter)와 인자(argument)
+		-> 함수
+			-> 인자(argument)가 매개변수(parameter)에 전달되는 형태로 동작
+
+		ex)
+		void func( int a, int b )
+		{
+			...
+		}
+
+		int main()
+		{
+			func( 1, 2);
+			...
+		}
+
+		함수가 호출되게 되면,
+			int x = 1;
+			int y = 2;
+		와 같이 인자가 매개변수에 전해짐
+
+	인수 전달
+		-> 값에 의한 전달
+			-> 함수의 지역변수이나 매개변수로 인자의 값 복사
+			-> 함수 호출이 끝나면 인자의 값 변화 X
+			-> call by value 라고 부름
+
+		-> 참조에 의한 전달
+			-> 매개변수로 전해지는 인자의 메모리를 공유
+				-> 매개변수와 인자의 주소 동일
+			-> 함수 호출이 끝나면 인자의 값 변화 O
+			-> C/C++은 return이 하나만 가능하기에, 이의 방법을 주로 사용
+			-> 참조 방식
+				-> 일반 & : L-value( 메모리 공간 O )
+				-> const & : L-value, R-value( 메모리 공간 X )
+
+		-> 주소에 의한 전달
+			-> 값이 주소값으로 받는다고 생각하면 된다
+			-> 간접 참조를 통하여 인자의 값 변경 가능
+				-> 인자의 주소값을 매개변수가 지니고 있고
+				-> 매개변수의 역참조를 통하여 인자로 접근하여 값 변경 가능
+
+# 9
+FPS, CPU 화면에 출력
+
+구성
+-> main.cpp
+	-> SYSTEM
+		-> DXENGINE
+			-> DXD3D
+			-> DXCAMERA
+			-> DXMODEL
+			-> DXLIGHT
+			-> DXTEXT
+			-> DXTEXTURE
+		-> SUB
+			-> SUBCPU
+			-> SUBFPS
+			-> SUBINPUT
+			-> SUBLOG
+			-> SUBTIMER
+
+

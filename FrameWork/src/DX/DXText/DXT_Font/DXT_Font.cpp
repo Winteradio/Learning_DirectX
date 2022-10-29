@@ -123,7 +123,7 @@ bool DXT_FONT::LoadFontData( const char* FontfileDIR )
 		fin >> m_Font[ I ].left;
 		fin >> m_Font[ I ].right;
 		fin >> m_Font[ I ].size;
-		m_Font[ I ].size *= 2;
+		m_Font[ I ].size *= 1.5f;
 	}
 
 	fin.close();

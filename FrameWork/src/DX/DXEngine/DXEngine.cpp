@@ -34,9 +34,9 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 }
 
 
-bool DXENGINE::Frame(int mouseX, int mouseY)
+bool DXENGINE::Frame( int FPS, int CPU, float Time, int mouseX, int mouseY )
 {
-	if ( !m_DXTEXT->SetMousePosition( mouseX, mouseY, m_DXD3D->GetDeviceContext() ) )
+	if ( !m_DXTEXT->Frame( m_DXD3D->GetDeviceContext(), mouseX, mouseY, CPU, FPS ) )
 	{
 		LOG_ERROR(" Failed - Print Mouse Position \n ");
 		return false;

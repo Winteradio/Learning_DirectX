@@ -10,7 +10,7 @@ SUBCPU::SUBCPU( const SUBCPU* Other )
 
 SUBCPU::~SUBCPU() {}
 
-void SUBCPU::Init()
+bool SUBCPU::Init()
 {
 	m_CanReadCPU = true;
 	m_LastSampleTime = 0;
@@ -32,6 +32,7 @@ void SUBCPU::Init()
 
 	m_LastSampleTime = GetTickCount();
 
+	return true;
 }
 
 void SUBCPU::Release()

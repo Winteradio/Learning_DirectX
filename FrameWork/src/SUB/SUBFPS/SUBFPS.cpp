@@ -9,11 +9,13 @@ SUBFPS::SUBFPS( const SUBFPS* Other )
 
 SUBFPS::~SUBFPS() {}
 
-void SUBFPS::Init()
+bool SUBFPS::Init()
 {
 	m_FPS = 0;
 	m_Count = 0;
 	m_StartTime = timeGetTime();
+
+	return true;
 }
 
 void SUBFPS::Frame()

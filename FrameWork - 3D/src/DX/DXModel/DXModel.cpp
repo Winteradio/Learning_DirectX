@@ -21,10 +21,10 @@ DXMODEL::DXMODEL( const DXMODEL* Other )
 DXMODEL::~DXMODEL(){};
 
 
-bool DXMODEL::Init( ID3D11Device* Device )
+bool DXMODEL::Init( ID3D11Device* Device, const char* IMGfileDIR, const char* MDfileDIR )
 {
-	if ( !LoadTexture( Device ) ) { return false; }
-	if ( !LoadModel() ) { return false; }
+	if ( !LoadTexture( Device, IMGfileDIR ) ) { return false; }
+	if ( !LoadModel( MDfileDIR ) ) { return false; }
 
 	if ( !SetVertex() ) { return  false; }
 	if ( !InitVertexBuffer( Device ) ) { return false; }
@@ -252,9 +252,9 @@ void DXMODEL::InitPointer()
 }
 
 
-bool DXMODEL::LoadTexture( ID3D11Device* Device )
+bool DXMODEL::LoadTexture( ID3D11Device* Device, const char* IMGfileDIR )
 {
-	m_Texture = new MDTEXTURE();
+	m_Texture = new DXTEXTURE();
 
 	if ( !m_Texture )
 	{
@@ -266,7 +266,7 @@ bool DXMODEL::LoadTexture( ID3D11Device* Device )
 		LOG_INFO(" Successed - Create Texture Object \n ");
 	}
 
-	if ( !m_Texture->Init( Device ) )
+	if ( !m_Texture->LoadTexture( Device, IMGfileDIR ) )
 	{
 		LOG_ERROR(" Failed - Init Texture Object \n ");
 		return false;
@@ -280,23 +280,20 @@ bool DXMODEL::LoadTexture( ID3D11Device* Device )
 }
 
 
-bool DXMODEL::LoadModel()
+bool DXMODEL::LoadModel( const char* MDfileDIR )
 {
-	// Set Model File Directory
-	m_ModelFile = ".\\..\\..\\src\\DX\\DXModel\\MDText\\MDBox.txt";
-
 	// Open Model Text file
-	ifstream fin( m_ModelFile );
+	ifstream fin( MDfileDIR );
 
 	// Check the whether file is opened
 	if ( fin.fail() )
 	{
-		LOG_ERROR(" Failed - Open Model File %s \n ", m_ModelFile );
+		LOG_ERROR(" Failed - Open Model File %s \n ", MDfileDIR );
 		return false;
 	}
 	else
 	{
-		LOG_INFO(" Successed - Open Model File %s \n ", m_ModelFile);
+		LOG_INFO(" Successed - Open Model File %s \n ", MDfileDIR );
 	}
 
 	// Get Value of VertexCount before Data
@@ -304,7 +301,6 @@ bool DXMODEL::LoadModel()
 	fin.get( input );
 	for (int I = 0; I < 999; I ++)
 	{
-		LOG_INFO(" %c \n ", input );
 		if ( input == ':')
 		{
 			break;
@@ -313,7 +309,7 @@ bool DXMODEL::LoadModel()
 	}
 	// Read Vertex Count
 	fin >> m_VertexCount;
-	LOG_INFO("%d \n", m_VertexCount );
+	LOG_INFO(" MDfile Vertex Count : %d \n", m_VertexCount );
 
 	// Set Index Count is same as Vertex Count
 	m_IndexCount = m_VertexCount;

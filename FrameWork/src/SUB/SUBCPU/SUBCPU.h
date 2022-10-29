@@ -13,7 +13,7 @@ class SUBCPU
 
 	public :
 
-		void Init();
+		bool Init();
 		void Release();
 		void Frame();
 		int GetCPUPercent();

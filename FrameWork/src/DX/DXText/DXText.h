@@ -40,21 +40,29 @@ class DXTEXT
 			const char*, const char*,
 			const char*, const char*);
 		void Release();
+
 		bool Render( ID3D11DeviceContext*, XMMATRIX, XMMATRIX );
-		bool SetMousePosition( int, int, ID3D11DeviceContext* );
+		bool Frame( ID3D11DeviceContext*, int, int, int, int );
+
+		bool SetMousePosition( ID3D11DeviceContext*, SentenceType*&, SentenceType*&, int, int );
+		bool SetFPS( ID3D11DeviceContext*, SentenceType*& , int );
+		bool SetCPU( ID3D11DeviceContext*, SentenceType*& , int );
 
 	private :
 
 		bool InitFont( ID3D11Device*, const char*, const char* );
 		bool InitFontShader( ID3D11Device*, ID3D11DeviceContext*, const char*, const char* );
 
-		bool InitSentence( SentenceType**, int, ID3D11Device* );
-		bool UpdateSentence( SentenceType*, char*, int, int, float, float ,float, ID3D11DeviceContext* );
-		void ReleaseSentence( SentenceType** );
-		bool RenderSentence( ID3D11DeviceContext*, SentenceType*, XMMATRIX, XMMATRIX );
+		bool InitSentence( ID3D11Device*, int );
+		bool InitVertexBuffer( ID3D11Device*, SentenceType*& );
+		bool InitIndexBuffer( ID3D11Device*, SentenceType*& );
 
 		void InitPointer();
 
+		bool UpdateSentence( ID3D11DeviceContext*, SentenceType*&, char*, int, int, float, float ,float );
+		void ReleaseSentence( SentenceType*& );
+
+		bool RenderSentence( ID3D11DeviceContext*, SentenceType*, XMMATRIX, XMMATRIX );
 
 	private :
 
@@ -65,8 +73,8 @@ class DXTEXT
 		int m_ScreenHeight;
 
 		XMMATRIX m_BaseViewMatrix;
-		SentenceType* m_Sentence1;
-		SentenceType* m_Sentence2;
+		SentenceType** m_SentenceList;
+		int m_SenCount;
 };
 
 #endif

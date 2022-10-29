@@ -12,7 +12,7 @@ class DXT_FONT
 		{
 			float left;
 			float right;
-			int size;
+			float size;
 		};
 
 		struct VertexType

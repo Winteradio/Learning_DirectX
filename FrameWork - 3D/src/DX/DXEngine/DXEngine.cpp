@@ -18,26 +18,44 @@ DXENGINE::~DXENGINE()
 
 bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 {
+	InitFileDIR();
+
 	if ( !InitDXD3D( Width, Height, VSYNC_ENABLED, hWnd, SCREEN_DEPTH, SCREEN_NEAR ) ) { return false; }
 	if ( !InitDXCAMERA() ) { return false; }
 	if ( !InitDXLIGHT() ) { return true; }
-	if ( !InitDXMODEL() ) { return false; }
-	if ( !InitDXSHADER() ) { return false; }
+	if ( !InitDXMODEL( m_LIMGfileDIR, m_MDfileDIR) ) { return false; }
+	if ( !InitDXSHADER( m_LVSfileDIR, m_LPSfileDIR ) ) { return false; }
+	if ( !InitDXTEXT( Width, Height, m_TFontfileDIR, m_TDDSfileDIR, m_TVSfileDIR, m_TPSfileDIR ) ) { return false; }
 
 	rotation = 0.0f;
+	move = 0.0f;
+	move_temp = 0.001f;
 
 	return true;
 }
 
 
-bool DXENGINE::Frame()
+bool DXENGINE::Frame(int mouseX, int mouseY)
 {
+	if ( !m_DXTEXT->SetMousePosition( mouseX, mouseY, m_DXD3D->GetDeviceContext() ) )
+	{
+		LOG_ERROR(" Failed - Print Mouse Position \n ");
+		return false;
+	}
 
 	rotation += (float)XM_PI * 0.0001f;
 	if ( rotation > 360.0f )
 	{
 		rotation -= 360.0f;
 	}
+
+	move += move_temp;
+	if ( move <= -2.5f || move >= 2.5f )
+	{
+		move_temp *= -1.0f;
+	}
+
+	m_DXCAMERA->SetPosition( 0.0f, move, -10.0f );
 
 	return Render( rotation );
 }
@@ -48,12 +66,14 @@ void DXENGINE::Release()
 	m_DXD3D->Release();
 	m_DXMODEL->Release();
 	m_DXSHADER->Release();
+	m_DXTEXT->Release();
 
 	delete m_DXD3D;
 	delete m_DXCAMERA;
 	delete m_DXLIGHT;
 	delete m_DXMODEL;
 	delete m_DXSHADER;
+	delete m_DXTEXT;
 
 	InitPointer();
 }
@@ -70,10 +90,12 @@ bool DXENGINE::Render( float rotation )
 	m_DXCAMERA->Render();
 
 	// Get World, View, Proj Matrix from Camera and DXD3D Object
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
-	m_DXD3D->GetWorldMatrix( worldMatrix );
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
 	m_DXCAMERA->GetViewMatrix( viewMatrix );
+	m_DXD3D->GetWorldMatrix( worldMatrix );
 	m_DXD3D->GetProjectionMatrix( projectionMatrix );
+	m_DXD3D->GetOrthoMatrix( orthoMatrix );
+
 
 	worldMatrix = XMMatrixRotationY( rotation );
 
@@ -92,10 +114,37 @@ bool DXENGINE::Render( float rotation )
 		return false;
 	}
 
+	m_DXD3D->GetWorldMatrix( worldMatrix );
+	m_DXD3D->TurnZBufferOff();
+	m_DXD3D->TurnOnAlphaBlending();
+
+	if ( !m_DXTEXT->Render( m_DXD3D->GetDeviceContext(), worldMatrix, orthoMatrix ) )
+	{
+		LOG_ERROR(" Failed - Render uisng Text \n ");
+	}
+
+	m_DXD3D->TurnOffAlphaBlending();
+	m_DXD3D->TurnZBufferOn();
+
 	// Print Buffor on Monitor
 	m_DXD3D->EndScene();
 
 	return true;
+}
+
+
+void DXENGINE::InitFileDIR()
+{
+	m_LVSfileDIR = ".\\..\\..\\shader\\VertexShader.hlsl";
+	m_LPSfileDIR = ".\\..\\..\\shader\\PixelShader.hlsl";
+	m_LIMGfileDIR = ".\\..\\..\\textures\\RedSquare.png";
+
+	m_MDfileDIR = ".\\..\\..\\src\\DX\\DXModel\\DMText\\DMBox.txt";
+
+	m_TVSfileDIR = ".\\..\\..\\src\\DX\\DXText\\DXT_Shader\\Shader\\VSFont.hlsl";
+	m_TPSfileDIR = ".\\..\\..\\src\\DX\\DXText\\DXT_Shader\\Shader\\PSFont.hlsl";
+	m_TFontfileDIR = ".\\..\\..\\src\\DX\\DXText\\DXT_Font\\DXT_Font.txt";
+	m_TDDSfileDIR = ".\\..\\..\\src\\DX\\DXText\\DXT_Font\\DXT_Font.dds";
 }
 
 
@@ -106,6 +155,17 @@ void DXENGINE::InitPointer()
 	m_DXLIGHT= nullptr;
 	m_DXMODEL= nullptr;
 	m_DXSHADER = nullptr;
+
+	m_LVSfileDIR = nullptr;
+	m_LPSfileDIR = nullptr;
+	m_LIMGfileDIR = nullptr;
+
+	m_MDfileDIR = nullptr;
+
+	m_TVSfileDIR = nullptr;
+	m_TPSfileDIR = nullptr;
+	m_TFontfileDIR = nullptr;
+	m_TDDSfileDIR = nullptr;
 }
 
 
@@ -154,7 +214,8 @@ bool DXENGINE::InitDXCAMERA()
 		LOG_INFO(" Successed - Create DXCAMERA \n ");
 	}
 
-	m_DXCAMERA->SetPosition( 3.0f, 3.0f, 3.0f );
+	m_DXCAMERA->SetPosition( 0.0f, 0.0f, -1.0f );
+	m_DXCAMERA->Render();
 	return true;
 }
 
@@ -184,7 +245,7 @@ bool DXENGINE::InitDXLIGHT()
 }
 
 
-bool DXENGINE::InitDXMODEL()
+bool DXENGINE::InitDXMODEL( const char* TexfileDIR, const char* MDfileDIR )
 {
 	// Create DXMODEL Object
 	m_DXMODEL = new DXMODEL;
@@ -200,7 +261,7 @@ bool DXENGINE::InitDXMODEL()
 	}
 
 	// Init DXMODEL Object
-	if ( !m_DXMODEL->Init( m_DXD3D->GetDevice() ) )
+	if ( !m_DXMODEL->Init( m_DXD3D->GetDevice(), TexfileDIR, MDfileDIR ) )
 	{
 		LOG_ERROR(" Failed - Init DXMODEL \n ");
 		return false;
@@ -214,7 +275,7 @@ bool DXENGINE::InitDXMODEL()
 }
 
 
-bool DXENGINE::InitDXSHADER()
+bool DXENGINE::InitDXSHADER( const char* VSfileDIR, const char* PSfileDIR )
 {
 	// Create DXSHADER Object
 	m_DXSHADER = new DXSHADER;
@@ -230,7 +291,7 @@ bool DXENGINE::InitDXSHADER()
 	}
 
 	// Init DXSHADER Object
-	if ( !m_DXSHADER->Init( m_DXD3D->GetDevice(), m_DXD3D->GetDeviceContext() ) )
+	if ( !m_DXSHADER->Init( m_DXD3D->GetDevice(), m_DXD3D->GetDeviceContext(), VSfileDIR, PSfileDIR ) )
 	{
 		LOG_ERROR(" Failed - Init DXSHADER \n ");
 		return false;
@@ -238,6 +299,38 @@ bool DXENGINE::InitDXSHADER()
 	else
 	{
 		LOG_INFO(" Successed - Init DXSHADER \n");
+	}
+
+	return true;
+}
+
+bool DXENGINE::InitDXTEXT( int screenWidth, int screenHeight, const char* FontfileDIR, const char* TexfileDIR, const char* VSfileDIR, const char* PSfileDIR )
+{
+	XMMATRIX baseViewMatrix;
+	m_DXCAMERA->GetViewMatrix( baseViewMatrix );
+
+	// Create DXTEXT Object
+	m_DXTEXT = new DXTEXT;
+
+	if ( !m_DXTEXT )
+	{
+		LOG_ERROR(" Failed - Create DXTEXT \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create DXTEXT \n ");
+	}
+
+	// Init DXTEXT Object
+	if ( !m_DXTEXT->Init( m_DXD3D->GetDevice(), m_DXD3D->GetDeviceContext(), screenWidth, screenHeight, baseViewMatrix, FontfileDIR, TexfileDIR, VSfileDIR, PSfileDIR ) )
+	{
+		LOG_ERROR(" Failed - Init DXTEXT \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Init DXTEXT \n ");
 	}
 
 	return true;

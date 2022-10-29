@@ -14,7 +14,7 @@ class SUBFPS
 
 	public :
 
-		void Init();
+		bool Init();
 		void Frame();
 		int GetFPS();
 
