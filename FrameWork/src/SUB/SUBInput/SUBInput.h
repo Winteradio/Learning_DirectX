@@ -1,11 +1,10 @@
-#ifndef __KMINPUT_H__
-#define __KMINPUT_H__
+#ifndef __SUBINPUT_H__
+#define __SUBINPUT_H__
 
 #include <Windows.h>
 #include <cmath>
-#include "Log.h"
 
-struct KMMOUSE
+struct MOUSEINFO
 {
 	int PosX = 0;
 	int PosY = 0;
@@ -14,19 +13,19 @@ struct KMMOUSE
 	bool Wheel = false;
 };
 
-class KMINPUT
+class SUBINPUT
 {
 	public :
 
-		KMINPUT();
-		KMINPUT( const KMINPUT* );
-		~KMINPUT();
+		SUBINPUT();
+		SUBINPUT( const SUBINPUT* );
+		~SUBINPUT();
 
 	public :
 
 		bool Init( int ,int );
 
-		KMMOUSE* GetMouse();
+		MOUSEINFO* GetMouse();
 		LRESULT CALLBACK MessageHandler( HWND, UINT, WPARAM, LPARAM );
 
 	private :
@@ -42,7 +41,7 @@ class KMINPUT
 
 		int m_ScreenWidth;
 		int m_ScreenHeight;
-		KMMOUSE* m_Mouse;
+		MOUSEINFO* m_Mouse;
 };
 
 #endif

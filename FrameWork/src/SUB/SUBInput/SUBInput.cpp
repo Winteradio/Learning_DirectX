@@ -1,17 +1,18 @@
-#include "KMInput.h"
+#include "SUBInput.h"
+#include "SUBLog.h"
 
-KMINPUT::KMINPUT(){}
+SUBINPUT::SUBINPUT(){}
 
-KMINPUT::KMINPUT( const KMINPUT* Other )
+SUBINPUT::SUBINPUT( const SUBINPUT* Other )
 {
 	*this = *Other;
 }
 
-KMINPUT::~KMINPUT() {}
+SUBINPUT::~SUBINPUT() {}
 
-bool KMINPUT::Init( int screenWidth,int screenHeight )
+bool SUBINPUT::Init( int screenWidth,int screenHeight )
 {
-	m_Mouse = new KMMOUSE;
+	m_Mouse = new MOUSEINFO;
 
 	m_ScreenWidth = screenWidth;
 	m_ScreenHeight = screenHeight;
@@ -19,12 +20,12 @@ bool KMINPUT::Init( int screenWidth,int screenHeight )
 	return true;
 }
 
-KMMOUSE* KMINPUT::GetMouse()
+MOUSEINFO* SUBINPUT::GetMouse()
 {
 	return m_Mouse;
 }
 
-LRESULT CALLBACK KMINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+LRESULT CALLBACK SUBINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
 	POINTS Point;
 
@@ -92,13 +93,13 @@ LRESULT CALLBACK KMINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wParam
 	}
 }
 
-void KMINPUT::SetMousePosition( int mouseX, int mouseY )
+void SUBINPUT::SetMousePosition( int mouseX, int mouseY )
 {
 	m_Mouse->PosX = mouseX - m_ScreenWidth / 2;
 	m_Mouse->PosY = (-1) * ( mouseY - m_ScreenHeight / 2 );
 }
 
 
-void KMINPUT::SetMouseLeftState( bool buttonState ) { m_Mouse->LeftButton = buttonState; }
-void KMINPUT::SetMouseRightState( bool buttonState ) { m_Mouse->RightButton = buttonState; }
-void KMINPUT::SetMouseWheelState( bool buttonState ) { m_Mouse->Wheel = buttonState; }
+void SUBINPUT::SetMouseLeftState( bool buttonState ) { m_Mouse->LeftButton = buttonState; }
+void SUBINPUT::SetMouseRightState( bool buttonState ) { m_Mouse->RightButton = buttonState; }
+void SUBINPUT::SetMouseWheelState( bool buttonState ) { m_Mouse->Wheel = buttonState; }

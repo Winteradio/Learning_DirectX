@@ -1,4 +1,4 @@
-#include "Log.h"
+#include "SUBLog.h"
 
 void LOG_print(const char* log_type,
 	const char* filename,

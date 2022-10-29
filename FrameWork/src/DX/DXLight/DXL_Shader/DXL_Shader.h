@@ -1,9 +1,9 @@
-#ifndef __DXSHADER_H__
-#define __DXSHADER_H__
+#ifndef __DXL_SHADER_H__
+#define __DXL_SHADER_H__
 
 #include "DXCommon.h"
 
-class DXSHADER
+class DXL_SHADER
 {
 	// Structor - MatrixBufferType and LightBufferType
 	private:
@@ -33,9 +33,9 @@ class DXSHADER
 	// Functions - Constructor and Destructor
 	public :
 
-		DXSHADER();
-		DXSHADER( const DXSHADER* );
-		~DXSHADER();
+		DXL_SHADER();
+		DXL_SHADER( const DXL_SHADER* );
+		~DXL_SHADER();
 
 	// Functions - Init, Release Object and Render
 	public :

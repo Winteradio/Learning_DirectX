@@ -11,6 +11,6 @@
 #include <d3dx10math.h>
 #include <xnamath.h>
 
-#include "Log.h"
+#include "SUBLog.h"
 
 #endif

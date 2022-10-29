@@ -1,21 +1,21 @@
-#include "DXShader.h"
+#include "DXL_Shader.h"
 
 
-DXSHADER::DXSHADER()
+DXL_SHADER::DXL_SHADER()
 {
 	InitPointer();
 }
 
-DXSHADER::DXSHADER( const DXSHADER* Other )
+DXL_SHADER::DXL_SHADER( const DXL_SHADER* Other )
 {
 	*this = *Other;
 }
 
-DXSHADER::~DXSHADER()
+DXL_SHADER::~DXL_SHADER()
 {}
 
 
-bool DXSHADER::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* VSfileDIR, const char* PSfileDIR )
+bool DXL_SHADER::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* VSfileDIR, const char* PSfileDIR )
 {
 	if ( !InitVertexShader( Device, DevContext, VSfileDIR ) ) { return false; }
 	if ( !InitPixelShader( Device, DevContext, PSfileDIR ) ) { return false; }
@@ -29,7 +29,7 @@ bool DXSHADER::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext, cons
 }
 
 
-void DXSHADER::Release()
+void DXL_SHADER::Release()
 {
 	m_VertexShader->Release();
 	m_PixelShader->Release();
@@ -46,7 +46,7 @@ void DXSHADER::Release()
 }
 
 
-bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount,
+bool DXL_SHADER::Render( ID3D11DeviceContext* DevContext, int indexCount,
 	XMMATRIX world, XMMATRIX view, XMMATRIX proj,
 	ID3D11ShaderResourceView* textureView,
 	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor, XMFLOAT4 specularColor, float specularPower, XMFLOAT3 cameraPosition )
@@ -70,7 +70,7 @@ bool DXSHADER::Render( ID3D11DeviceContext* DevContext, int indexCount,
 }
 
 
-bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext,
+bool DXL_SHADER::SetShaderParameters( ID3D11DeviceContext* DevContext,
 	XMMATRIX world, XMMATRIX view, XMMATRIX proj,
 	ID3D11ShaderResourceView* textureView,
 	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor, XMFLOAT4 specularColor, float specularPower, XMFLOAT3 cameraPosition )
@@ -169,7 +169,7 @@ bool DXSHADER::SetShaderParameters( ID3D11DeviceContext* DevContext,
 
 
 
-void DXSHADER::ShaderErrorMessage( ID3D10Blob* errorMessage )
+void DXL_SHADER::ShaderErrorMessage( ID3D10Blob* errorMessage )
 {
 	LOG_ERROR("%s \n",(char*)( errorMessage->GetBufferPointer() ) ) ;
 
@@ -179,7 +179,7 @@ void DXSHADER::ShaderErrorMessage( ID3D10Blob* errorMessage )
 }
 
 
-bool DXSHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* VSfileDIR )
+bool DXL_SHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* VSfileDIR )
 {
 	HRESULT hr;
 	ID3D10Blob* errorMessage = nullptr;
@@ -224,7 +224,7 @@ bool DXSHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* DevC
 
 
 
-bool DXSHADER::InitPixelShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* PSfileDIR )
+bool DXL_SHADER::InitPixelShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* PSfileDIR )
 {
 	HRESULT hr;
 	ID3D10Blob* errorMessage = nullptr;
@@ -267,7 +267,7 @@ bool DXSHADER::InitPixelShader( ID3D11Device* Device, ID3D11DeviceContext* DevCo
 }
 
 
-bool DXSHADER::InitLayout( ID3D11Device* Device )
+bool DXL_SHADER::InitLayout( ID3D11Device* Device )
 {
 	HRESULT hr;
 
@@ -320,7 +320,7 @@ bool DXSHADER::InitLayout( ID3D11Device* Device )
     return true;
 }
 
-bool DXSHADER::InitSampleState( ID3D11Device* Device )
+bool DXL_SHADER::InitSampleState( ID3D11Device* Device )
 {
 	HRESULT hr;
 
@@ -359,7 +359,7 @@ bool DXSHADER::InitSampleState( ID3D11Device* Device )
 
 
 
-bool DXSHADER::InitMatrixBuffer( ID3D11Device* Device )
+bool DXL_SHADER::InitMatrixBuffer( ID3D11Device* Device )
 {
 	HRESULT hr;
 
@@ -388,7 +388,7 @@ bool DXSHADER::InitMatrixBuffer( ID3D11Device* Device )
     return true;
 }
 
-bool DXSHADER::InitLightBuffer( ID3D11Device* Device )
+bool DXL_SHADER::InitLightBuffer( ID3D11Device* Device )
 {
 	HRESULT hr;
 
@@ -417,7 +417,7 @@ bool DXSHADER::InitLightBuffer( ID3D11Device* Device )
 	return true;
 }
 
-bool DXSHADER::InitCameraBuffer( ID3D11Device* Device )
+bool DXL_SHADER::InitCameraBuffer( ID3D11Device* Device )
 {
 	HRESULT hr;
 
@@ -447,7 +447,7 @@ bool DXSHADER::InitCameraBuffer( ID3D11Device* Device )
 }
 
 
-void DXSHADER::InitPointer()
+void DXL_SHADER::InitPointer()
 {
 	m_VertexShaderBuffer = nullptr;
 	m_VertexShader = nullptr;

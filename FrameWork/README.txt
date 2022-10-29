@@ -77,7 +77,7 @@ DirectX 초기화 관련 Class 추가
  Total Light : 실질적인 Object의 빛의 밝기
 
 
- # 6
+# 6
 3차원 박스 만들기 / MDParticle, DXPhysics 추가 예정
 -> main.cpp
 	-> System Class
@@ -95,4 +95,94 @@ DirectX 초기화 관련 Class 추가
 -> Normal Vector
 	-> final Normal Vector = World Matrix * Normal Vector
 	-> World가 이동 혹은 회전함에 따라 최종 Normal Vector가 달라짐
-	-> 이러한 Normal Vector는 Light로 표현되는 Color에도 영향을 끼
+	-> 이러한 Normal Vector는 Light로 표현되는 Color에도 영향을 끼침
+
+# 7
+목록
+	-> 프레임워크 재정의
+	-> 정반사광 추가
+		-> 진짜 간단한 빛 구현
+	-> 움직이는 3차원 박스 구현
+	-> 간단한 글자 화면에 출력
+	-> 사용자의 마우스 입력 관련 구현
+
+구성
+-> main.cpp
+	-> SYSTEM
+		-> DXENGINE
+			-> DXD3D
+			-> DXCAMERA
+			-> DXMODEL
+			-> DXLIGHT
+			-> DXTEXT
+			-> DXTEXTURE
+		-> SUB
+			-> SUBCPU
+			-> SUBFPS
+			-> SUBINPUT
+			-> SUBLOG
+			-> SUBTIMER
+
+내용
+-> main.cpp
+	-> System
+		- Window 초기화
+		- MainLoop
+		- DX, SUB 관리
+
+		-> DXENGINE
+			-> DXD3D
+				- DirectX 초기화
+				- Device, DeviceContext 관련
+				- SwapChain, RenderTarget, DepthStencil, Blending 관련
+				- World, Ortho, Projection Matrix & ViewPort 관련
+
+			-> DXCAMERA
+				- Camera 초기화
+				- Camera Position, Rotation 관련
+				- Camera View Matrix 관련
+
+			-> DXMODEL
+				- Model 초기화
+					- Model Vertex, Index txt 파일 읽기 관련
+						- Load Model
+					- Image(texture) 관련
+						- Load Texture
+				- Vertex, Index 관련
+					- Update, Init
+
+			-> DXLIGHT
+				- Light 초기화
+					- Light 방향 및 각 성질들 설정
+						- Set ... & Get ...
+				-> DXL_SHADER
+					- Light Shader 초기화
+						- Light VS, PS hlsl 파일 읽기 관련
+							- Init ...
+					- Layout, SampleState, Buffer 관리
+					- Light Render 관리
+
+			-> DXTEXT
+				-> DXT_FONT
+					- Font 초기화
+						- Font DDS(texture), txt 파일 읽기 관련
+							- Load DDS & txt
+					- 주어진 Text의 Vertex, Index 형성 관련
+						- BuildVertexArray
+				-> DXT_SHADER
+					- Font Shader 초기화
+						- Font VS, PS hlsl 파일 읽기 관련
+							- Init ...
+					- Layout, SampleState, Buffer 관리
+					- Font Render 관리
+
+			-> DXTEXTURE
+				- Texture 파일 읽기
+				- Texture 파일 내용 전해주기
+
+		-> SUB
+			-> SUBCPU - CPU 사용량 계산
+			-> SUBFPS - FPS 계산
+			-> SUBINPUT - User Input 관리
+			-> SUBLOG - Log 출력 도우미
+			-> SUBTIMER - Time 계산

@@ -1,5 +1,5 @@
-#ifndef __LOG_H__
-#define __LOG_H__
+#ifndef __SUBLOG_H__
+#define __SUBLOG_H__
 
 // Setting for see console Debug Log Message
 #pragma comment(linker, "/entry:WinMainCRTStartup")

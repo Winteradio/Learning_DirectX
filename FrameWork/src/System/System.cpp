@@ -30,8 +30,14 @@ bool SYSTEM::Init()
 {
 	// Windows Init
 	if ( !InitWindows() ) { return false; }
-	// Input IDInit
-	if ( !InitKMINPUT() ) { return false; }
+	// SUBCPU Init
+	if ( !InitSUBCPU() ) { return false; }
+	// SUBFPS Init
+	if ( !InitSUBFPS() ) { return false; }
+	// SUBINPUT Init
+	if ( !InitSUBINPUT() ) { return false; }
+	// SUBTIMER Init
+	if ( !InitSUBTIMER() ) { return false; }
 	// DXENGINE Init
 	if ( !InitDXENGINE() ) { return false; }
 
@@ -89,8 +95,8 @@ void SYSTEM::Release()
 
 bool SYSTEM::Frame()
 {
-	int mouseX = g_KMINPUT->GetMouse()->PosX;
-	int mouseY = g_KMINPUT->GetMouse()->PosY;
+	int mouseX = g_SUBINPUT->GetMouse()->PosX;
+	int mouseY = g_SUBINPUT->GetMouse()->PosY;
 
 	if ( !m_DXENGINE->Frame( mouseX, mouseY ) )
 	{
@@ -176,32 +182,37 @@ bool SYSTEM::InitWindows()
 }
 
 
-bool SYSTEM::InitKMINPUT()
+bool SYSTEM::InitSUBINPUT()
 {
-	// Create KMINPUT Objects
-	g_KMINPUT = new KMINPUT;
-	if ( !g_KMINPUT )
+	// Create SUBINPUT Objects
+	g_SUBINPUT = new SUBINPUT;
+	if ( !g_SUBINPUT )
 	{
-		LOG_ERROR(" Failed - Create KMINPUT \n ");
+		LOG_ERROR(" Failed - Create SUBINPUT \n ");
 		return false;
 	}
 	else
 	{
-		LOG_INFO(" Successed - Create KMINPUT \n ");
+		LOG_INFO(" Successed - Create SUBINPUT \n ");
 	}
 
 	// Init INPUT Objects
-	if ( !g_KMINPUT->Init( m_Width, m_Height ) )
+	if ( !g_SUBINPUT->Init( m_Width, m_Height ) )
 	{
-		LOG_ERROR(" Failed - Init KMINPUT \n ");
+		LOG_ERROR(" Failed - Init SUBINPUT \n ");
 		return false;
 	}
 	else
 	{
-		LOG_INFO(" Successed - Init KMINPUT \n ");
+		LOG_INFO(" Successed - Init SUBINPUT \n ");
 	}
 	return true;
 }
+
+
+bool SYSTEM::InitSUBCPU() { return true; }
+bool SYSTEM::InitSUBFPS() { return true; }
+bool SYSTEM::InitSUBTIMER() { return true; }
 
 
 bool SYSTEM::InitDXENGINE()
@@ -240,11 +251,11 @@ void SYSTEM::InitPointer()
 	m_WindowTitle = nullptr;
 	m_DXENGINE = nullptr;
 
-	g_KMINPUT = nullptr;
+	g_SUBINPUT = nullptr;
 }
 
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
-	return g_KMINPUT->MessageHandler( hWnd, message, wParam, lParam );
+	return g_SUBINPUT->MessageHandler( hWnd, message, wParam, lParam );
 }

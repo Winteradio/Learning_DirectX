@@ -23,14 +23,32 @@ MESSAGE( STATUS "Setting Done")
 
 
 
-#### DIRECTX11 ---------------------------------- #
-MESSAGE( STATUS "Directx11 - Linking : DIRECTX SDK")
+#### Window SDK ---------------------------------- #
+MESSAGE( STATUS "Window - Linking : WINDOW SDK")
 
 SET( WINDOWSDK_INCLUDE_DIR
 	"C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\shared"
 	"C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\um"
 	"C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\winrt
 	")
+
+SET( WINDOWSDK_LIB_DIR
+	"C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\um"
+	)
+
+SET( WINDOWSDK_LIBS winMM.lib Pdh.lib)
+
+TARGET_INCLUDE_DIRECTORIES( ${PROJECT_NAME} PUBLIC ${WINDOWSDK_INCLUDE_DIR} )
+TARGET_LINK_DIRECTORIES( ${PROJECT_NAME} PUBLIC ${WINDOWSDK_LIB_DIR} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PUBLIC ${WINDOWSDK_LIBS})
+
+MESSAGE( STATUS "WindowSDK - Done")
+#### Window SDK ---------------------------------- #
+
+
+
+#### DIRECTX11 ---------------------------------- #
+MESSAGE( STATUS "Directx11 - Linking : DIRECTX SDK")
 
 SET( D11_INCLUDE_DIR
 	"C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Include"
@@ -40,7 +58,7 @@ SET( D11_LIB_DIR
 	)
 SET( D11_LIBS d3d11.lib d3dx11.lib d3dx10.lib dxgi.lib dxguid.lib d3dcompiler.lib )
 
-TARGET_INCLUDE_DIRECTORIES( ${PROJECT_NAME} PUBLIC ${WINDOWSDK_INCLUDE_DIR} ${D11_INCLUDE_DIR} )
+TARGET_INCLUDE_DIRECTORIES( ${PROJECT_NAME} PUBLIC ${D11_INCLUDE_DIR} )
 TARGET_LINK_DIRECTORIES( ${PROJECT_NAME} PUBLIC ${D11_LIB_DIR} )
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PUBLIC ${D11_LIBS} )
 
