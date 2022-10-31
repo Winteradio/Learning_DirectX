@@ -30,6 +30,9 @@ bool DXMODEL::Init( ID3D11Device* Device, const char* IMGfileDIR, const char* MD
 	if ( !InitVertexBuffer( Device ) ) { return false; }
 	if ( !SetIndex() ) { return false; }
 	if ( !InitIndexBuffer( Device ) ) { return false; }
+	//if ( !InitOutputBuffer( Device ) ) { return false; }
+
+	if ( !InitDXMMANGER( m_Vertices, m_Indices, 3 ) ) { return false; }
 
 	return true;
 }
@@ -40,20 +43,21 @@ void DXMODEL::Release()
 	m_VertexBuffer->Release();
 	m_IndexBuffer->Release();
 
-	m_Texture->Release();
+	m_DXTEXTURE->Release();
+	m_DXMMANGER->Release();
 
 	InitPointer();
 
-	if ( m_Model )
+	if ( m_ModelTXT )
 	{
-		delete[] m_Model;
+		delete[] m_ModelTXT;
 	}
 }
 
 
 void DXMODEL::Render( ID3D11DeviceContext* DevContext )
 {
-	//Update( DevContext );
+	Update( DevContext );
 
 	// Set Vertex Type of Degree and offset
 	UINT stride = sizeof( VertexType );
@@ -71,10 +75,11 @@ void DXMODEL::Render( ID3D11DeviceContext* DevContext )
 
 bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 {
-	SetVertex();
-	SetIndex();
-	if ( !UpdateVertexBuffer( DevContext ) ) { return false; }
-	if ( !UpdateIndexBuffer( DevContext ) ) { return false; }
+	//SetVertex();
+	//SetIndex();
+	//if ( !UpdateVertexBuffer( DevContext ) ) { return false; }
+	//if ( !UpdateIndexBuffer( DevContext ) ) { return false; }
+	//if ( !UpdateOutputBuffer( DevContext ) ) { return false; }
 
 	return true;
 }
@@ -91,9 +96,9 @@ bool DXMODEL::SetVertex()
 
 	for ( int I = 0; I < m_VertexCount; I++ )
 	{
-		m_Vertices[ I ].POS = XMFLOAT3( m_Model[ I ].X, m_Model[ I ].Y, m_Model[ I ].Z );
-		m_Vertices[ I ].TEXTURE = XMFLOAT2( m_Model[ I ].TU, m_Model[ I ].TV );
-		m_Vertices[ I ].NORMAL = XMFLOAT3( m_Model[ I ].NX, m_Model[ I ].NY, m_Model[ I ].NZ );
+		m_Vertices[ I ].POS = XMFLOAT3( m_ModelTXT[ I ].X, m_ModelTXT[ I ].Y, m_ModelTXT[ I ].Z );
+		m_Vertices[ I ].TEXTURE = XMFLOAT2( m_ModelTXT[ I ].TU, m_ModelTXT[ I ].TV );
+		m_Vertices[ I ].NORMAL = XMFLOAT3( m_ModelTXT[ I ].NX, m_ModelTXT[ I ].NY, m_ModelTXT[ I ].NZ );
 	}
 
 	return true;
@@ -198,6 +203,64 @@ bool DXMODEL::InitIndexBuffer( ID3D11Device* Device )
 }
 
 
+bool DXMODEL::InitOutputBuffer( ID3D11Device* Device )
+{
+	HRESULT hr;
+
+	// Describe output Buffer that is static
+	D3D11_BUFFER_DESC outputBufferDesc;
+	ZeroMemory( &outputBufferDesc, sizeof( D3D11_BUFFER_DESC ) );
+
+    outputBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    outputBufferDesc.ByteWidth = sizeof( VertexType ) * m_VertexCount;
+    outputBufferDesc.BindFlags = D3D11_BIND_STREAM_OUTPUT;
+    outputBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+    outputBufferDesc.MiscFlags = 0;
+    outputBufferDesc.StructureByteStride = 0;
+
+    // Create output Buffer
+    hr = Device->CreateBuffer( &outputBufferDesc, NULL, &m_OutputBuffer );
+    if ( FAILED( hr ) )
+    {
+    	LOG_ERROR(" Failed - Create output Data \n ");
+    	return false;
+    }
+    else
+    {
+    	LOG_INFO(" Succssed - Create output Data \n ");
+    }
+
+    return true;
+}
+
+
+bool DXMODEL::InitDXMMANGER( VertexType* vertices, UINT* indices, int numModel )
+{
+	m_DXMMANGER = new DXM_MANAGER;
+	if ( !m_DXMMANGER )
+	{
+		LOG_ERROR(" Failed - Create DXM Manager Object \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create DXM Manager Object \n ");
+	}
+
+	if ( !m_DXMMANGER->Init( vertices, indices, m_VertexCount, numModel ) )
+	{
+		LOG_ERROR(" Failed - Init DXM Magner Object \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create DXM Manger Object \n ");
+	}
+
+	return true;
+}
+
+
 bool DXMODEL::UpdateVertexBuffer( ID3D11DeviceContext* DevContext )
 {
 	HRESULT hr;
@@ -238,6 +301,26 @@ bool DXMODEL::UpdateIndexBuffer( ID3D11DeviceContext* DevContext )
 }
 
 
+bool DXMODEL::UpdateOutputBuffer( ID3D11DeviceContext* DevContext )
+{
+	HRESULT hr;
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	ZeroMemory( &mappedResource, sizeof( D3D11_MAPPED_SUBRESOURCE ) );
+
+	hr = DevContext->Map( m_OutputBuffer, 0, D3D11_MAP_READ, 0, &mappedResource );
+	if ( FAILED( hr ) )
+	{
+		LOG_ERROR(" Failed - CLose Index Buffer \n ");
+		return false;
+	}
+	memcpy( mappedResource.pData, m_Vertices, sizeof( UINT ) * m_VertexCount );
+	DevContext->Unmap( m_OutputBuffer, 0 );
+
+	return true;
+}
+
+
 void DXMODEL::InitPointer()
 {
 	m_VertexBuffer = nullptr;
@@ -246,17 +329,18 @@ void DXMODEL::InitPointer()
 	m_Vertices = nullptr;
 	m_Indices = nullptr;
 
-	m_Texture = nullptr;
+	m_DXTEXTURE = nullptr;
+	m_DXMMANGER = nullptr;
 
-	m_Model = nullptr;
+	m_ModelTXT = nullptr;
 }
 
 
 bool DXMODEL::LoadTexture( ID3D11Device* Device, const char* IMGfileDIR )
 {
-	m_Texture = new DXTEXTURE();
+	m_DXTEXTURE = new DXTEXTURE();
 
-	if ( !m_Texture )
+	if ( !m_DXTEXTURE )
 	{
 		LOG_ERROR(" Failed - Create Texture Object \n ");
 		return false;
@@ -266,7 +350,7 @@ bool DXMODEL::LoadTexture( ID3D11Device* Device, const char* IMGfileDIR )
 		LOG_INFO(" Successed - Create Texture Object \n ");
 	}
 
-	if ( !m_Texture->LoadTexture( Device, IMGfileDIR ) )
+	if ( !m_DXTEXTURE->LoadTexture( Device, IMGfileDIR ) )
 	{
 		LOG_ERROR(" Failed - Init Texture Object \n ");
 		return false;
@@ -314,11 +398,11 @@ bool DXMODEL::LoadModel( const char* MDfileDIR )
 	// Set Index Count is same as Vertex Count
 	m_IndexCount = m_VertexCount;
 
-	// Create ModelType array
-	m_Model = new ModelType[ m_VertexCount ];
-	if ( !m_Model )
+	// Create ModelTXT array
+	m_ModelTXT = new ModelTXT[ m_VertexCount ];
+	if ( !m_ModelTXT )
 	{
-		LOG_ERROR(" Failed - Create ModelType Array \n ");
+		LOG_ERROR(" Failed - Create ModelTXT Array \n ");
 		return false;
 	}
 
@@ -339,9 +423,9 @@ bool DXMODEL::LoadModel( const char* MDfileDIR )
 	// Get Vertex Data
 	for ( int I = 0 ; I < m_VertexCount; I++ )
 	{
-		fin >> m_Model[I].X >> m_Model[I].Y >> m_Model[I].Z;
-		fin >> m_Model[I].TU >> m_Model[I].TV;
-		fin >> m_Model[I].NX >> m_Model[I].NY >> m_Model[I].NZ;
+		fin >> m_ModelTXT[I].X >> m_ModelTXT[I].Y >> m_ModelTXT[I].Z;
+		fin >> m_ModelTXT[I].TU >> m_ModelTXT[I].TV;
+		fin >> m_ModelTXT[I].NX >> m_ModelTXT[I].NY >> m_ModelTXT[I].NZ;
 	}
 
 	// Close Model File
@@ -353,4 +437,4 @@ bool DXMODEL::LoadModel( const char* MDfileDIR )
 
 int DXMODEL::GetIndexCount() { return m_IndexCount; }
 
-ID3D11ShaderResourceView* DXMODEL::GetTexture() { return m_Texture->GetTexture(); }
+ID3D11ShaderResourceView* DXMODEL::GetTexture() { return m_DXTEXTURE->GetTexture(); }

@@ -186,13 +186,14 @@ bool DXL_SHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* De
 
 
 	// Compile Vertex Shader Code File
-	hr = D3DX11CompileFromFile( VSfileDIR, 0, 0, "ColorVertexShader", "vs_5_0", 0, 0, 0, &m_VertexShaderBuffer, &errorMessage, 0 );
+	hr = D3DX11CompileFromFile( VSfileDIR, 0, 0, "ColorVertexShader", "vs_5_0", D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY, 0, 0, &m_VertexShaderBuffer, &errorMessage, 0 );
 	if ( FAILED( hr ) )
 	{
 		if ( errorMessage )
 		{
 			LOG_ERROR(" Failed - Compile %s \n ", VSfileDIR );
 			ShaderErrorMessage( errorMessage );
+			system("pause");
 		}
 		else
 		{
@@ -205,7 +206,6 @@ bool DXL_SHADER::InitVertexShader( ID3D11Device* Device, ID3D11DeviceContext* De
 	{
 		LOG_INFO(" Succssed - Compile %s \n ", VSfileDIR );
 	}
-
 
 	// Create Vertex Shader from Buffer
 	hr = Device->CreateVertexShader( m_VertexShaderBuffer->GetBufferPointer(), m_VertexShaderBuffer->GetBufferSize(), NULL, &m_VertexShader );
@@ -237,6 +237,7 @@ bool DXL_SHADER::InitPixelShader( ID3D11Device* Device, ID3D11DeviceContext* Dev
 		{
 			LOG_ERROR(" Failed - Compile %s \n ", PSfileDIR );
 			ShaderErrorMessage( errorMessage );
+			system("pause");
 		}
 		else
 		{

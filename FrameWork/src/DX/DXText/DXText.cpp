@@ -17,8 +17,7 @@ DXTEXT::~DXTEXT() {}
 
 bool DXTEXT::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext,
 	int screenWidth, int screenHeight, XMMATRIX baseViewMatrix,
-	const char* FontfileDIR, const char* TexfileDIR,
-	const char* VSfileDIR, const char* PSfileDIR )
+	const char* FontfileDIR, const char* TexfileDIR, const char* VSfileDIR, const char* PSfileDIR )
 {
 	m_ScreenWidth = screenWidth;
 	m_ScreenHeight = screenHeight;

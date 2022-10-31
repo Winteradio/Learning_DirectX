@@ -17,6 +17,7 @@ class SUBCPU
 		void Release();
 		void Frame();
 		int GetCPUPercent();
+		bool GetCanReadCPU();
 
 	private :
 

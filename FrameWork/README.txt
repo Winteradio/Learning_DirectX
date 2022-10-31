@@ -251,4 +251,57 @@ FPS, CPU 화면에 출력
 			-> SUBLOG
 			-> SUBTIMER
 
+# 10
+지면과의 충돌 구현
+-> 3차원상의 강체 충돌 구현
+	-> CCW(Counter Clockwise) 알고리즘
+		-> Object
+			- Normal Vector에 따라 Plane의 개수 설정
+			- 총 Plane * Plane의 선분 개수
+			- ex) 직육면체 2개 충돌 비교
+				각각의 Plane의 개수 : 6개
+				각 Plane의 선분의 개수 : 4개
+				총 계산량 : 6*4*6*4 -> 매우 많아진다
 
+			- 서로 다른 Object끼리 Normal Vector의 내적이 음수인 경우끼리 충돌 가능
+				> 음수, 0, 양수 셋 다 계산하게 될 시, 계산량이 너무 많아짐
+				> 충돌 시, Normal Vector를 정하는 기준은?
+
+	-> mappedResource를 불러와서, Vertex와 Index에 memcpy를 시킨다.
+		-> Output Buffer를 사용하여서 Input Buffer를 통해서 최종 생성된 Output Buffer를 얻는다
+		ex memcpy( List, mappedResource.pData , sizeof( Type ) * Count )
+		 동적 리소스를 진행했던 형식의 반대라고 생각하면 된다.
+		 리소스에 대한 변환은 없다
+
+	-> 강체의 이동
+		-> Vertex의 변환
+			-> Particle이 아닌 이상, 하나의 Object엔 수많은 Vertex와 Index가 존재
+		-> World의 변환
+			-> World의 변환을 사용해야
+			-> 하나의 Model에 대한 다양한 물체들을 단순히 World를 추가함으로 구현할 수 있음
+
+	-> 추후에 Model List 필요
+		-> Model List에서 자신으로부터 Hit Box 범위 안에 있는 Model들만 충돌 테스트할 수 있도록 알고리즘 구현 필요
+
+-> Vertex Shader의 Output Vertex 가져오
+	-> D3D11_BIND_FLAG
+		-> D3D11_BIND_VERTEX_BUFFER
+			IA 단계에서 Binding
+		-> D3D11_BIND_INDEX_BUFFER
+			IA 단계에서 Binding
+		-> D3D11_BIND_CONSTANT_BUFFER
+			Shader 단계에서 Binding
+		-> D3D11_BIND_SHADER_RESOURCE
+			Shader 단계에서 Binding
+		-> D3D11_BIND_STREAM_OUTPUT
+			Stream Output 단계에서 출력 버퍼 바인딩
+		-> D3D11_BIND_RENDER_TARGET
+			Output Merge 단계에서 렌더링 대상 바인딩
+		-> D3D11_BIND_DEPTH_STENCIL
+			Output Merge 단계에서 깊이 스텐실 바인딩
+		-> D3D11_BIND_UNORDERED_ACCESS
+			순서가 지정되지 않은 액세스 리소스
+		-> D3D11_BIND_DECORDER
+			디코더 API
+		-> D3D11_BIND_VIDEO_ENCODER
+			비디오 API

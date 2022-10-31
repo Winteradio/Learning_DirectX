@@ -37,8 +37,7 @@ class DXTEXT
 
 		bool Init( ID3D11Device*, ID3D11DeviceContext*,
 			int, int, XMMATRIX,
-			const char*, const char*,
-			const char*, const char*);
+			const char*, const char*, const char*, const char*);
 		void Release();
 
 		bool Render( ID3D11DeviceContext*, XMMATRIX, XMMATRIX );
@@ -59,7 +58,8 @@ class DXTEXT
 
 		void InitPointer();
 
-		bool UpdateSentence( ID3D11DeviceContext*, SentenceType*&, char*, int, int, float, float ,float );
+		bool UpdateSentence( ID3D11DeviceContext*, SentenceType*&,
+			char*, int, int, float, float ,float );
 		void ReleaseSentence( SentenceType*& );
 
 		bool RenderSentence( ID3D11DeviceContext*, SentenceType*, XMMATRIX, XMMATRIX );

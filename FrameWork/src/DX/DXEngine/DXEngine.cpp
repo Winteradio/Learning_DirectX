@@ -54,7 +54,7 @@ bool DXENGINE::Frame( int FPS, int CPU, float Time, int mouseX, int mouseY )
 		move_temp *= -1.0f;
 	}
 
-	m_DXCAMERA->SetPosition( 0.0f, move, -10.0f );
+	m_DXCAMERA->SetPosition( 0, 0.0f, -7.0f );
 
 	return Render( rotation );
 }
@@ -95,16 +95,14 @@ bool DXENGINE::Render( float rotation )
 	m_DXD3D->GetOrthoMatrix( orthoMatrix );
 
 
-	worldMatrix = XMMatrixRotationY( rotation );
+	worldMatrix = XMMatrixRotationX( rotation ) * XMMatrixRotationY( rotation ) * XMMatrixRotationZ( rotation ) * XMMatrixTranslation( move, 0.0f, 0.0f );
 
 	// Ready for Drawing tha need Model Vertex and Index buffer for Graphics pipeline
 	m_DXMODEL->Render( m_DXD3D->GetDeviceContext() );
 
 	// Render using Shader
-	hr = m_DXLIGHT->Render(
-		m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(),
-		worldMatrix, viewMatrix, projectionMatrix,
-		m_DXMODEL->GetTexture(), m_DXCAMERA->GetPosition() );
+	hr = m_DXLIGHT->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(),
+		worldMatrix, viewMatrix, projectionMatrix, m_DXMODEL->GetTexture(), m_DXCAMERA->GetPosition() );
 	if ( !hr )
 	{
 		LOG_ERROR(" Failed - Render using Shader \n ");
@@ -243,9 +241,9 @@ bool DXENGINE::InitDXLIGHT( const char* VSfileDIR, const char* PSfileDIR )
 
 	m_DXLIGHT->SetAmbientColor( 0.5f, 0.5f, 0.5f, 1.0f );
 	m_DXLIGHT->SetDiffuseColor( 0.75f, 0.75f, 0.75f, 1.0f );
-	m_DXLIGHT->SetDirection( -1.0f, 1.0f, 1.0f );
 	m_DXLIGHT->SetSpecularColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	m_DXLIGHT->SetSpecularPower( 32.0f );
+	m_DXLIGHT->SetDirection( -1.0f, 1.0f, 1.0f );
 
 	return true;
 }

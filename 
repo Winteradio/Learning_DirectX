@@ -1,0 +1,26 @@
+[33m2a2316e70d15d74b8cca24282c5ed94083d934bf[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m  Print FPS, CPU
+[33meac739267606685ef7c50d261182112258904b78[m[33m ([m[1;33mtag: v1.6[m[33m)[m  Improve DirectX11's framework
+[33m611c1bbc703a3b5b793f358f8929f7b09c88b8ea[m  DirectX11
+[33m0b200656161737199b622f4280d7bd6aaa49cd03[m  DirectX11
+[33m51cbadca6904ad25a719488b1ff6c32fbcbd385f[m  DirectX11
+[33mb4b3128d9de52310fadc33048338889af9d773d3[m  DirectX11
+[33m41369dc62646652867002b34cf49f98f1ac7e460[m  DirectX11
+[33ma0d246462254eae2bdbe90dd4b2c0ee618df79b2[m[33m ([m[1;33mtag: v1.5[m[33m)[m  DirectX
+[33m58b8c250f3ad4f9bf87dbfe398c97d15e6228adf[m  DirectX
+[33mcc6c5f52be92a05ba7f19826440dcdfc8edb1a81[m  DirectX11
+[33mfffb1550e3006fe6bd7a57321fe0aac6d2d3067a[m[33m ([m[1;33mtag: v1.4[m[33m)[m  Diffuse & Ambient Light
+[33md22f2de998435aaec71a46fbf4b93b585cedbfb1[m  DirectX11
+[33m6193886e76e2c17c834044f87cd0bc1c897b9e3a[m[33m ([m[1;33mtag: v1.3[m[33m)[m  DirectX 3D Simple Light
+[33mbf8a973b6ce935d8ac0ca450e9d15aadd8b1a40f[m[33m ([m[1;33mtag: v1.2[m[33m)[m  3D Rotating Object
+[33mc0dd0cac0cec3f937643823e12fdef1df00cdeff[m  3D Rotating Object
+[33m29d96931ce71594241355cc16ee7fb9b0e86ca5c[m[33m ([m[1;33mtag: v1.1[m[33m)[m  DirectX11
+[33medeaf26556c0e2de2a336e408d2ca70a088aa4de[m[33m ([m[1;33mtag: v1.0[m[33m)[m  DirectX11 - Setting Light
+[33m8ac2488374918b3ece0ba8be7ad2c11a1f8f5abc[m[33m ([m[1;33mtag: v0.9[m[33m)[m  DirectX11 - Change Triangle Color
+[33mb46b1df2d95756138bcdc6b35b7fa0e183172a9c[m[33m ([m[1;33mtag: v0.8[m[33m)[m  DirectX11
+[33mc549701559f445444c0ad57445bf801696f67f60[m[33m ([m[1;33mtag: v0.7[m[33m)[m  DirectX11
+[33m33c30ce10f6e1d25d7c28fc38df866f5b74ae535[m[33m ([m[1;33mtag: v0.6[m[33m)[m  DirectX
+[33mac2a4cde62c7073d02ce4f8da4ce5b216229202d[m[33m ([m[1;33mtag: v0.5[m[33m)[m  DirectX - Triangle
+[33mb1263b8cc437afd8d8b954bd43b658defabc39d4[m[33m ([m[1;33mtag: v0.4[m[33m)[m  DirectX 11
+[33mc5464b75f475f2630875c5716897522764f17c4f[m[33m ([m[1;33mtag: v0.3[m[33m)[m  DX
+[33m5466033f59e75272ad1e05085013d6713a9bfd75[m[33m ([m[1;33mtag: v0.2[m[33m)[m  DirectX
+[33m7689b69f724c1612b74918f92ff92e882a8fd8de[m[33m ([m[1;33mtag: v0.1[m[33m)[m  DirectX 11

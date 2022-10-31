@@ -2,17 +2,23 @@
 
 // Globals
 
-cbuffer MatrixBuffer
+cbuffer MatrixBuffer : register(b0)
 {
 	matrix worldMatrix;
 	matrix viewMatrix;
 	matrix projectionMatrix;
 };
 
-cbuffer CameraBuffer
+cbuffer CameraBuffer : register(b1)
 {
 	float3 cameraPosition;
 	float padding;
+};
+
+cbuffer OutputBuffer : register(b2)
+{
+	float4 Out_POS;
+	float3 Out_NOR;
 };
 
 // Typedefs
@@ -47,12 +53,14 @@ PixelInputType ColorVertexShader( VertexInputType input )
 	output.normal = mul( input.normal, (float3x3)worldMatrix );
 	output.normal = normalize( output.normal );
 
-
 	float4 worldPosition = mul( input.position, worldMatrix );
 
 	output.viewDirection = cameraPosition.xyz - worldPosition.xyz;
 
 	output.viewDirection = normalize( output.viewDirection );
+
+	Out_POS = output.position;
+	Out_NOR = output.normal;
 
 	return output;
 };

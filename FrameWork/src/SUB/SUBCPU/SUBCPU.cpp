@@ -69,3 +69,8 @@ int SUBCPU::GetCPUPercent()
 
 	return usage;
 }
+
+bool SUBCPU::GetCanReadCPU()
+{
+	return m_CanReadCPU;
+}

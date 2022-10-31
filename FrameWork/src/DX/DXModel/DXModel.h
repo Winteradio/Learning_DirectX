@@ -3,22 +3,18 @@
 
 #include "DXCommon.h"
 #include "DXTexture.h"
+#include "DXM_Manager.h"
 
 class DXMODEL
 {
-	struct VertexType
-	{
-		XMFLOAT3 POS;
-		XMFLOAT2 TEXTURE;
-		XMFLOAT3 NORMAL;
-	};
+	public :
 
-	struct ModelType
-	{
-		float X, Y, Z;
-		float TU, TV;
-		float NX, NY, NZ;
-	};
+		struct ModelTXT
+		{
+			float X, Y, Z;
+			float TU, TV;
+			float NX, NY, NZ;
+		};
 
 	// Functions - Constructor and Destructor
 	public :
@@ -43,9 +39,12 @@ class DXMODEL
 
 		bool InitVertexBuffer( ID3D11Device* );
 		bool InitIndexBuffer( ID3D11Device* );
+		bool InitOutputBuffer( ID3D11Device* );
+		bool InitDXMMANGER( VertexType*, UINT*, int );
 
 		bool UpdateVertexBuffer( ID3D11DeviceContext* );
 		bool UpdateIndexBuffer( ID3D11DeviceContext* );
+		bool UpdateOutputBuffer( ID3D11DeviceContext* );
 
 		void InitPointer();
 
@@ -63,16 +62,19 @@ class DXMODEL
 
 		ID3D11Buffer* m_VertexBuffer;
 		ID3D11Buffer* m_IndexBuffer;
+		ID3D11Buffer* m_OutputBuffer;
 
 		int m_VertexCount;
 		int m_IndexCount;
+		int m_ModelCount;
 
 		VertexType* m_Vertices;
 		UINT* m_Indices;
 
-		ModelType* m_Model;
+		ModelTXT* m_ModelTXT;
 
-		DXTEXTURE* m_Texture;
+		DXTEXTURE* m_DXTEXTURE;
+		DXM_MANAGER* m_DXMMANGER;
 };
 
 #endif

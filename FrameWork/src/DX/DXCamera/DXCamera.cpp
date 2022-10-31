@@ -16,6 +16,10 @@ DXCAMERA::DXCAMERA( const DXCAMERA* Other )
 
 DXCAMERA::~DXCAMERA(){}
 
+bool DXCAMERA::Frame( int mouseX, int mouseY )
+{
+	return true;
+}
 
 void DXCAMERA::Render()
 {
