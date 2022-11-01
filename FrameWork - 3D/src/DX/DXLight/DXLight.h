@@ -2,6 +2,7 @@
 #define __DXLIGHT_H__
 
 #include "DXCommon.h"
+#include "DXL_Shader.h"
 
 class DXLIGHT
 {
@@ -15,6 +16,13 @@ class DXLIGHT
 	// Functions - Set and Get Light information
 	public :
 
+		bool Init( ID3D11Device*, ID3D11DeviceContext*, const char*, const char* );
+		bool InitLightShader(  ID3D11Device*, ID3D11DeviceContext*, const char*, const char* );
+
+		bool Render( ID3D11DeviceContext*, int,
+			XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*, XMFLOAT3 );
+		void Release();
+
 		void SetAmbientColor( float, float, float, float );
 		void SetDiffuseColor( float, float, float ,float );
 		void SetDirection( float, float, float );
@@ -27,6 +35,10 @@ class DXLIGHT
 		XMFLOAT4 GetSpecularColor();
 		float GetSpecularPower();
 
+	private :
+
+		void InitPointer();
+
 	// Variables - Setting Value for Light
 	private :
 
@@ -35,6 +47,8 @@ class DXLIGHT
 		XMFLOAT3 m_Direction;
 		XMFLOAT4 m_SpecularColor;
 		float m_SpecularPower;
+
+		DXL_SHADER* m_LightShader;
 };
 
 #endif

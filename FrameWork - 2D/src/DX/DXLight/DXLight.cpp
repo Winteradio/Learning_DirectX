@@ -1,6 +1,9 @@
 #include "DXLight.h"
 
-DXLIGHT::DXLIGHT(){}
+DXLIGHT::DXLIGHT()
+{
+	InitPointer();
+}
 
 DXLIGHT::DXLIGHT( const DXLIGHT* Other )
 {
@@ -8,6 +11,71 @@ DXLIGHT::DXLIGHT( const DXLIGHT* Other )
 }
 
 DXLIGHT::~DXLIGHT(){}
+
+bool DXLIGHT::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* VSfileDIR, const char* PSfileDIR )
+{
+	if ( !InitLightShader( Device, DevContext, VSfileDIR, PSfileDIR ) ) { return false; }
+
+	return true;
+}
+
+bool DXLIGHT::InitLightShader( ID3D11Device* Device, ID3D11DeviceContext* DevContext, const char* VSfileDIR, const char* PSfileDIR )
+{
+	// Create Light Shader
+	m_LightShader = new DXL_SHADER;
+	if ( !m_LightShader )
+	{
+		LOG_ERROR(" Failed - Create Light Shader \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Light Shader \n ");
+	}
+
+	// Initialize Light Shader
+	if ( !m_LightShader->Init( Device, DevContext, VSfileDIR, PSfileDIR ) )
+	{
+		LOG_ERROR(" Failed - Init Light Shader \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Init Light Shader \n ");
+	}
+
+	return true;
+}
+
+bool DXLIGHT::Render( ID3D11DeviceContext* DevContext, int indexCount,
+	XMMATRIX world, XMMATRIX view, XMMATRIX proj,
+	ID3D11ShaderResourceView* lightShaderView, XMFLOAT3 cameraPosition )
+{
+	if ( !m_LightShader->Render( DevContext, indexCount,
+		world, view, proj,
+		lightShaderView,
+		m_Direction, m_DiffuseColor, m_AmbientColor, m_SpecularColor, m_SpecularPower,
+		cameraPosition ) )
+	{
+		LOG_ERROR(" Failed - Render using Light Shader \n ");
+		return false;
+	}
+
+	return true;
+}
+
+void DXLIGHT::Release()
+{
+	m_LightShader->Release();
+	delete m_LightShader;
+
+	InitPointer();
+}
+
+void DXLIGHT::InitPointer()
+{
+	m_LightShader = nullptr;
+}
 
 void DXLIGHT::SetAmbientColor( float X, float Y, float Z, float W )
 {

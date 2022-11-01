@@ -16,6 +16,10 @@ DXCAMERA::DXCAMERA( const DXCAMERA* Other )
 
 DXCAMERA::~DXCAMERA(){}
 
+bool DXCAMERA::Frame( int mouseX, int mouseY )
+{
+	return true;
+}
 
 void DXCAMERA::Render()
 {
@@ -39,9 +43,9 @@ void DXCAMERA::Render()
 
 
 	// Set LookAt Vector
-	LookAt.x = -1.0f;
-	LookAt.y = -1.0f;
-	LookAt.z = -1.0f;
+	LookAt.x = 0.0f;
+	LookAt.y = 0.0f;
+	LookAt.z = 1.0f;
 
 	lookAtVector = XMLoadFloat3( &LookAt );
 
@@ -49,9 +53,9 @@ void DXCAMERA::Render()
 	// Rotation Matrix
 	/////////////////////
 	// Change Angle Rotation, Degree to Radian
-	pitch = (float)( m_Rotation.x * PI / 180 );
-	yaw = (float)( m_Rotation.y * PI / 180 );
-	roll = (float)( m_Rotation.z * PI / 180 );
+	pitch = (float)( m_Rotation.x * M_PI / 180 );
+	yaw = (float)( m_Rotation.y * M_PI / 180 );
+	roll = (float)( m_Rotation.z * M_PI / 180 );
 
 	// Make Rotation Matrix
 	rotationMatrix = XMMatrixRotationRollPitchYaw( pitch, yaw, roll );

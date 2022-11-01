@@ -22,9 +22,8 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 
 	if ( !InitDXD3D( Width, Height, VSYNC_ENABLED, hWnd, SCREEN_DEPTH, SCREEN_NEAR ) ) { return false; }
 	if ( !InitDXCAMERA() ) { return false; }
-	if ( !InitDXLIGHT() ) { return true; }
-	if ( !InitDXMODEL( m_LIMGfileDIR, m_MDfileDIR) ) { return false; }
-	if ( !InitDXSHADER( m_LVSfileDIR, m_LPSfileDIR ) ) { return false; }
+	if ( !InitDXLIGHT( m_LVSfileDIR, m_LPSfileDIR ) ) { return true; }
+	if ( !InitDXMODEL( m_LIMGfileDIR, m_MDfileDIR ) ) { return false; }
 	if ( !InitDXTEXT( Width, Height, m_TFontfileDIR, m_TDDSfileDIR, m_TVSfileDIR, m_TPSfileDIR ) ) { return false; }
 
 	rotation = 0.0f;
@@ -35,9 +34,9 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 }
 
 
-bool DXENGINE::Frame(int mouseX, int mouseY)
+bool DXENGINE::Frame( int FPS, int CPU, float Time, int mouseX, int mouseY )
 {
-	if ( !m_DXTEXT->SetMousePosition( mouseX, mouseY, m_DXD3D->GetDeviceContext() ) )
+	if ( !m_DXTEXT->Frame( m_DXD3D->GetDeviceContext(), mouseX, mouseY, CPU, FPS ) )
 	{
 		LOG_ERROR(" Failed - Print Mouse Position \n ");
 		return false;
@@ -55,7 +54,7 @@ bool DXENGINE::Frame(int mouseX, int mouseY)
 		move_temp *= -1.0f;
 	}
 
-	m_DXCAMERA->SetPosition( 0.0f, move, -10.0f );
+	m_DXCAMERA->SetPosition( 0, 0.0f, -7.0f );
 
 	return Render( rotation );
 }
@@ -64,15 +63,14 @@ bool DXENGINE::Frame(int mouseX, int mouseY)
 void DXENGINE::Release()
 {
 	m_DXD3D->Release();
+	m_DXLIGHT->Release();
 	m_DXMODEL->Release();
-	m_DXSHADER->Release();
 	m_DXTEXT->Release();
 
 	delete m_DXD3D;
 	delete m_DXCAMERA;
 	delete m_DXLIGHT;
 	delete m_DXMODEL;
-	delete m_DXSHADER;
 	delete m_DXTEXT;
 
 	InitPointer();
@@ -97,17 +95,14 @@ bool DXENGINE::Render( float rotation )
 	m_DXD3D->GetOrthoMatrix( orthoMatrix );
 
 
-	worldMatrix = XMMatrixRotationY( rotation );
+	worldMatrix = XMMatrixRotationX( rotation ) * XMMatrixRotationY( rotation ) * XMMatrixRotationZ( rotation ) * XMMatrixTranslation( move, 0.0f, 0.0f );
 
 	// Ready for Drawing tha need Model Vertex and Index buffer for Graphics pipeline
 	m_DXMODEL->Render( m_DXD3D->GetDeviceContext() );
 
 	// Render using Shader
-	hr = m_DXSHADER->Render(
-		m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(),
-		worldMatrix, viewMatrix, projectionMatrix,
-		m_DXMODEL->GetTexture(),
-		m_DXLIGHT->GetDirection(), m_DXLIGHT->GetDiffuseColor(), m_DXLIGHT->GetAmbientColor(), m_DXLIGHT->GetSpecularColor(), m_DXLIGHT->GetSpecularPower(), m_DXCAMERA->GetPosition() );
+	hr = m_DXLIGHT->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(),
+		worldMatrix, viewMatrix, projectionMatrix, m_DXMODEL->GetTexture(), m_DXCAMERA->GetPosition() );
 	if ( !hr )
 	{
 		LOG_ERROR(" Failed - Render using Shader \n ");
@@ -135,8 +130,8 @@ bool DXENGINE::Render( float rotation )
 
 void DXENGINE::InitFileDIR()
 {
-	m_LVSfileDIR = ".\\..\\..\\shader\\VertexShader.hlsl";
-	m_LPSfileDIR = ".\\..\\..\\shader\\PixelShader.hlsl";
+	m_LVSfileDIR = ".\\..\\..\\src\\DX\\DXLight\\DXL_Shader\\Shader\\VSLight.hlsl";
+	m_LPSfileDIR = ".\\..\\..\\src\\DX\\DXLight\\DXL_Shader\\Shader\\PSLight.hlsl";
 	m_LIMGfileDIR = ".\\..\\..\\textures\\RedSquare.png";
 
 	m_MDfileDIR = ".\\..\\..\\src\\DX\\DXModel\\DMText\\DMBox.txt";
@@ -154,7 +149,6 @@ void DXENGINE::InitPointer()
 	m_DXCAMERA = nullptr;
 	m_DXLIGHT= nullptr;
 	m_DXMODEL= nullptr;
-	m_DXSHADER = nullptr;
 
 	m_LVSfileDIR = nullptr;
 	m_LPSfileDIR = nullptr;
@@ -220,7 +214,7 @@ bool DXENGINE::InitDXCAMERA()
 }
 
 
-bool DXENGINE::InitDXLIGHT()
+bool DXENGINE::InitDXLIGHT( const char* VSfileDIR, const char* PSfileDIR )
 {
 	// Create DXLIGHT Object
 	m_DXLIGHT = new DXLIGHT;
@@ -235,11 +229,21 @@ bool DXENGINE::InitDXLIGHT()
 		LOG_INFO(" Successed - Create DXLIGHT \n ");
 	}
 
+	if ( !m_DXLIGHT->Init( m_DXD3D->GetDevice(), m_DXD3D->GetDeviceContext(), VSfileDIR, PSfileDIR ) )
+	{
+		LOG_ERROR(" Failed - Init DXLIGHT \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Init DXLIGHT \n ");
+	}
+
 	m_DXLIGHT->SetAmbientColor( 0.5f, 0.5f, 0.5f, 1.0f );
 	m_DXLIGHT->SetDiffuseColor( 0.75f, 0.75f, 0.75f, 1.0f );
-	m_DXLIGHT->SetDirection( -1.0f, 1.0f, 1.0f );
 	m_DXLIGHT->SetSpecularColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	m_DXLIGHT->SetSpecularPower( 32.0f );
+	m_DXLIGHT->SetDirection( -1.0f, 1.0f, 1.0f );
 
 	return true;
 }
@@ -274,35 +278,6 @@ bool DXENGINE::InitDXMODEL( const char* TexfileDIR, const char* MDfileDIR )
 	return true;
 }
 
-
-bool DXENGINE::InitDXSHADER( const char* VSfileDIR, const char* PSfileDIR )
-{
-	// Create DXSHADER Object
-	m_DXSHADER = new DXSHADER;
-
-	if ( !m_DXSHADER )
-	{
-		LOG_ERROR(" Failed - Create DXSHADER \n ");
-		return false;
-	}
-	else
-	{
-		LOG_INFO(" Successed - Create DXSHADER \n ");
-	}
-
-	// Init DXSHADER Object
-	if ( !m_DXSHADER->Init( m_DXD3D->GetDevice(), m_DXD3D->GetDeviceContext(), VSfileDIR, PSfileDIR ) )
-	{
-		LOG_ERROR(" Failed - Init DXSHADER \n ");
-		return false;
-	}
-	else
-	{
-		LOG_INFO(" Successed - Init DXSHADER \n");
-	}
-
-	return true;
-}
 
 bool DXENGINE::InitDXTEXT( int screenWidth, int screenHeight, const char* FontfileDIR, const char* TexfileDIR, const char* VSfileDIR, const char* PSfileDIR )
 {

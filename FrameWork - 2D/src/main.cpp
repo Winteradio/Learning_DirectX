@@ -1,5 +1,7 @@
+#ifndef __MAIN_CPP__
+#define __MAIN_CPP__
+
 #include "System.h"
-#include "Log.h"
 
 int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 {
@@ -16,3 +18,5 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	system("pause");
 	return 0;
 }
+
+#endif

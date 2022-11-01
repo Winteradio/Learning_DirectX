@@ -24,6 +24,8 @@ bool DXD3D::Init( int Width, int Height, bool VSYNC, HWND hWnd, float SCREEN_DEP
 
 	if ( !InitDepthStencil( Width, Height ) ) { return false; }
 
+	if ( !InitRasterizer() ) { return false; }
+
 	if ( !InitBlend() ) { return false; }
 
 	InitViewport( Width, Height );
@@ -43,7 +45,8 @@ void DXD3D::Release()
 	m_RenderTargetView->Release();
 	m_DepthStencilBuffer->Release();
 	m_DepthStencilView->Release();
-	m_RasterState->Release();
+	m_RasterStateSL->Release();
+	m_RasterStateWF->Release();
 
 	InitPointer();
 }
@@ -258,7 +261,6 @@ bool DXD3D::InitDepthStencil( int Width, int Height )
 	return true;
 }
 
-
 bool DXD3D::InitRasterizer()
 {
 	HRESULT hr;
@@ -266,6 +268,20 @@ bool DXD3D::InitRasterizer()
 	// Describe the  Rasterizer
 	D3D11_RASTERIZER_DESC rasterDesc;
 	ZeroMemory( &rasterDesc, sizeof( D3D11_RASTERIZER_DESC ) );
+
+    rasterDesc.CullMode = D3D11_CULL_NONE;
+    rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+
+    hr = m_Device->CreateRasterizerState( &rasterDesc, &m_RasterStateWF );
+    if ( FAILED( hr ) )
+    {
+    	LOG_ERROR(" Failed - Create Raster State - WireFrame ");
+    	return false;
+    }
+    else
+    {
+    	LOG_INFO(" Successed - Create Rasterizer State - WireFrame ");
+    }
 
     rasterDesc.AntialiasedLineEnable = false;
     rasterDesc.CullMode = D3D11_CULL_BACK;
@@ -278,20 +294,16 @@ bool DXD3D::InitRasterizer()
     rasterDesc.ScissorEnable = false;
     rasterDesc.SlopeScaledDepthBias = 0.0f;
 
-    hr = m_Device->CreateRasterizerState( &rasterDesc, &m_RasterState);
+    hr = m_Device->CreateRasterizerState( &rasterDesc, &m_RasterStateSL );
     if ( FAILED( hr ) )
     {
-    	LOG_ERROR(" Failed - Create Rasterizer State \n ");
+    	LOG_ERROR(" Failed - Create Rasterizer State - Solid \n ");
         return false;
     }
     else
     {
-    	LOG_INFO(" Succssed - Create Rasterizer State \n ");
+    	LOG_INFO(" Succssed - Create Rasterizer State - Solid \n ");
     }
-
-    // Set Rasterizer State
-    m_DeviceContext->RSSetState( m_RasterState );
-
     return true;
 }
 
@@ -400,6 +412,10 @@ void DXD3D::GetProjectionMatrix( XMMATRIX& ProjectionMartix ) { ProjectionMartix
 void DXD3D::GetWorldMatrix( XMMATRIX& WorldMatrix ) { WorldMatrix = m_WorldMatrix; }
 
 void DXD3D::GetOrthoMatrix( XMMATRIX& OrthoMatrix ) { OrthoMatrix = m_OrthoMatrix; }
+
+void DXD3D::TurnWireFrameOn() { m_DeviceContext->RSSetState( m_RasterStateWF ); }
+
+void DXD3D::TurnWireFrameOff() { m_DeviceContext->RSSetState( m_RasterStateSL ); }
 
 void DXD3D::TurnZBufferOn() { m_DeviceContext->OMSetDepthStencilState( m_DepthEnabledStencilState, 1 ); }
 

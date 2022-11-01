@@ -2,10 +2,10 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\NewMake\build\x64\Debug\ZERO_CHECK</FullPath>
+      <FullPath>C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork - 2D\build\x64\Debug\ZERO_CHECK</FullPath>
     </ProjectOutput>
     <ProjectOutput>
-      <FullPath>C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\NewMake\build\Debug\Example.exe</FullPath>
+      <FullPath>C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork - 2D\build\Debug\Example.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

@@ -4,9 +4,7 @@
 #include <Windows.h>
 
 #include "DXEngine.h"
-#include "KMInput.h"
-#include "Log.h"
-
+#include "SUBCommon.h"
 
 class SYSTEM
 {
@@ -29,8 +27,12 @@ class SYSTEM
 		bool Init();
 		bool Frame();
 		bool InitWindows();
-		bool InitKMINPUT();
 		bool InitDXENGINE();
+
+		bool InitSUBCPU();
+		bool InitSUBINPUT();
+		bool InitSUBFPS();
+		bool InitSUBTIMER();
 
 		void InitPointer();
 
@@ -55,10 +57,15 @@ class SYSTEM
 		bool m_FullScreen;
 
 		DXENGINE* m_DXENGINE;
+
+		SUBCPU* m_SUBCPU;
+		SUBFPS* m_SUBFPS;
+		SUBINPUT* m_SUBINPUT;
+		SUBTIMER* m_SUBTIMER;
 };
 
 static LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
-static KMINPUT* g_KMINPUT;
+static SUBINPUT* g_SUBINPUT;
 
 #endif __SYSTEM_H__

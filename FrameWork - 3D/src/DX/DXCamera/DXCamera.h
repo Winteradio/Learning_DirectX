@@ -18,6 +18,7 @@ class DXCAMERA
 	public :
 
 		void Render();
+		bool Frame( int, int );
 
 	// Functions - Set and Get
 	public :

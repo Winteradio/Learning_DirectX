@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\NewMake\build\CMakeFiles\9ccff410d7d7332b962060bfeb6ba53f\generate.stamp.rule">
+    <CustomBuild Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork - 2D\build\CMakeFiles\e13f7ff087ecd18bbdb2534c5e98f3ff\generate.stamp.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{20B96739-77C4-346D-B818-2211D30945FA}</UniqueIdentifier>
+      <UniqueIdentifier>{4418F516-DCDB-3E0B-843C-A4CC71D73783}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

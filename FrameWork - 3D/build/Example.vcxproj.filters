@@ -7,10 +7,19 @@
     <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\System\System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\KMInput\KMInput.cpp">
+    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBCPU\SUBCPU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\Log\Log.cpp">
+    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBFPS\SUBFPS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBInput\SUBInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBLog\SUBLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBTimer\SUBTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXCamera\DXCamera.cpp">
@@ -25,16 +34,16 @@
     <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXLight\DXLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXLight\DXL_Shader\DXL_Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXModel\DXModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXModel\DXM_Manager\DXM_Manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXPhysics\DXPhysics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXShader\DXShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXTexture\DXTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXText\DXText.cpp">
@@ -46,15 +55,30 @@
     <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXText\DXT_Shader\DXT_Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXTexture\DXTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\System\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\KMInput\KMInput.h">
+    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\Log\Log.h">
+    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBCPU\SUBCPU.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBFPS\SUBFPS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBInput\SUBInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBLog\SUBLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\SUB\SUBTimer\SUBTimer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXCommon.h">
@@ -72,16 +96,16 @@
     <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXLight\DXLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXLight\DXL_Shader\DXL_Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXModel\DXModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXModel\DXM_Manager\DXM_Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXPhysics\DXPhysics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXShader\DXShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXTexture\DXTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXText\DXText.h">
@@ -91,6 +115,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXText\DXT_Shader\DXT_Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\겨울엔군고구마한잔\OneDrive - 한양대학교\바탕 화면\C++\Directx11\FrameWork\src\DX\DXTexture\DXTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,16 +2,11 @@
 #define __DXMODEL_H__
 
 #include "DXCommon.h"
-#include "MDTexture.h"
+#include "DXTexture.h"
+#include "DXM_Manager.h"
 
 class DXMODEL
 {
-	struct VertexType
-	{
-		XMFLOAT3 POS;
-		XMFLOAT2 TEXTURE;
-	};
-
 	// Functions - Constructor and Destructor
 	public :
 
@@ -22,50 +17,41 @@ class DXMODEL
 	// Functions - Init, Release Object and Render
 	public :
 
-		bool Init( ID3D11Device*, int ,int , char*, int ,int );
+		bool Init( ID3D11Device*, const char*, const char* );
 		void Release();
-		void Render( ID3D11DeviceContext*, int );
-		bool Update( ID3D11DeviceContext*, int );
+		void Render( ID3D11DeviceContext* );
+		bool Update( ID3D11DeviceContext* );
 
 	// Functions - Divide Init Function
 	private :
 
-		bool SetVertex();
-		bool SetIndex();
-
-		bool InitVertexBuffer( ID3D11Device* );
-		bool InitIndexBuffer( ID3D11Device* );
-
-		bool UpdateVertexBuffer( ID3D11DeviceContext* );
-		bool UpdateIndexBuffer( ID3D11DeviceContext* );
-
+		bool InitDXMMANGER( int, DXMPOLYGON );
+		bool InitVertexBuffer( ID3D11Device*, int );
+		bool InitIndexBuffer( ID3D11Device*, int );
 		void InitPointer();
 
-		bool LoadTexture( ID3D11Device*, char* );
+		bool LoadTexture( ID3D11Device*, const char* );
 
 	// Functions - Get
 	public :
 
-		int GetIndexCount();
+		int GetIndexCount( int );
+		int GetVertexCount( int );
 		ID3D11ShaderResourceView* GetTexture();
 
-	// Variable
+	// Variables
 	private :
 
 		ID3D11Buffer* m_VertexBuffer;
 		ID3D11Buffer* m_IndexBuffer;
 
-		int m_VertexCount;
-		int m_IndexCount;
+		int m_ModelCount;
 
-		MDTEXTURE* m_Texture;
+		ModelTXT* m_ModelTXT;
 
-		int m_ScreenWidth;
-		int m_ScreenHeight;
-		int m_BitmapWidth;
-		int m_BitmapHeight;
-		int m_PreviousPosX;
-		int m_PreviousPosY;
+		DXTEXTURE* m_DXTEXTURE;
+		DXM_MANAGER* m_DXMMANGER;
+		MODELINFO* m_DXMODELLIST;
 };
 
 #endif

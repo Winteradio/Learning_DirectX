@@ -1,6 +1,6 @@
-^C:\USERS\겨울엔군고구마한잔\ONEDRIVE - 한양대학교\바탕 화면\C++\DIRECTX11\NEWMAKE\CMAKELISTS.TXT
+^C:\USERS\겨울엔군고구마한잔\ONEDRIVE - 한양대학교\바탕 화면\C++\DIRECTX11\FRAMEWORK - 2D\CMAKELISTS.TXT
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/NewMake" "-BC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/NewMake/build" --check-stamp-file "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/NewMake/build/CMakeFiles/generate.stamp"
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/FrameWork - 2D" "-BC:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/FrameWork - 2D/build" --check-stamp-file "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/FrameWork - 2D/build/CMakeFiles/generate.stamp"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

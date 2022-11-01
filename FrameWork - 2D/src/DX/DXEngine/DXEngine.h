@@ -7,14 +7,12 @@
 #include "DXCamera.h"
 #include "DXLight.h"
 #include "DXModel.h"
-#include "DXShader.h"
+#include "DXText.h"
 
 // Variables - Globals
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 1.0f;
-
-
 
 class DXENGINE
 {
@@ -30,22 +28,24 @@ class DXENGINE
 
 		bool Init( int, int, HWND );
 
-		bool Frame();
+		bool Frame( int, int, float, int, int, bool );
 		void Release();
 
 	// Functions - Divide Init Functions
 	private :
 
+		void InitFileDIR();
+
 		bool InitDXD3D( int, int, bool, HWND, float, float );
 		bool InitDXCAMERA();
-		bool InitDXLIGHT();
-		bool InitDXMODEL();
-		bool InitDXSHADER();
+		bool InitDXLIGHT( const char*, const char* );
+		bool InitDXMODEL( const char*, const char* );
+		bool InitDXTEXT( int, int, const char*, const char*, const char*, const char* );
 
 	// Functions - Render for each frames
 	private :
 
-		bool Render( float );
+		bool Render( float, bool );
 
 		void InitPointer();
 
@@ -56,9 +56,26 @@ class DXENGINE
 		DXCAMERA* m_DXCAMERA;
 		DXLIGHT* m_DXLIGHT;
 		DXMODEL* m_DXMODEL;
-		DXSHADER* m_DXSHADER;
+		DXTEXT* m_DXTEXT;
 
 		float rotation;
+		float move;
+		float move_temp;
+
+		const char* m_LTVSfileDIR;
+		const char* m_LTPSfileDIR;
+
+		const char* m_LCVSfileDIR;
+		const char* m_LCPSfileDIR;
+
+		const char* m_LIMGfileDIR;
+
+		const char* m_MDfileDIR;
+
+		const char* m_TVSfileDIR;
+		const char* m_TPSfileDIR;
+		const char* m_TFontfileDIR;
+		const char* m_TDDSfileDIR;
 };
 
 #endif __DXENGINE_H__

@@ -32,7 +32,7 @@ bool DXMODEL::Init( ID3D11Device* Device, const char* IMGfileDIR, const char* MD
 	if ( !InitIndexBuffer( Device ) ) { return false; }
 	//if ( !InitOutputBuffer( Device ) ) { return false; }
 
-	if ( !InitDXMMANGER( m_Vertices, m_Indices, 3 ) ) { return false; }
+	//if ( !InitDXMMANGER( m_Vertices, m_Indices, 3 ) ) { return false; }
 
 	return true;
 }

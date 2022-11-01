@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/NewMake
+# Install script for directory: C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/FrameWork - 2D
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/NewMake/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/겨울엔군고구마한잔/OneDrive - 한양대학교/바탕 화면/C++/Directx11/FrameWork - 2D/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

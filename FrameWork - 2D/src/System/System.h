@@ -4,8 +4,7 @@
 #include <Windows.h>
 
 #include "DXEngine.h"
-#include "Log.h"
-
+#include "SUBCommon.h"
 
 class SYSTEM
 {
@@ -30,6 +29,11 @@ class SYSTEM
 		bool InitWindows();
 		bool InitDXENGINE();
 
+		bool InitSUBCPU();
+		bool InitSUBINPUT();
+		bool InitSUBFPS();
+		bool InitSUBTIMER();
+
 		void InitPointer();
 
 	// Variables
@@ -53,10 +57,15 @@ class SYSTEM
 		bool m_FullScreen;
 
 		DXENGINE* m_DXENGINE;
+
+		SUBCPU* m_SUBCPU;
+		SUBFPS* m_SUBFPS;
+		SUBINPUT* m_SUBINPUT;
+		SUBTIMER* m_SUBTIMER;
 };
 
 static LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );
 
-static SYSTEM* MSGHandle = 0;
+static SUBINPUT* g_SUBINPUT;
 
 #endif __SYSTEM_H__

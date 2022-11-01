@@ -44,6 +44,9 @@ class DXD3D
 		void GetWorldMatrix( XMMATRIX& );
 		void GetOrthoMatrix( XMMATRIX& );
 
+		void TurnWireFrameOn();
+		void TurnWireFrameOff();
+
 		void TurnZBufferOn();
 		void TurnZBufferOff();
 
@@ -65,7 +68,8 @@ class DXD3D
 		ID3D11DepthStencilState* m_DepthDisabledStencilState;
 		ID3D11DepthStencilView* m_DepthStencilView;
 
-		ID3D11RasterizerState* m_RasterState;
+		ID3D11RasterizerState* m_RasterStateSL;
+		ID3D11RasterizerState* m_RasterStateWF;
 
 		ID3D11BlendState* m_AlphaEnabledBlendingState;
 		ID3D11BlendState* m_AlphaDisabledBlendingState;

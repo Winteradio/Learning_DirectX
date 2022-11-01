@@ -7,7 +7,6 @@
 #include "DXCamera.h"
 #include "DXLight.h"
 #include "DXModel.h"
-#include "DXShader.h"
 #include "DXText.h"
 
 // Variables - Globals
@@ -31,7 +30,7 @@ class DXENGINE
 
 		bool Init( int, int, HWND );
 
-		bool Frame( int, int );
+		bool Frame( int, int, float, int, int );
 		void Release();
 
 	// Functions - Divide Init Functions
@@ -41,9 +40,8 @@ class DXENGINE
 
 		bool InitDXD3D( int, int, bool, HWND, float, float );
 		bool InitDXCAMERA();
-		bool InitDXLIGHT();
+		bool InitDXLIGHT( const char*, const char* );
 		bool InitDXMODEL( const char*, const char* );
-		bool InitDXSHADER( const char*, const char* );
 		bool InitDXTEXT( int, int, const char*, const char*, const char*, const char* );
 
 	// Functions - Render for each frames
@@ -60,7 +58,6 @@ class DXENGINE
 		DXCAMERA* m_DXCAMERA;
 		DXLIGHT* m_DXLIGHT;
 		DXMODEL* m_DXMODEL;
-		DXSHADER* m_DXSHADER;
 		DXTEXT* m_DXTEXT;
 
 		float rotation;

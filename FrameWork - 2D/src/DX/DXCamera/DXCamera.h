@@ -3,8 +3,6 @@
 
 #include "DXCommon.h"
 
-#define PI 3.14159265358979323846
-
 class DXCAMERA
 {
 	// Functions - Constructor and Destructor
@@ -18,6 +16,7 @@ class DXCAMERA
 	public :
 
 		void Render();
+		bool Frame( int, int );
 
 	// Functions - Set and Get
 	public :
