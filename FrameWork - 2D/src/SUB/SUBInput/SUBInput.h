@@ -6,11 +6,16 @@
 
 struct MOUSEINFO
 {
+	int ScreenWidth = 0;
+	int ScreenHeight = 0;
 	int PosX = 0;
 	int PosY = 0;
+	int PrevPosX = 0;
+	int PrevPosY = 0;
 	bool LeftButton = false;;
 	bool RightButton = false;;
 	bool Wheel = false;
+	int WheelDir = 0;
 };
 
 class SUBINPUT
@@ -32,9 +37,10 @@ class SUBINPUT
 	private :
 
 		void SetMousePosition( int, int );
+		void SetMouseWheelDir( int );
 		void SetMouseLeftState( bool );
 		void SetMouseRightState( bool );
-		void SetMouseWheelState( bool );
+		void SetMouseWheelState( bool& );
 		void SetRasterizerState( bool& );
 
 	private :

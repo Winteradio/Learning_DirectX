@@ -5,6 +5,8 @@ DXCAMERA::DXCAMERA()
 {
 	m_Position = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 	m_Rotation = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	m_DirFocus = XMFLOAT3( 0.0f, 0.0f, 1.0f );
+	m_DirUp = XMFLOAT3( 0.0f, 1.0f, 0.0f );
 }
 
 
@@ -16,38 +18,30 @@ DXCAMERA::DXCAMERA( const DXCAMERA* Other )
 
 DXCAMERA::~DXCAMERA(){}
 
-bool DXCAMERA::Frame( int mouseX, int mouseY )
+bool DXCAMERA::Frame( bool LeftButton, int screenWidth, int screenHeight, int mouseX, int mouseY, int prevMouseX, int prevMouseY, int WheelDir )
 {
+	float MoveX = LeftButton * (float)( - mouseX + prevMouseX ) / ( screenWidth * 30 );
+	float MoveY = LeftButton * (float)( - mouseY + prevMouseY ) / ( screenHeight * 30 );
+	float MoveZ = (float)WheelDir / 1000;
+
+	m_Position.x += MoveX;
+	m_Position.y += MoveY;
+	m_Position.z += MoveZ;
+
+	m_DirFocus.x += MoveX;
+	m_DirFocus.y += MoveY;
 	return true;
 }
 
 void DXCAMERA::Render()
 {
-	XMFLOAT3 Up, Pos, LookAt;
 	XMVECTOR upVector, posVector, lookAtVector;
 	float pitch, yaw, roll;
 	XMMATRIX rotationMatrix;
 
-	// Set Up Vector
-	Up.x = 0.0f;
-	Up.y = 1.0f;
-	Up.z = 0.0f;
-
-	upVector = XMLoadFloat3( &Up );
-
-
-	// Set Camera Position in 3D World
-	Pos = m_Position;
-
 	posVector = XMLoadFloat3( &m_Position );
-
-
-	// Set LookAt Vector
-	LookAt.x = 0.0f;
-	LookAt.y = 0.0f;
-	LookAt.z = 1.0f;
-
-	lookAtVector = XMLoadFloat3( &LookAt );
+	lookAtVector = XMLoadFloat3( &m_DirFocus );
+	upVector = XMLoadFloat3( &m_DirUp );
 
 	/////////////////////
 	// Rotation Matrix
@@ -87,8 +81,25 @@ void DXCAMERA::SetRotation( float ANG_P, float ANG_Y, float ANG_R )
 	m_Rotation.z = ANG_R;
 }
 
+void DXCAMERA::SetLookAt( float POS_X, float POS_Y, float POS_Z )
+{
+	m_DirFocus.x = POS_X;
+	m_DirFocus.y = POS_Y;
+	m_DirFocus.z = POS_Z;
+}
+
+void DXCAMERA::SetLookUp( float POS_X, float POS_Y, float POS_Z )
+{
+	m_DirUp.x = POS_X;
+	m_DirUp.y = POS_X;
+	m_DirUp.z = POS_Z;
+}
+
 void DXCAMERA::GetViewMatrix( XMMATRIX& ViewMatrix ) { ViewMatrix = m_ViewMatrix; }
 
 XMFLOAT3 DXCAMERA::GetPosition() { return m_Position; }
 
 XMFLOAT3 DXCAMERA::GetRotation() { return m_Rotation; }
+
+XMFLOAT3 DXCAMERA::GetLookAt() { return m_DirFocus; }
+XMFLOAT3 DXCAMERA::GetLookUp() { return m_DirUp; }

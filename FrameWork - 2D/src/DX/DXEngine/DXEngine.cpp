@@ -34,9 +34,16 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 }
 
 
-bool DXENGINE::Frame( int FPS, int CPU, float Time, int mouseX, int mouseY, bool wireFrame )
+bool DXENGINE::Frame( int FPS, int CPU, float Time, MOUSEINFO* Mouse, bool wireFrame )
 {
-	if ( !m_DXTEXT->Frame( m_DXD3D->GetDeviceContext(), mouseX, mouseY, CPU, FPS ) )
+	if ( !m_DXCAMERA->Frame( Mouse->LeftButton, Mouse->ScreenWidth, Mouse->ScreenHeight, Mouse->PosX, Mouse->PosY, Mouse->PrevPosX, Mouse->PrevPosY, Mouse->WheelDir ) )
+	{
+		LOG_ERROR(" Failed - Set new camera value \n ");
+		return false;
+	}
+
+
+	if ( !m_DXTEXT->Frame( m_DXD3D->GetDeviceContext(), Mouse->PosX, Mouse->PosY, CPU, FPS ) )
 	{
 		LOG_ERROR(" Failed - Print Mouse Position \n ");
 		return false;
@@ -53,8 +60,6 @@ bool DXENGINE::Frame( int FPS, int CPU, float Time, int mouseX, int mouseY, bool
 	{
 		move_temp *= -1.0f;
 	}
-
-	m_DXCAMERA->SetPosition( 0, 0.0f, -5.0f );
 
 	return Render( rotation, wireFrame );
 }
@@ -104,7 +109,7 @@ bool DXENGINE::Render( float rotation, bool wireFrame )
 	if ( wireFrame ) { m_DXD3D->TurnWireFrameOn(); }
 	else { m_DXD3D->TurnWireFrameOff(); }
 
-	worldMatrix = XMMatrixRotationX( rotation ) * XMMatrixRotationY( rotation ) * XMMatrixRotationZ( rotation );
+	worldMatrix = XMMatrixRotationZ( rotation );
 
 	// Render using Shader
 	hr = m_DXLIGHT->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount( 1 ),
@@ -222,7 +227,7 @@ bool DXENGINE::InitDXCAMERA()
 		LOG_INFO(" Successed - Create DXCAMERA \n ");
 	}
 
-	m_DXCAMERA->SetPosition( 0.0f, 0.0f, -1.0f );
+	m_DXCAMERA->SetPosition( 0.0f, 0.0f, -5.0f );
 	m_DXCAMERA->Render();
 	return true;
 }

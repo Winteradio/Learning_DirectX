@@ -9,7 +9,7 @@ typedef enum DXMPOLYGON
 	DXMRECTANGLE = 4,
 	DXMPENTAGON = 5,
 	DXMHEXAGON = 6,
-	DXMCIRCLE = 200,
+	DXMCIRCLE = 50,
 }DXMPOLYGON;
 
 struct VERTEXINFO
@@ -28,6 +28,15 @@ struct MODELINFO
 	UINT* INDICES;
 	int NumVertex;
 	int NumIndex;
+};
+
+struct TYPEINFO
+{
+	DXMPOLYGON TYPE;
+	int NumModel;
+	int NumVertex;
+	int NumIndex;
+	MODELINFO* MODELS;
 };
 
 class DXM_MANAGER

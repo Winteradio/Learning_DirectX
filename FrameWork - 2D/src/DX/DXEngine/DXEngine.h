@@ -9,6 +9,8 @@
 #include "DXModel.h"
 #include "DXText.h"
 
+#include "SUBInput.h"
+
 // Variables - Globals
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
@@ -28,7 +30,7 @@ class DXENGINE
 
 		bool Init( int, int, HWND );
 
-		bool Frame( int, int, float, int, int, bool );
+		bool Frame( int, int, float, MOUSEINFO*, bool );
 		void Release();
 
 	// Functions - Divide Init Functions

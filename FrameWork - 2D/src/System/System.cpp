@@ -30,6 +30,7 @@ bool SYSTEM::Init()
 {
 	// Windows Init
 	if ( !InitWindows() ) { return false; }
+
 	// SUBCPU Init
 	if ( !InitSUBCPU() ) { return false; }
 	// SUBFPS Init
@@ -38,6 +39,7 @@ bool SYSTEM::Init()
 	if ( !InitSUBINPUT() ) { return false; }
 	// SUBTIMER Init
 	if ( !InitSUBTIMER() ) { return false; }
+
 	// DXENGINE Init
 	if ( !InitDXENGINE() ) { return false; }
 
@@ -107,12 +109,7 @@ bool SYSTEM::Frame()
 	m_SUBFPS->Frame();
 	m_SUBTIMER->Frame();
 
-	// Update Mouse Position
-	int mouseX = m_SUBINPUT->GetMouse()->PosX;
-	int mouseY = m_SUBINPUT->GetMouse()->PosY;
-	bool wireFrame = m_SUBINPUT->GetRasterizerState();
-
-	if ( !m_DXENGINE->Frame( m_SUBFPS->GetFPS(), m_SUBCPU->GetCPUPercent(), m_SUBTIMER->GetTime(), mouseX, mouseY, wireFrame ) )
+	if ( !m_DXENGINE->Frame( m_SUBFPS->GetFPS(), m_SUBCPU->GetCPUPercent(), m_SUBTIMER->GetTime(), m_SUBINPUT->GetMouse(), m_SUBINPUT->GetRasterizerState() ) )
 	{
 		LOG_ERROR(" Failed - Frame DXENGINE \n ");
 		return false;

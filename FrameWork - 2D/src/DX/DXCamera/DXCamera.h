@@ -16,23 +16,29 @@ class DXCAMERA
 	public :
 
 		void Render();
-		bool Frame( int, int );
+		bool Frame( bool, int, int, int, int, int, int, int );
 
 	// Functions - Set and Get
 	public :
 
 		void SetPosition( float, float, float );
 		void SetRotation( float, float, float );
+		void SetLookAt( float, float, float );
+		void SetLookUp( float, float, float );
 
 		void GetViewMatrix( XMMATRIX& );
 		XMFLOAT3 GetPosition();
 		XMFLOAT3 GetRotation();
+		XMFLOAT3 GetLookAt();
+		XMFLOAT3 GetLookUp();
 
 	// Variables
 	private :
 
 		XMFLOAT3 m_Position;
 		XMFLOAT3 m_Rotation;
+		XMFLOAT3 m_DirFocus;
+		XMFLOAT3 m_DirUp;
 		XMMATRIX m_ViewMatrix;
 };
 
