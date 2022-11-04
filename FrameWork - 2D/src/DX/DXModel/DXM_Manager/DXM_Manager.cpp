@@ -84,17 +84,15 @@ void DXM_MANAGER::Create( MODELINFO& model, DXMPOLYGON Type )
 			Position = XMFLOAT3( cos( I * 2 * M_PI / model.TYPE ), sin( I * 2 * M_PI / model.TYPE ), 0.0f );
 		}
 		model.VERTICES[ I ].POS = Position;
-		LOG_INFO(" %f %f \n ",Position.x, Position.y);
 		model.VERTICES[ I ].COLOR = Color;
 		model.VERTICES[ I ].NORMAL = XMFLOAT3( 0.0f, 0.0f, 1.0f );
 		if ( I >= 1 )
 		{
-			UINT Temp = I + 1;
+			int Temp = I + 1;
 			if ( Temp > model.TYPE ) { Temp -= model.TYPE; }
 			model.INDICES[ 3 * (I - 1) ] = 0;
-			model.INDICES[ 3 * (I - 1) + 1 ] = I;
-			model.INDICES[ 3 * (I - 1) + 2 ] = Temp;
-			LOG_INFO(" %d %d \n ", I, Temp );
+			model.INDICES[ 3 * (I - 1) + 1 ] = Temp;
+			model.INDICES[ 3 * (I - 1) + 2 ] = I;
 		}
 	}
 }

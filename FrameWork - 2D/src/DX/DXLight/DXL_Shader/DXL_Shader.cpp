@@ -55,13 +55,13 @@ void DXL_SHADER::Release()
 bool DXL_SHADER::Render( ID3D11DeviceContext* DevContext, int indexCount,
 	XMMATRIX world, XMMATRIX view, XMMATRIX proj,
 	ID3D11ShaderResourceView* textureView,
-	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor, XMFLOAT4 specularColor, float specularPower, XMFLOAT3 cameraPosition )
+	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT3 cameraPosition )
 {
 	if ( !SetShaderParameters(
 		DevContext,
 		world, view, proj,
 		textureView,
-		lightDirection, diffuseColor, ambientColor, specularColor, specularPower, cameraPosition ) )
+		lightDirection, diffuseColor, cameraPosition ) )
 	{
 		LOG_ERROR(" Failed - Set Shader Parameters \n ");
 		return false;
@@ -84,7 +84,7 @@ bool DXL_SHADER::Render( ID3D11DeviceContext* DevContext, int indexCount,
 bool DXL_SHADER::SetShaderParameters( ID3D11DeviceContext* DevContext,
 	XMMATRIX world, XMMATRIX view, XMMATRIX proj,
 	ID3D11ShaderResourceView* textureView,
-	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor, XMFLOAT4 specularColor, float specularPower, XMFLOAT3 cameraPosition )
+	XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT3 cameraPosition )
 {
 	HRESULT hr;
 
@@ -160,11 +160,9 @@ bool DXL_SHADER::SetShaderParameters( ID3D11DeviceContext* DevContext,
 	// Get Pointer about Constant Buffer's Data
 	LightBufferType* dataPtr2 = (LightBufferType*)mappedResource.pData;
 
-	dataPtr2->ambientColor = ambientColor;
 	dataPtr2->diffuseColor = diffuseColor;
 	dataPtr2->lightDirection = lightDirection;
-	dataPtr2->specularColor = specularColor;
-	dataPtr2->specularPower = specularPower;
+	dataPtr2->padding = 0.0f;
 
 	// Unlock Constant Buffer;
 	DevContext->Unmap( m_LightBuffer, 0 );

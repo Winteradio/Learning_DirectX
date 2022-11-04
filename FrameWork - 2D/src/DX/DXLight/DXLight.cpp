@@ -54,8 +54,7 @@ bool DXLIGHT::Render( ID3D11DeviceContext* DevContext, int indexCount,
 	if ( !m_LightShader->Render( DevContext, indexCount,
 		world, view, proj,
 		lightShaderView,
-		m_Direction, m_DiffuseColor, m_AmbientColor, m_SpecularColor, m_SpecularPower,
-		cameraPosition ) )
+		m_Direction, m_DiffuseColor, cameraPosition ) )
 	{
 		LOG_ERROR(" Failed - Render using Light Shader \n ");
 		return false;

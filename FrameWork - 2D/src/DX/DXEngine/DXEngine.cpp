@@ -99,8 +99,11 @@ bool DXENGINE::Render( float rotation, bool wireFrame )
 
 	// Ready for Drawing tha need Model Vertex and Index buffer for Graphics pipeline
 	m_DXMODEL->Render( m_DXD3D->GetDeviceContext() );
+
 	m_DXD3D->TurnZBufferOff();
-	m_DXD3D->TurnWireFrameOff();
+	if ( wireFrame ) { m_DXD3D->TurnWireFrameOn(); }
+	else { m_DXD3D->TurnWireFrameOff(); }
+
 	worldMatrix = XMMatrixRotationX( rotation ) * XMMatrixRotationY( rotation ) * XMMatrixRotationZ( rotation );
 
 	// Render using Shader
@@ -254,7 +257,7 @@ bool DXENGINE::InitDXLIGHT( const char* VSfileDIR, const char* PSfileDIR )
 	m_DXLIGHT->SetDiffuseColor( 0.75f, 0.75f, 0.75f, 1.0f );
 	m_DXLIGHT->SetSpecularColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	m_DXLIGHT->SetSpecularPower( 32.0f );
-	m_DXLIGHT->SetDirection( 0.0f, 0.0f, 1.0f );
+	m_DXLIGHT->SetDirection( 0.0f, 0.0f, -1.0f );
 
 	return true;
 }
