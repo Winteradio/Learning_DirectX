@@ -89,7 +89,7 @@ void DXM_MANAGER::Create( MODELINFO& model, DXMPOLYGON Type )
 		model.VERTICES[ I ].NORMAL = XMFLOAT3( 0.0f, 0.0f, 1.0f );
 		if ( I >= 1 )
 		{
-			int Temp = I + 1;
+			UINT Temp = I + 1;
 			if ( Temp > model.TYPE ) { Temp -= model.TYPE; }
 			model.INDICES[ 3 * (I - 1) ] = 0;
 			model.INDICES[ 3 * (I - 1) + 1 ] = I;

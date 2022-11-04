@@ -98,6 +98,16 @@ bool DXMODEL::InitVertexBuffer( ID3D11Device* Device, int Num )
     D3D11_SUBRESOURCE_DATA vertexData;
     ZeroMemory( &vertexData, sizeof( D3D11_SUBRESOURCE_DATA ) );
 
+    for (int I = 0; I < GetVertexCount( Num ); I++ )
+    {
+    	VERTEXINFO Info = m_DXMODELLIST[ Num - 1].VERTICES[ I ];
+    	LOG_INFO(" POS %f %f %f \n ",Info.POS.x,Info.POS.y,Info.POS.z);
+    	LOG_INFO(" Color %f %f %f \n ",Info.COLOR.x,Info.COLOR.y,Info.COLOR.z,Info.COLOR.w);
+    	LOG_INFO(" NORMAL %f %f %f \n ",Info.NORMAL.x,Info.NORMAL.y,Info.NORMAL.z);
+    	LOG_INFO(" %d \n ", m_DXMODELLIST[ Num -1 ].NumVertex);
+    	LOG_INFO("\n");
+    }
+
     vertexData.pSysMem = m_DXMODELLIST[ Num-1 ].VERTICES;
     vertexData.SysMemPitch = 0;
     vertexData.SysMemSlicePitch = 0;
@@ -136,6 +146,14 @@ bool DXMODEL::InitIndexBuffer( ID3D11Device* Device, int Num )
     // Describe Subresouce Structor that have Pointer for Index Data
     D3D11_SUBRESOURCE_DATA indexData;
     ZeroMemory( &indexData, sizeof( D3D11_SUBRESOURCE_DATA ) );
+
+    for (int I = 0; I < GetIndexCount( Num ); I++ )
+    {
+    	UINT Info = m_DXMODELLIST[ Num - 1].INDICES[ I ];
+    	LOG_INFO(" INDEX %d \n ",Info);
+    	LOG_INFO(" %d \n ", m_DXMODELLIST[ Num -1 ].NumIndex);
+    	LOG_INFO("\n");
+    }
 
     indexData.pSysMem = m_DXMODELLIST[ Num-1 ].INDICES;
     indexData.SysMemPitch = 0;
