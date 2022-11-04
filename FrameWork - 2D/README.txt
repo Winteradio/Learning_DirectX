@@ -305,3 +305,8 @@ FPS, CPU 화면에 출력
 			디코더 API
 		-> D3D11_BIND_VIDEO_ENCODER
 			비디오 API
+
+# 11
+2차원 카메라 이동 & Zoom In/Out
+-> 카메라 이동 : 왼쪽 마우스 버튼 누른 상태에서 드래그
+-> 줌 인&아웃 : Ctrl 키 누른 상태에서 휠 드래그

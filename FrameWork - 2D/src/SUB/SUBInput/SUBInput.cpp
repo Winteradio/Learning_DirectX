@@ -52,6 +52,30 @@ LRESULT CALLBACK SUBINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wPara
 
 					return 0;
 				}
+
+				case VK_CONTROL :
+				{
+					SetMouseWheelState( true );
+					return 0;
+				}
+			}
+		}
+
+		case WM_KEYUP :
+		{
+			switch ( wParam )
+			{
+				case VK_CONTROL :
+				{
+					SetMouseWheelState( false );
+					SetMouseWheelDir( 0 );
+					return 0;
+				}
+
+				case VK_F1 :
+				{
+					return 0;
+				}
 			}
 		}
 
@@ -107,12 +131,6 @@ LRESULT CALLBACK SUBINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wPara
 			return 0;
 		}
 
-		case WM_MBUTTONDOWN :
-		{
-			SetMouseWheelState( m_Mouse->Wheel );
-			return 0;
-		}
-
 		default :
 		{
 			return DefWindowProc( hWnd, message, wParam, lParam );
@@ -143,17 +161,7 @@ void SUBINPUT::SetMouseWheelDir( int WheelDir )
 
 void SUBINPUT::SetMouseLeftState( bool buttonState ) { m_Mouse->LeftButton = buttonState; }
 void SUBINPUT::SetMouseRightState( bool buttonState ) { m_Mouse->RightButton = buttonState; }
-void SUBINPUT::SetMouseWheelState( bool& buttonState )
-{
-	if ( buttonState )
-	{
-		buttonState = false;
-	}
-	else
-	{
-		buttonState = true;
-	}
-}
+void SUBINPUT::SetMouseWheelState( bool buttonState ) { m_Mouse->Wheel = buttonState; }
 
 void SUBINPUT::SetRasterizerState( bool& RasterizerState )
 {

@@ -40,7 +40,7 @@ class SUBINPUT
 		void SetMouseWheelDir( int );
 		void SetMouseLeftState( bool );
 		void SetMouseRightState( bool );
-		void SetMouseWheelState( bool& );
+		void SetMouseWheelState( bool );
 		void SetRasterizerState( bool& );
 
 	private :
