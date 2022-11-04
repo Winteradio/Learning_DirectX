@@ -54,7 +54,7 @@ bool DXENGINE::Frame( int FPS, int CPU, float Time, int mouseX, int mouseY, bool
 		move_temp *= -1.0f;
 	}
 
-	m_DXCAMERA->SetPosition( 0, 0.0f, -1.0f );
+	m_DXCAMERA->SetPosition( 0, 0.0f, -5.0f );
 
 	return Render( rotation, wireFrame );
 }
@@ -82,7 +82,7 @@ bool DXENGINE::Render( float rotation, bool wireFrame )
 	bool hr;
 
 	// Erase Buffer for Drawing Scene
-	m_DXD3D->BeginScene( 0.0f, 0.0f, 0.0f, 1.0f );
+	m_DXD3D->BeginScene( 0.2f, 0.2f, 0.2f, 1.0f );
 
 	// Create View Matrix about Camera Position
 	m_DXCAMERA->Render();

@@ -95,12 +95,12 @@ bool DXENGINE::Render( float rotation )
 	m_DXD3D->GetOrthoMatrix( orthoMatrix );
 
 
-	worldMatrix = XMMatrixTranslation( 0.0f, 0.0f, move );
+	worldMatrix = XMMatrixTranslation( 0.0f, 0.0f, move ) *XMMatrixRotationX( rotation);
 
 	// Ready for Drawing tha need Model Vertex and Index buffer for Graphics pipeline
 	m_DXMODEL->Render( m_DXD3D->GetDeviceContext() );
 
-	m_DXD3D->TurnWireFrameOn();
+	m_DXD3D->TurnWireFrameOff();
 	// Render using Shader
 	hr = m_DXLIGHT->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount(),
 		worldMatrix, viewMatrix, projectionMatrix, m_DXMODEL->GetTexture(), m_DXCAMERA->GetPosition() );
