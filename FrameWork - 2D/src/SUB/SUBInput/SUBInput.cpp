@@ -20,12 +20,13 @@ bool SUBINPUT::Init( int screenWidth,int screenHeight )
 	m_Mouse->ScreenHeight = m_ScreenHeight;
 
 	m_WireFrame = false;
-
+	m_Insert = false;
 	return true;
 }
 
 MOUSEINFO* SUBINPUT::GetMouse() { return m_Mouse; }
 bool SUBINPUT::GetRasterizerState() { return m_WireFrame; }
+bool SUBINPUT::GetInsertState() { return m_Insert; }
 
 
 LRESULT CALLBACK SUBINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
@@ -53,11 +54,24 @@ LRESULT CALLBACK SUBINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wPara
 					return 0;
 				}
 
+				case VK_F2 :
+				{
+					SetInsertState( m_Insert );
+
+					return 0;
+				}
+
 				case VK_CONTROL :
 				{
 					SetMouseWheelState( true );
 					return 0;
 				}
+
+				default :
+				{
+					return DefWindowProc( hWnd, message, wParam, lParam );
+				}
+
 			}
 		}
 
@@ -73,6 +87,11 @@ LRESULT CALLBACK SUBINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wPara
 				}
 
 				case VK_F1 :
+				{
+					return 0;
+				}
+
+				case VK_F2 :
 				{
 					return 0;
 				}
@@ -174,5 +193,19 @@ void SUBINPUT::SetRasterizerState( bool& RasterizerState )
 	{
 		LOG_INFO(" Turn on Wire Frame \n ");
 		RasterizerState = true;
+	}
+}
+
+void SUBINPUT::SetInsertState( bool& InsertState )
+{
+	if ( InsertState == true)
+	{
+		LOG_INFO(" Turn off Insert \n ");
+		InsertState = false;
+	}
+	else
+	{
+		LOG_INFO(" Turn on Insert Frame \n ");
+		InsertState = true;
 	}
 }

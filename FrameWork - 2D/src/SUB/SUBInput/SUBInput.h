@@ -32,6 +32,7 @@ class SUBINPUT
 
 		MOUSEINFO* GetMouse();
 		bool GetRasterizerState();
+		bool GetInsertState();
 		LRESULT CALLBACK MessageHandler( HWND, UINT, WPARAM, LPARAM );
 
 	private :
@@ -42,6 +43,7 @@ class SUBINPUT
 		void SetMouseRightState( bool );
 		void SetMouseWheelState( bool );
 		void SetRasterizerState( bool& );
+		void SetInsertState( bool& );
 
 	private :
 
@@ -51,6 +53,7 @@ class SUBINPUT
 		int m_ScreenHeight;
 		MOUSEINFO* m_Mouse;
 		bool m_WireFrame;
+		bool m_Insert;
 };
 
 #endif

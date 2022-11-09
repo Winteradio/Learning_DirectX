@@ -109,7 +109,7 @@ bool SYSTEM::Frame()
 	m_SUBFPS->Frame();
 	m_SUBTIMER->Frame();
 
-	if ( !m_DXENGINE->Frame( m_SUBFPS->GetFPS(), m_SUBCPU->GetCPUPercent(), m_SUBTIMER->GetTime(), m_SUBINPUT->GetMouse(), m_SUBINPUT->GetRasterizerState() ) )
+	if ( !m_DXENGINE->Frame( m_SUBFPS->GetFPS(), m_SUBCPU->GetCPUPercent(), m_SUBTIMER->GetTime(), m_SUBINPUT->GetMouse(), m_SUBINPUT->GetRasterizerState(), m_SUBINPUT->GetInsertState() ) )
 	{
 		LOG_ERROR(" Failed - Frame DXENGINE \n ");
 		return false;
@@ -165,12 +165,16 @@ bool SYSTEM::InitWindows()
 		LOG_INFO(" Successed - Register Wnd Class \n ");
 	}
 
+	RECT clientSize = { 0, 0, m_Width, m_Height };
+	AdjustWindowRect( &clientSize, WS_OVERLAPPEDWINDOW, FALSE );
+
 	// Create Window
 	m_hWnd = CreateWindowEx( NULL,
 		m_WindowName, m_WindowTitle,
 		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT,
-		m_Width, m_Height,
+		0, 0,
+		clientSize.right - clientSize.left,
+		clientSize.bottom - clientSize.top,
 		NULL, NULL, m_hInstance, NULL );
 
 	if ( !m_hWnd )

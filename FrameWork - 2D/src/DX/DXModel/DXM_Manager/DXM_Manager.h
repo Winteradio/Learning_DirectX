@@ -2,6 +2,7 @@
 #define __DXM_MANAGER_H__
 
 #include "DXCommon.h"
+#include "DXPhysics.h"
 
 typedef enum DXMPOLYGON
 {
@@ -21,22 +22,22 @@ struct VERTEXINFO
 
 struct MODELINFO
 {
-	DXMPOLYGON TYPE;
 	XMFLOAT3 POS;
 	XMFLOAT3 ROT;
-	VERTEXINFO* VERTICES;
-	UINT* INDICES;
-	int NumVertex;
-	int NumIndex;
 };
 
 struct TYPEINFO
 {
 	DXMPOLYGON TYPE;
+
 	int NumModel;
-	int NumVertex;
-	int NumIndex;
 	MODELINFO* MODELS;
+
+	int NumVertex;
+	VERTEXINFO* VERTICES;
+
+	int NumIndex;
+	UINT* INDICES;
 };
 
 class DXM_MANAGER
@@ -49,20 +50,21 @@ class DXM_MANAGER
 
 	public :
 
-		bool Init( MODELINFO*&, const int, DXMPOLYGON );
-		void Release( MODELINFO*& );
-		bool Frame();
+		bool Init( TYPEINFO*&, const int, DXMPOLYGON );
+		void Release( TYPEINFO*& );
+		bool Frame( TYPEINFO*&, bool, int, int );
 
 	private :
 
-		void Rotation( float, float, float, MODELINFO& );
-		void Translation( float, float, float, MODELINFO& );
+		void Rotation( float, float, float, MODELINFO*& );
+		void Translation( float, float, float, MODELINFO*& );
 		void Scale( float, float ,float );
 
 		void InitPointer();
 
 		void Destory( const int );
-		void Create( MODELINFO&, DXMPOLYGON );
+		void Create( TYPEINFO*& );
+		void Insert( TYPEINFO*&, int, int );
 };
 
 #endif

@@ -41,11 +41,9 @@ class DXTEXT
 		void Release();
 
 		bool Render( ID3D11DeviceContext*, XMMATRIX, XMMATRIX );
-		bool Frame( ID3D11DeviceContext*, int, int, int, int );
+		bool Frame( ID3D11DeviceContext*, int, int, int, int, int);
 
-		bool SetMousePosition( ID3D11DeviceContext*, SentenceType*&, SentenceType*&, int, int );
-		bool SetFPS( ID3D11DeviceContext*, SentenceType*& , int );
-		bool SetCPU( ID3D11DeviceContext*, SentenceType*& , int );
+		bool SetSentence( ID3D11DeviceContext*, SentenceType*&, char*, int, int, int, XMFLOAT4 );
 
 	private :
 
@@ -75,6 +73,7 @@ class DXTEXT
 		XMMATRIX m_BaseViewMatrix;
 		SentenceType** m_SentenceList;
 		int m_SenCount;
+		int m_MaxText;
 };
 
 #endif

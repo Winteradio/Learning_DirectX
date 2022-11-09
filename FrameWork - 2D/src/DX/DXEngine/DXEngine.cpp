@@ -28,22 +28,29 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 
 	rotation = 0.0f;
 	move = 0.0f;
-	move_temp = 0.001f;
+	move_temp = 0.02f;
+
+	system("pause");
 
 	return true;
 }
 
 
-bool DXENGINE::Frame( int FPS, int CPU, float Time, MOUSEINFO* Mouse, bool wireFrame )
+bool DXENGINE::Frame( int FPS, int CPU, float Time, MOUSEINFO* Mouse, bool wireFrame, bool Insert )
 {
-	if ( !m_DXCAMERA->Frame( Mouse->LeftButton, Mouse->ScreenWidth, Mouse->ScreenHeight, Mouse->PosX, Mouse->PosY, Mouse->PrevPosX, Mouse->PrevPosY, Mouse->WheelDir ) )
+	if ( !m_DXMODEL->Frame( Insert, Mouse->PosX, Mouse->PosY ) )
+	{
+		LOG_ERROR(" Failed - Insert New Model \n ");
+		return false;
+	}
+
+	if ( !m_DXCAMERA->Frame( Mouse->LeftButton, Mouse->ScreenWidth, Mouse->ScreenHeight, Mouse->PosX, Mouse->PosY, Mouse->PrevPosX, Mouse->PrevPosY, Mouse->WheelDir, SCREEN_NEAR, SCREEN_DEPTH ) )
 	{
 		LOG_ERROR(" Failed - Set new camera value \n ");
 		return false;
 	}
 
-
-	if ( !m_DXTEXT->Frame( m_DXD3D->GetDeviceContext(), Mouse->PosX, Mouse->PosY, CPU, FPS ) )
+	if ( !m_DXTEXT->Frame( m_DXD3D->GetDeviceContext(), Mouse->PosX, Mouse->PosY, CPU, FPS, m_DXMODEL->GetNumModel( 1 ) ) )
 	{
 		LOG_ERROR(" Failed - Print Mouse Position \n ");
 		return false;
@@ -56,7 +63,7 @@ bool DXENGINE::Frame( int FPS, int CPU, float Time, MOUSEINFO* Mouse, bool wireF
 	}
 
 	move += move_temp;
-	if ( move <= -2.5f || move >= 2.5f )
+	if ( move <= -100.0f || move >= 100.0f )
 	{
 		move_temp *= -1.0f;
 	}
@@ -94,10 +101,9 @@ bool DXENGINE::Render( float rotation, bool wireFrame )
 
 	// Get World, View, Proj Matrix from Camera and DXD3D Object
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, orthoMatrix;
-	m_DXCAMERA->GetViewMatrix( viewMatrix );
 	m_DXD3D->GetWorldMatrix( worldMatrix );
-	m_DXD3D->GetProjectionMatrix( projectionMatrix );
-	m_DXD3D->GetOrthoMatrix( orthoMatrix );
+	m_DXCAMERA->GetViewMatrix( viewMatrix );
+	m_DXCAMERA->GetOrthoMatrix( orthoMatrix );
 
 
 	//worldMatrix = XMMatrixTranslation( move, 0.0f, 0.0f );
@@ -109,11 +115,22 @@ bool DXENGINE::Render( float rotation, bool wireFrame )
 	if ( wireFrame ) { m_DXD3D->TurnWireFrameOn(); }
 	else { m_DXD3D->TurnWireFrameOff(); }
 
-	worldMatrix = XMMatrixRotationZ( rotation );
+	worldMatrix = XMMatrixRotationZ( rotation ) * XMMatrixTranslation( move, 100.0f, 0.0f );
 
 	// Render using Shader
 	hr = m_DXLIGHT->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount( 1 ),
-		worldMatrix, viewMatrix, projectionMatrix, m_DXMODEL->GetTexture(), m_DXCAMERA->GetPosition() );
+		worldMatrix, viewMatrix, orthoMatrix, m_DXMODEL->GetTexture(), m_DXCAMERA->GetPosition() );
+	if ( !hr )
+	{
+		LOG_ERROR(" Failed - Render using Shader \n ");
+		return false;
+	}
+
+	m_DXD3D->GetWorldMatrix( worldMatrix );
+	worldMatrix = XMMatrixRotationZ( rotation );
+	// Render using Shader
+	hr = m_DXLIGHT->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount( 1 ),
+		worldMatrix, viewMatrix, orthoMatrix, m_DXMODEL->GetTexture(), m_DXCAMERA->GetPosition() );
 	if ( !hr )
 	{
 		LOG_ERROR(" Failed - Render using Shader \n ");
@@ -122,8 +139,8 @@ bool DXENGINE::Render( float rotation, bool wireFrame )
 
 	m_DXD3D->GetWorldMatrix( worldMatrix );
 	m_DXD3D->TurnOnAlphaBlending();
-
 	m_DXD3D->TurnWireFrameOff();
+	m_DXD3D->GetOrthoMatrix( orthoMatrix );
 	if ( !m_DXTEXT->Render( m_DXD3D->GetDeviceContext(), worldMatrix, orthoMatrix ) )
 	{
 		LOG_ERROR(" Failed - Render uisng Text \n ");
@@ -227,7 +244,7 @@ bool DXENGINE::InitDXCAMERA()
 		LOG_INFO(" Successed - Create DXCAMERA \n ");
 	}
 
-	m_DXCAMERA->SetPosition( 0.0f, 0.0f, -5.0f );
+	m_DXCAMERA->SetPosition( 0.0f, 0.0f, -1.0f );
 	m_DXCAMERA->Render();
 	return true;
 }

@@ -21,6 +21,7 @@ class DXMODEL
 		void Release();
 		void Render( ID3D11DeviceContext* );
 		bool Update( ID3D11DeviceContext* );
+		bool Frame( bool, int, int );
 
 	// Functions - Divide Init Function
 	private :
@@ -37,6 +38,7 @@ class DXMODEL
 
 		int GetIndexCount( int );
 		int GetVertexCount( int );
+		int GetNumModel( int );
 		ID3D11ShaderResourceView* GetTexture();
 
 	// Variables
@@ -51,7 +53,7 @@ class DXMODEL
 
 		DXTEXTURE* m_DXTEXTURE;
 		DXM_MANAGER* m_DXMMANGER;
-		MODELINFO* m_DXMODELLIST;
+		TYPEINFO* m_DXMODELLIST;
 };
 
 #endif

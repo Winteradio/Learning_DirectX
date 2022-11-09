@@ -7,6 +7,7 @@ DXCAMERA::DXCAMERA()
 	m_Rotation = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 	m_DirFocus = XMFLOAT3( 0.0f, 0.0f, 1.0f );
 	m_DirUp = XMFLOAT3( 0.0f, 1.0f, 0.0f );
+	m_OrthoPos = XMFLOAT2( 0.0f, 0.0f );
 }
 
 
@@ -18,18 +19,12 @@ DXCAMERA::DXCAMERA( const DXCAMERA* Other )
 
 DXCAMERA::~DXCAMERA(){}
 
-bool DXCAMERA::Frame( bool LeftButton, int screenWidth, int screenHeight, int mouseX, int mouseY, int prevMouseX, int prevMouseY, int WheelDir )
+bool DXCAMERA::Frame( bool LeftButton, int screenWidth, int screenHeight, int mouseX, int mouseY, int prevMouseX, int prevMouseY, int WheelDir, float SCREEN_NEAR, float SCREEN_DEPTH )
 {
-	float MoveX = LeftButton * (float)( - mouseX + prevMouseX ) / ( screenWidth * 30 );
-	float MoveY = LeftButton * (float)( - mouseY + prevMouseY ) / ( screenHeight * 30 );
-	float MoveZ = (float)WheelDir / 1000;
+	m_OrthoPos.x += LeftButton * 20 * (float)( - mouseX + prevMouseX ) / ( screenWidth );
+	m_OrthoPos.y += LeftButton * 20 *(float)( - mouseY + prevMouseY ) / ( screenHeight );
 
-	m_Position.x += MoveX;
-	m_Position.y += MoveY;
-	m_Position.z += MoveZ;
-
-	m_DirFocus.x += MoveX;
-	m_DirFocus.y += MoveY;
+	m_OrthoMatrix = XMMatrixOrthographicOffCenterLH( -(float)screenWidth/2 + m_OrthoPos.x, (float)screenWidth/2 + m_OrthoPos.x, -(float)screenHeight/2 + m_OrthoPos.y, (float)screenHeight/2 + m_OrthoPos.y, SCREEN_NEAR, SCREEN_DEPTH );
 	return true;
 }
 
@@ -59,7 +54,7 @@ void DXCAMERA::Render()
 	upVector = XMVector3TransformCoord( upVector, rotationMatrix );
 
 	// Change Vector using Viewer Position
-	lookAtVector = XMVectorAdd( posVector, lookAtVector );
+	lookAtVector = XMVectorAdd( -posVector, lookAtVector );
 
 	// Set View Matrix using Camera Vectors
 	m_ViewMatrix = XMMatrixLookAtLH( posVector, lookAtVector, upVector );
@@ -96,6 +91,8 @@ void DXCAMERA::SetLookUp( float POS_X, float POS_Y, float POS_Z )
 }
 
 void DXCAMERA::GetViewMatrix( XMMATRIX& ViewMatrix ) { ViewMatrix = m_ViewMatrix; }
+
+void DXCAMERA::GetOrthoMatrix( XMMATRIX& OrthoMatrix ) { OrthoMatrix = m_OrthoMatrix; }
 
 XMFLOAT3 DXCAMERA::GetPosition() { return m_Position; }
 

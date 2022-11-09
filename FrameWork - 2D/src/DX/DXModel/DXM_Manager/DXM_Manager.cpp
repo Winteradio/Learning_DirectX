@@ -12,49 +12,62 @@ DXM_MANAGER::DXM_MANAGER( const DXM_MANAGER* Other )
 
 DXM_MANAGER::~DXM_MANAGER() {}
 
-bool DXM_MANAGER::Init( MODELINFO*& modelList, const int numModel, DXMPOLYGON Type )
+bool DXM_MANAGER::Init( TYPEINFO*& typeList, const int numModel, DXMPOLYGON Type )
 {
-	modelList = new MODELINFO[ numModel ];
-	if ( !modelList )
+	typeList = new TYPEINFO;
+	if ( !typeList )
+	{
+		LOG_ERROR(" Failed - Create Type List \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create Type List \n ");
+	}
+
+	typeList->TYPE = Type;
+	typeList->NumModel = numModel;
+
+	typeList->MODELS = new MODELINFO[ typeList->NumModel ];
+	if ( !typeList->MODELS )
 	{
 		LOG_ERROR(" Failed - Create Model List \n ");
 		return false;
 	}
 	else
 	{
-		LOG_INFO(" Successed - Create Model List \n ");
-	}
-
-	for ( int I = 0; I < numModel; I++ )
-	{
-		Create( modelList[ I ], Type );
+		Create( typeList );
 	}
 
 	return true;
 }
 
-void DXM_MANAGER::Release( MODELINFO*& modelList )
+void DXM_MANAGER::Release( TYPEINFO*& typeList )
 {
-	if ( modelList )
+	if ( typeList )
 	{
-		delete[] modelList;
-		modelList = nullptr;
+		delete[] typeList;
+		typeList = nullptr;
 	}
 }
 
-bool DXM_MANAGER::Frame()
+bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int mouseY )
 {
+	if ( InsertState )
+	{
+		Insert( typeList, mouseX, mouseY );
+	}
 	return true;
 }
 
-void DXM_MANAGER::Rotation( float X, float Y, float Z, MODELINFO& model )
+void DXM_MANAGER::Rotation( float X, float Y, float Z, MODELINFO*& model )
 {
-	model.ROT = XMFLOAT3( X, Y, Z );
+	model->ROT = XMFLOAT3( X, Y, Z );
 }
 
-void DXM_MANAGER::Translation( float X, float Y, float Z, MODELINFO& model )
+void DXM_MANAGER::Translation( float X, float Y, float Z, MODELINFO*& model )
 {
-	model.POS = XMFLOAT3( X, Y, Z );
+	model->POS = XMFLOAT3( X, Y, Z );
 }
 
 void DXM_MANAGER::Scale( float X, float Y, float Z ) {}
@@ -63,15 +76,15 @@ void DXM_MANAGER::InitPointer() {}
 
 void DXM_MANAGER::Destory( const int Num ) {}
 
-void DXM_MANAGER::Create( MODELINFO& model, DXMPOLYGON Type )
+void DXM_MANAGER::Create( TYPEINFO*& typeList )
 {
-	model.TYPE = Type;
-	model.NumVertex = model.TYPE + 1;
-	model.NumIndex = model.TYPE * 3;
-	model.VERTICES = new VERTEXINFO[ model.NumVertex ];
-	model.INDICES = new UINT[ model.NumIndex ];
+	typeList->NumVertex = typeList->TYPE + 1;
+	typeList->NumIndex = typeList->TYPE * 3;
+	typeList->VERTICES = new VERTEXINFO[ typeList->NumVertex ];
+	typeList->INDICES = new UINT[ typeList->NumIndex ];
+	float radius = 40.0f;
 
-	for ( int I = 0; I < model.NumVertex; I++ )
+	for ( int I = 0; I < typeList->NumVertex; I++ )
 	{
 		XMFLOAT3 Position;
 		XMFLOAT4 Color = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -81,18 +94,34 @@ void DXM_MANAGER::Create( MODELINFO& model, DXMPOLYGON Type )
 		}
 		else
 		{
-			Position = XMFLOAT3( cos( I * 2 * M_PI / model.TYPE ), sin( I * 2 * M_PI / model.TYPE ), 0.0f );
+			Position = XMFLOAT3( radius * cos( I * 2 * M_PI / typeList->TYPE ), radius * sin( I * 2 * M_PI / typeList->TYPE ), 0.0f );
 		}
-		model.VERTICES[ I ].POS = Position;
-		model.VERTICES[ I ].COLOR = Color;
-		model.VERTICES[ I ].NORMAL = XMFLOAT3( 0.0f, 0.0f, 1.0f );
+		typeList->VERTICES[ I ].POS = Position;
+		typeList->VERTICES[ I ].COLOR = Color;
+		typeList->VERTICES[ I ].NORMAL = XMFLOAT3( 0.0f, 0.0f, 1.0f );
 		if ( I >= 1 )
 		{
 			int Temp = I + 1;
-			if ( Temp > model.TYPE ) { Temp -= model.TYPE; }
-			model.INDICES[ 3 * (I - 1) ] = 0;
-			model.INDICES[ 3 * (I - 1) + 1 ] = Temp;
-			model.INDICES[ 3 * (I - 1) + 2 ] = I;
+			if ( Temp > typeList->TYPE ) { Temp -= typeList->TYPE; }
+			typeList->INDICES[ 3 * (I - 1) ] = 0;
+			typeList->INDICES[ 3 * (I - 1) + 1 ] = Temp;
+			typeList->INDICES[ 3 * (I - 1) + 2 ] = I;
 		}
 	}
+}
+
+void DXM_MANAGER::Insert( TYPEINFO*& typeList, int mouseX, int mouseY )
+{
+	typeList->NumModel++;
+	MODELINFO* Temp = new MODELINFO[ typeList->NumModel ];
+	for ( int I = 0; I < typeList->NumModel-1; I++ )
+	{
+		Temp[ I ] = typeList->MODELS[ I ];
+	}
+	Temp[ typeList->NumModel -1 ].POS = XMFLOAT3( (float)mouseX, (float)mouseY, 0.0f );
+	Temp[ typeList->NumModel -1 ].ROT = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+
+	typeList->MODELS = Temp;
+	delete[] Temp;
+	Temp = nullptr;
 }

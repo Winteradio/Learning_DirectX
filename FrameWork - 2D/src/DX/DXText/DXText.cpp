@@ -24,11 +24,12 @@ bool DXTEXT::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext,
 
 	m_BaseViewMatrix = baseViewMatrix;
 
-	m_SenCount = 4;
+	m_SenCount = 5;
+	m_MaxText = 16;
 
 	if ( !InitFont( Device, FontfileDIR, TexfileDIR ) ) { return false; }
 	if ( !InitFontShader( Device, DevContext, VSfileDIR, PSfileDIR ) ) { return false; }
-	if ( !InitSentence( Device, 16 ) ) { return false; }
+	if ( !InitSentence( Device, m_MaxText ) ) { return false; }
 
 	return true;
 }
@@ -69,87 +70,36 @@ bool DXTEXT::Render( ID3D11DeviceContext* DevContext, XMMATRIX worldMatrix, XMMA
 }
 
 
-bool DXTEXT::Frame( ID3D11DeviceContext* DevContext, int mouseX, int mouseY, int CPU, int FPS )
+bool DXTEXT::Frame( ID3D11DeviceContext* DevContext, int mouseX, int mouseY, int CPU, int FPS, int numModel )
 {
-	if ( !SetMousePosition( DevContext, m_SentenceList[0], m_SentenceList[1], mouseX, mouseY ) ) { return false; }
-	if ( !SetCPU( DevContext, m_SentenceList[2], CPU ) ) { return false; }
-	if ( !SetFPS( DevContext, m_SentenceList[3], FPS ) ) { return false; }
+	XMFLOAT4 Color = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
+	if ( !SetSentence( DevContext, m_SentenceList[0], "FPS : ", FPS, 20, 30, Color ) ) { return false; }
+	if ( !SetSentence( DevContext, m_SentenceList[1], "CPU : ", CPU, 20, 60, Color ) ) { return false; }
+	if ( !SetSentence( DevContext, m_SentenceList[2], "Mouse X : ", mouseX, 200, 30, Color ) ) { return false; }
+	if ( !SetSentence( DevContext, m_SentenceList[3], "Mouse Y : ", mouseY, 200 ,60, Color ) ) { return false; }
+	if ( !SetSentence( DevContext, m_SentenceList[4], "Num : ", numModel, 20 ,90, Color ) ) { return false; }
 
 	return true;
 }
 
 
-bool DXTEXT::SetMousePosition( ID3D11DeviceContext* DevContext, SentenceType*& sentence1, SentenceType*& sentence2, int mouseX, int mouseY )
+bool DXTEXT::SetSentence( ID3D11DeviceContext* DevContext, SentenceType*& sentence, char* Text, int Info, int posX, int posY, XMFLOAT4 color )
 {
-	// Mouse X
-	char tempString[16] = {0,};
-	_itoa_s( mouseX, tempString, 10 );
+	char tempString[ 16 ] = {0,};
+	_itoa_s( Info, tempString, 10 );
 
-	char mouseString[16] = {0,};
-	strcpy_s( mouseString, "Mouse X: " );
-	strcat_s( mouseString, tempString );
+	char resultString[ 16 ] = {0,};
+	strcpy_s( resultString, Text );
+	strcat_s( resultString, tempString );
 
-	if ( !UpdateSentence( DevContext, sentence1, mouseString, 200, 30, 1.0f, 1.0f, 1.0f ) )
+	if ( !UpdateSentence( DevContext, sentence, resultString, posX, posY, color.x, color.y, color.z ) )
 	{
-		LOG_ERROR(" Failed - Update Mouse X \n ");
-		return false;
-	}
-
-	// Mouse Y
-	_itoa_s( mouseY, tempString, 10 );
-
-	strcpy_s( mouseString, "Mouse Y: " );
-	strcat_s( mouseString, tempString );
-
-	if ( !UpdateSentence( DevContext, sentence2, mouseString, 200, 60, 1.0f, 1.0f, 1.0f) )
-	{
-		LOG_ERROR(" Failed - Update Mouse Y \n ");
+		LOG_ERROR(" Failed - Update %s \n ", Text );
 		return false;
 	}
 
 	return true;
 }
-
-
-bool DXTEXT::SetFPS( ID3D11DeviceContext* DevContext, SentenceType*& sentence, int FPS )
-{
-	// FPS
-	char tempString[16] = {0,};
-	_itoa_s( FPS, tempString, 10 );
-
-	char FPSString[16] = {0,};
-	strcpy_s( FPSString, "FPS : " );
-	strcat_s( FPSString, tempString );
-
-	if ( !UpdateSentence( DevContext, sentence, FPSString, 20, 30, 1.0f, 1.0f, 1.0f ) )
-	{
-		LOG_ERROR(" Failed - Update Mouse X \n ");
-		return false;
-	}
-
-	return true;
-}
-
-
-bool DXTEXT::SetCPU( ID3D11DeviceContext* DevContext, SentenceType*& sentence, int CPU )
-{
-	// CPUPercent
-	char tempString[16] = {0,};
-	_itoa_s( CPU, tempString, 10 );
-
-	char CPUString[16] = {0,};
-	strcpy_s( CPUString, "CPU : " );
-	strcat_s( CPUString, tempString );
-
-	if ( !UpdateSentence( DevContext, sentence, CPUString, 20, 60, 1.0f, 1.0f, 1.0f ) )
-	{
-		LOG_ERROR(" Failed - Update CPU Percent \n ");
-		return false;
-	}
-
-	return true;
-}
-
 
 bool DXTEXT::InitFont( ID3D11Device* Device, const char* FontfileDIR, const char* TexfileDIR )
 {

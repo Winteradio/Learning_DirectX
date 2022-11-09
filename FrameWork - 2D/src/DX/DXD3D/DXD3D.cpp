@@ -34,7 +34,6 @@ bool DXD3D::Init( int Width, int Height, bool VSYNC, HWND hWnd, float SCREEN_DEP
 	return true;
 }
 
-
 void DXD3D::Release()
 {
 	if ( m_SwapChain ) { m_SwapChain->SetFullscreenState( false, NULL ); }
@@ -339,7 +338,8 @@ void DXD3D::InitMatrix( int Width, int Height, float SCREEN_DEPTH, float SCREEN_
     m_WorldMatrix = XMMatrixIdentity();
 
     // Set for 2D Rendering
-    m_OrthoMatrix = XMMatrixOrthographicLH((float)Width, (float)Height, SCREEN_NEAR, SCREEN_DEPTH);
+    // m_OrthoMatrix = XMMatrixOrthographicLH((float)Width, (float)Height, SCREEN_NEAR, SCREEN_DEPTH);
+    m_OrthoMatrix = XMMatrixOrthographicOffCenterLH( -(float)Width/2, (float)Width/2, -(float)Height/2, (float)Height/2, SCREEN_NEAR, SCREEN_DEPTH );
 }
 
 
@@ -413,15 +413,9 @@ void DXD3D::GetWorldMatrix( XMMATRIX& WorldMatrix ) { WorldMatrix = m_WorldMatri
 
 void DXD3D::GetOrthoMatrix( XMMATRIX& OrthoMatrix ) { OrthoMatrix = m_OrthoMatrix; }
 
-void DXD3D::TurnWireFrameOn()
-{
-	m_DeviceContext->RSSetState( m_RasterStateWF );
-}
+void DXD3D::TurnWireFrameOn() { m_DeviceContext->RSSetState( m_RasterStateWF ); }
 
-void DXD3D::TurnWireFrameOff()
-{
-	m_DeviceContext->RSSetState( m_RasterStateSL );
-}
+void DXD3D::TurnWireFrameOff() { m_DeviceContext->RSSetState( m_RasterStateSL ); }
 
 void DXD3D::TurnZBufferOn() { m_DeviceContext->OMSetDepthStencilState( m_DepthEnabledStencilState, 1 ); }
 

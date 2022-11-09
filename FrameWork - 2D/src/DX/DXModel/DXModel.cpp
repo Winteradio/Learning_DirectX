@@ -38,7 +38,7 @@ void DXMODEL::Release()
 	m_IndexBuffer->Release();
 
 	m_DXTEXTURE->Release();
-	m_DXMMANGER->Release( m_DXMODELLIST);
+	m_DXMMANGER->Release( m_DXMODELLIST );
 
 	InitPointer();
 
@@ -74,6 +74,18 @@ bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 	//if ( !UpdateVertexBuffer( DevContext ) ) { return false; }
 	//if ( !UpdateIndexBuffer( DevContext ) ) { return false; }
 	//if ( !UpdateOutputBuffer( DevContext ) ) { return false; }
+
+	return true;
+}
+
+
+bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY )
+{
+	if ( !m_DXMMANGER ->Frame( m_DXMODELLIST, InsertState, mouseX, mouseY ) )
+	{
+		LOG_INFO(" Failed - Frame for DXMODEL \n ");
+		return false;
+	}
 
 	return true;
 }
@@ -171,7 +183,7 @@ bool DXMODEL::InitDXMMANGER( int numModel, DXMPOLYGON Type )
 		LOG_INFO(" Successed - Create DXM Manager Object \n ");
 	}
 
-	if ( !m_DXMMANGER->Init( m_DXMODELLIST, numModel, Type ) )
+	if ( !m_DXMMANGER->Init( m_DXMODELLIST , numModel, Type ) )
 	{
 		LOG_ERROR(" Failed - Init DXM Magner Object \n ");
 		return false;
@@ -224,5 +236,6 @@ bool DXMODEL::LoadTexture( ID3D11Device* Device, const char* IMGfileDIR )
 
 int DXMODEL::GetVertexCount( int Num ) { return m_DXMODELLIST[ Num - 1 ].NumVertex; }
 int DXMODEL::GetIndexCount( int Num ) { return m_DXMODELLIST[ Num - 1 ].NumIndex; }
+int DXMODEL::GetNumModel( int Num ) { return m_DXMODELLIST[ Num -1 ].NumModel; }
 
 ID3D11ShaderResourceView* DXMODEL::GetTexture() { return m_DXTEXTURE->GetTexture(); }

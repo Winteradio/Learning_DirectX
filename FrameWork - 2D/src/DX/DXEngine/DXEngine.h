@@ -14,7 +14,7 @@
 // Variables - Globals
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
-const float SCREEN_NEAR = 1.0f;
+const float SCREEN_NEAR = 0.1f;
 
 class DXENGINE
 {
@@ -30,7 +30,7 @@ class DXENGINE
 
 		bool Init( int, int, HWND );
 
-		bool Frame( int, int, float, MOUSEINFO*, bool );
+		bool Frame( int, int, float, MOUSEINFO*, bool, bool );
 		void Release();
 
 	// Functions - Divide Init Functions

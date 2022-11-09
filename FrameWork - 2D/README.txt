@@ -310,3 +310,23 @@ FPS, CPU 화면에 출력
 2차원 카메라 이동 & Zoom In/Out
 -> 카메라 이동 : 왼쪽 마우스 버튼 누른 상태에서 드래그
 -> 줌 인&아웃 : Ctrl 키 누른 상태에서 휠 드래그
+
+
+# 12
+2차원 렌더링 필요
+-> Orthogonal Matrix 형성 및 마우스 위치 인식 제대로 하는지 파악하기
+	-> XMMatrixOrthograpghicLH : 0.0 을 초점으로하는 ViewMatrix 설정
+	-> XMMatrixOrthographicOffCenterLH : ViewPosition을 중심으로 ViewMatrix 설정
+
+-> Windows Size 와 Client Size 다름
+	-> http://www.directxtutorial.com/Lesson.aspx?lessonid=11-1-4
+
+-> 마우스를 활용한 모델 추가
+	-> WM_KEYDOWN의 값을 넣어줬으면,
+	   WM_KEYUP의 값도 세팅해줘야한다.
+	-> WM_KEYDOWN F1 값 세탕하고, WM_KEYUP은 세팅 안할 시,
+	   F1 키를 누르게 되면 Window는 종료되게 된다.
+	-> F2 값만 넣어지게 되었을 시, Insert가 시작이 되면 계속 추가됨
+	   3초에 약 15000개의 입자 정보가 업데이트 된다.
+	   F2를 눌러서, Insert가 진행이 되도록 하고,
+	   마우스 클릭이 되었을 때만, 추가 생성이 되도록 구현해야함
