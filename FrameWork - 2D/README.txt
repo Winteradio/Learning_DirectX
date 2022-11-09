@@ -330,3 +330,23 @@ FPS, CPU 화면에 출력
 	   3초에 약 15000개의 입자 정보가 업데이트 된다.
 	   F2를 눌러서, Insert가 진행이 되도록 하고,
 	   마우스 클릭이 되었을 때만, 추가 생성이 되도록 구현해야함
+
+	-> WM_KEYDOWN - F1, InsertState 세팅 값 변경
+	-> InsertState에 맞춰서 추가할 Model들을 마우스 X,Y 위치에 맞춰서 Rendering
+		-> 하지만, InsertState가 true인 상태에선 1초당 500개의 Model들이 그려진다.
+		-> 1초에 하나씩 그려지도록 수정
+			-> ModelManager의 Insert에서 Time(float), PrevTime(float)을 int로 형변환한 후,
+			   Time과 Prev가 다를 때( 1초에 한번 ) Insert가 진행되도록 실행하였다.
+
+	-> TypeInfo
+		-> Type - DXMTRIANGLE, DXMRECTANGLE, DXMPENTAGON, DXMHEXAGON, DXMCIRCLE
+		-> NumModel - Model의 개수
+		-> MaxModel - Model의 최대개수
+		-> MODELS - Model들의 Position과 Rotation 정보들을 가진 객체 포인터
+		-> NumVertex - 주어진 Type의 Vertex 갯수
+		-> VERTICES - 주어진 Type의 VERTEXINFO 객체 포인터
+		-> NumIndex - 주어진 Type의 Index 갯수
+		-> INDICES - 주어진 Type의 Index 정보
+
+	-> TypeInfo에서 Model들을 지금은 정적할당으로 구현
+		-> 동적할당으로 다시 한번 더 해보기

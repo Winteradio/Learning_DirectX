@@ -33,6 +33,8 @@ class SUBINPUT
 		MOUSEINFO* GetMouse();
 		bool GetRasterizerState();
 		bool GetInsertState();
+		bool Frame();
+
 		LRESULT CALLBACK MessageHandler( HWND, UINT, WPARAM, LPARAM );
 
 	private :

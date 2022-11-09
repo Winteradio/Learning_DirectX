@@ -108,6 +108,7 @@ bool SYSTEM::Frame()
 	m_SUBCPU->Frame();
 	m_SUBFPS->Frame();
 	m_SUBTIMER->Frame();
+	m_SUBINPUT->Frame();
 
 	if ( !m_DXENGINE->Frame( m_SUBFPS->GetFPS(), m_SUBCPU->GetCPUPercent(), m_SUBTIMER->GetTime(), m_SUBINPUT->GetMouse(), m_SUBINPUT->GetRasterizerState(), m_SUBINPUT->GetInsertState() ) )
 	{

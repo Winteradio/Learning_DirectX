@@ -21,12 +21,12 @@ class DXMODEL
 		void Release();
 		void Render( ID3D11DeviceContext* );
 		bool Update( ID3D11DeviceContext* );
-		bool Frame( bool, int, int );
+		bool Frame( bool, int, int, int, int );
 
 	// Functions - Divide Init Function
 	private :
 
-		bool InitDXMMANGER( int, DXMPOLYGON );
+		bool InitDXMMANGER( DXMPOLYGON );
 		bool InitVertexBuffer( ID3D11Device*, int );
 		bool InitIndexBuffer( ID3D11Device*, int );
 		void InitPointer();
@@ -39,7 +39,9 @@ class DXMODEL
 		int GetIndexCount( int );
 		int GetVertexCount( int );
 		int GetNumModel( int );
+		XMFLOAT3 GetPosition( int, int  );
 		ID3D11ShaderResourceView* GetTexture();
+		TYPEINFO* m_DXMODELLIST;
 
 	// Variables
 	private :
@@ -47,13 +49,12 @@ class DXMODEL
 		ID3D11Buffer* m_VertexBuffer;
 		ID3D11Buffer* m_IndexBuffer;
 
-		int m_ModelCount;
+		int m_MaxCount;
 
 		ModelTXT* m_ModelTXT;
 
 		DXTEXTURE* m_DXTEXTURE;
 		DXM_MANAGER* m_DXMMANGER;
-		TYPEINFO* m_DXMODELLIST;
 };
 
 #endif

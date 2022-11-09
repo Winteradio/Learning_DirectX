@@ -12,7 +12,7 @@ DXM_MANAGER::DXM_MANAGER( const DXM_MANAGER* Other )
 
 DXM_MANAGER::~DXM_MANAGER() {}
 
-bool DXM_MANAGER::Init( TYPEINFO*& typeList, const int numModel, DXMPOLYGON Type )
+bool DXM_MANAGER::Init( TYPEINFO*& typeList, const int MaxCount, DXMPOLYGON Type )
 {
 	typeList = new TYPEINFO;
 	if ( !typeList )
@@ -26,9 +26,10 @@ bool DXM_MANAGER::Init( TYPEINFO*& typeList, const int numModel, DXMPOLYGON Type
 	}
 
 	typeList->TYPE = Type;
-	typeList->NumModel = numModel;
+	typeList->NumModel = 0;
+	typeList->MaxModel = MaxCount;
 
-	typeList->MODELS = new MODELINFO[ typeList->NumModel ];
+	typeList->MODELS = new MODELINFO[ MaxCount ];
 	if ( !typeList->MODELS )
 	{
 		LOG_ERROR(" Failed - Create Model List \n ");
@@ -51,9 +52,9 @@ void DXM_MANAGER::Release( TYPEINFO*& typeList )
 	}
 }
 
-bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int mouseY )
+bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int mouseY, int Time, int prevTime )
 {
-	if ( InsertState )
+	if ( InsertState && Time != prevTime )
 	{
 		Insert( typeList, mouseX, mouseY );
 	}
@@ -112,16 +113,12 @@ void DXM_MANAGER::Create( TYPEINFO*& typeList )
 
 void DXM_MANAGER::Insert( TYPEINFO*& typeList, int mouseX, int mouseY )
 {
-	typeList->NumModel++;
-	MODELINFO* Temp = new MODELINFO[ typeList->NumModel ];
-	for ( int I = 0; I < typeList->NumModel-1; I++ )
+	if ( typeList->NumModel + 1 > typeList->MaxModel )
 	{
-		Temp[ I ] = typeList->MODELS[ I ];
+		return;
 	}
-	Temp[ typeList->NumModel -1 ].POS = XMFLOAT3( (float)mouseX, (float)mouseY, 0.0f );
-	Temp[ typeList->NumModel -1 ].ROT = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 
-	typeList->MODELS = Temp;
-	delete[] Temp;
-	Temp = nullptr;
+	typeList->NumModel++;
+	typeList->MODELS[ typeList->NumModel -1 ].POS = XMFLOAT3( (float)mouseX, (float)mouseY, 0.0f );
+	typeList->MODELS[ typeList->NumModel -1 ].ROT = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 }

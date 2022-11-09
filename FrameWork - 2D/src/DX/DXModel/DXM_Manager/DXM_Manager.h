@@ -31,6 +31,7 @@ struct TYPEINFO
 	DXMPOLYGON TYPE;
 
 	int NumModel;
+	int MaxModel;
 	MODELINFO* MODELS;
 
 	int NumVertex;
@@ -52,7 +53,7 @@ class DXM_MANAGER
 
 		bool Init( TYPEINFO*&, const int, DXMPOLYGON );
 		void Release( TYPEINFO*& );
-		bool Frame( TYPEINFO*&, bool, int, int );
+		bool Frame( TYPEINFO*&, bool, int, int, int, int );
 
 	private :
 

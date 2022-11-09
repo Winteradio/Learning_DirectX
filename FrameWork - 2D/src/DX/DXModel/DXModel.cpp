@@ -24,7 +24,7 @@ DXMODEL::~DXMODEL(){};
 bool DXMODEL::Init( ID3D11Device* Device, const char* IMGfileDIR, const char* MDfileDIR )
 {
 	if ( !LoadTexture( Device, IMGfileDIR ) ) { return false; }
-	if ( !InitDXMMANGER( 1, DXMCIRCLE ) ) { return false; }
+	if ( !InitDXMMANGER( DXMCIRCLE ) ) { return false; }
 	if ( !InitVertexBuffer( Device, 1 ) ) { return false; }
 	if ( !InitIndexBuffer( Device, 1 ) ) { return false; }
 
@@ -79,14 +79,13 @@ bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 }
 
 
-bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY )
+bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY, int Time, int prevTime )
 {
-	if ( !m_DXMMANGER ->Frame( m_DXMODELLIST, InsertState, mouseX, mouseY ) )
+	if ( !m_DXMMANGER ->Frame( m_DXMODELLIST, InsertState, mouseX, mouseY, Time, prevTime ) )
 	{
 		LOG_INFO(" Failed - Frame for DXMODEL \n ");
 		return false;
 	}
-
 	return true;
 }
 
@@ -170,8 +169,10 @@ bool DXMODEL::InitIndexBuffer( ID3D11Device* Device, int Num )
 }
 
 
-bool DXMODEL::InitDXMMANGER( int numModel, DXMPOLYGON Type )
+bool DXMODEL::InitDXMMANGER( DXMPOLYGON Type )
 {
+	m_MaxCount = 4000;
+
 	m_DXMMANGER = new DXM_MANAGER;
 	if ( !m_DXMMANGER )
 	{
@@ -183,7 +184,7 @@ bool DXMODEL::InitDXMMANGER( int numModel, DXMPOLYGON Type )
 		LOG_INFO(" Successed - Create DXM Manager Object \n ");
 	}
 
-	if ( !m_DXMMANGER->Init( m_DXMODELLIST , numModel, Type ) )
+	if ( !m_DXMMANGER->Init( m_DXMODELLIST, m_MaxCount, Type ) )
 	{
 		LOG_ERROR(" Failed - Init DXM Magner Object \n ");
 		return false;
@@ -237,5 +238,6 @@ bool DXMODEL::LoadTexture( ID3D11Device* Device, const char* IMGfileDIR )
 int DXMODEL::GetVertexCount( int Num ) { return m_DXMODELLIST[ Num - 1 ].NumVertex; }
 int DXMODEL::GetIndexCount( int Num ) { return m_DXMODELLIST[ Num - 1 ].NumIndex; }
 int DXMODEL::GetNumModel( int Num ) { return m_DXMODELLIST[ Num -1 ].NumModel; }
+XMFLOAT3 DXMODEL::GetPosition( int Num, int Index ) { return m_DXMODELLIST[ Num -1 ].MODELS[ Index ].POS; }
 
 ID3D11ShaderResourceView* DXMODEL::GetTexture() { return m_DXTEXTURE->GetTexture(); }

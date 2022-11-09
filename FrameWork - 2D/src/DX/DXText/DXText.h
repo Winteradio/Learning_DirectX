@@ -41,7 +41,7 @@ class DXTEXT
 		void Release();
 
 		bool Render( ID3D11DeviceContext*, XMMATRIX, XMMATRIX );
-		bool Frame( ID3D11DeviceContext*, int, int, int, int, int);
+		bool Frame( ID3D11DeviceContext*, int, int, int, int, int, int);
 
 		bool SetSentence( ID3D11DeviceContext*, SentenceType*&, char*, int, int, int, XMFLOAT4 );
 

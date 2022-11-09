@@ -63,6 +63,7 @@ class DXENGINE
 		float rotation;
 		float move;
 		float move_temp;
+		int prevTime;
 
 		const char* m_LTVSfileDIR;
 		const char* m_LTPSfileDIR;

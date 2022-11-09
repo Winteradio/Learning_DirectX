@@ -22,8 +22,9 @@ class SUBTIMER
 
 		INT64 m_Frequency;
 		float m_TicksPerMS;
-		INT64 m_StartTime;
-		float m_FrameTime;
+		DWORD m_StateTime;
+		DWORD m_FinishTime;
+		float m_Time;
 };
 
 #endif

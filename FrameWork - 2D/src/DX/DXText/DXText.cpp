@@ -24,7 +24,7 @@ bool DXTEXT::Init( ID3D11Device* Device, ID3D11DeviceContext* DevContext,
 
 	m_BaseViewMatrix = baseViewMatrix;
 
-	m_SenCount = 5;
+	m_SenCount = 6;
 	m_MaxText = 16;
 
 	if ( !InitFont( Device, FontfileDIR, TexfileDIR ) ) { return false; }
@@ -70,7 +70,7 @@ bool DXTEXT::Render( ID3D11DeviceContext* DevContext, XMMATRIX worldMatrix, XMMA
 }
 
 
-bool DXTEXT::Frame( ID3D11DeviceContext* DevContext, int mouseX, int mouseY, int CPU, int FPS, int numModel )
+bool DXTEXT::Frame( ID3D11DeviceContext* DevContext, int mouseX, int mouseY, int CPU, int FPS, int Time, int numModel )
 {
 	XMFLOAT4 Color = XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f );
 	if ( !SetSentence( DevContext, m_SentenceList[0], "FPS : ", FPS, 20, 30, Color ) ) { return false; }
@@ -78,6 +78,7 @@ bool DXTEXT::Frame( ID3D11DeviceContext* DevContext, int mouseX, int mouseY, int
 	if ( !SetSentence( DevContext, m_SentenceList[2], "Mouse X : ", mouseX, 200, 30, Color ) ) { return false; }
 	if ( !SetSentence( DevContext, m_SentenceList[3], "Mouse Y : ", mouseY, 200 ,60, Color ) ) { return false; }
 	if ( !SetSentence( DevContext, m_SentenceList[4], "Num : ", numModel, 20 ,90, Color ) ) { return false; }
+	if ( !SetSentence( DevContext, m_SentenceList[5], "Time : ", Time, 20 ,120, Color ) ) { return false; }
 
 	return true;
 }

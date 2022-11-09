@@ -19,23 +19,19 @@ bool SUBTIMER::Init()
 	}
 
 	m_TicksPerMS = (float)( m_Frequency / 1000 );
-	QueryPerformanceCounter( ( LARGE_INTEGER*)&m_StartTime );
+
+	m_StateTime = timeGetTime();
 
 	return true;
 }
 
 void SUBTIMER::Frame()
 {
-	INT64 currentTime = 0;
-
-	QueryPerformanceCounter( ( LARGE_INTEGER*)&currentTime );
-	float timeDifference = (float)( currentTime - m_StartTime );
-
-	m_FrameTime = timeDifference / m_TicksPerMS;
-	m_StartTime = currentTime;
+	m_FinishTime = timeGetTime();
+	m_Time = ( m_FinishTime - m_StateTime ) / 1000.0f;
 }
 
 float SUBTIMER::GetTime()
 {
-	return m_FrameTime;
+	return m_Time;
 }
