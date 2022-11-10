@@ -1,45 +1,8 @@
 #ifndef __DXM_MANAGER_H__
 #define __DXM_MANAGER_H__
 
-#include "DXCommon.h"
-#include "DXPhysics.h"
-
-typedef enum DXMPOLYGON
-{
-	DXMTRIANGLE = 3,
-	DXMRECTANGLE = 4,
-	DXMPENTAGON = 5,
-	DXMHEXAGON = 6,
-	DXMCIRCLE = 30,
-}DXMPOLYGON;
-
-struct VERTEXINFO
-{
-	XMFLOAT3 POS;
-	XMFLOAT4 COLOR;
-	XMFLOAT3 NORMAL;
-};
-
-struct MODELINFO
-{
-	XMFLOAT3 POS;
-	XMFLOAT3 ROT;
-};
-
-struct TYPEINFO
-{
-	DXMPOLYGON TYPE;
-
-	int NumModel;
-	int MaxModel;
-	MODELINFO* MODELS;
-
-	int NumVertex;
-	VERTEXINFO* VERTICES;
-
-	int NumIndex;
-	UINT* INDICES;
-};
+#include "DXM_Common.h"
+#include "DXM_Physics.h"
 
 class DXM_MANAGER
 {
@@ -53,7 +16,7 @@ class DXM_MANAGER
 
 		bool Init( TYPEINFO*&, const int, DXMPOLYGON );
 		void Release( TYPEINFO*& );
-		bool Frame( TYPEINFO*&, bool, int, int, int, int );
+		bool Frame( TYPEINFO*&, bool, int, int, float, float );
 
 	private :
 

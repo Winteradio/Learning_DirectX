@@ -4,6 +4,7 @@
 #include "DXCommon.h"
 #include "DXTexture.h"
 #include "DXM_Manager.h"
+#include "DXM_Physics.h"
 
 class DXMODEL
 {
@@ -21,12 +22,13 @@ class DXMODEL
 		void Release();
 		void Render( ID3D11DeviceContext* );
 		bool Update( ID3D11DeviceContext* );
-		bool Frame( bool, int, int, int, int );
+		bool Frame( bool, int, int, float, float );
 
 	// Functions - Divide Init Function
 	private :
 
 		bool InitDXMMANGER( DXMPOLYGON );
+		bool InitDXMPHYSICS( float, float, float, float );
 		bool InitVertexBuffer( ID3D11Device*, int );
 		bool InitIndexBuffer( ID3D11Device*, int );
 		void InitPointer();
@@ -55,6 +57,7 @@ class DXMODEL
 
 		DXTEXTURE* m_DXTEXTURE;
 		DXM_MANAGER* m_DXMMANGER;
+		DXM_PHYSICS* m_DXMPHYSICS;
 };
 
 #endif

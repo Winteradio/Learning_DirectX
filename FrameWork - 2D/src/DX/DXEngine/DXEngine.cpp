@@ -30,15 +30,13 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 	move = 0.0f;
 	move_temp = 0.02f;
 
-	system("pause");
-
 	return true;
 }
 
 
 bool DXENGINE::Frame( int FPS, int CPU, float Time, MOUSEINFO* Mouse, bool wireFrame, bool Insert )
 {
-	if ( !m_DXMODEL->Frame( Insert, Mouse->PosX, Mouse->PosY, (int)Time, prevTime ) )
+	if ( !m_DXMODEL->Frame( Insert, Mouse->PosX, Mouse->PosY, Time, prevTime ) )
 	{
 		LOG_ERROR(" Failed - Insert New Model \n ");
 		return false;
@@ -68,7 +66,7 @@ bool DXENGINE::Frame( int FPS, int CPU, float Time, MOUSEINFO* Mouse, bool wireF
 		move_temp *= -1.0f;
 	}
 
-	prevTime = (int)Time;
+	prevTime = Time;
 
 	return Render( rotation, wireFrame );
 }

@@ -52,9 +52,9 @@ void DXM_MANAGER::Release( TYPEINFO*& typeList )
 	}
 }
 
-bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int mouseY, int Time, int prevTime )
+bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int mouseY, float Time, float prevTime )
 {
-	if ( InsertState && Time != prevTime )
+	if ( InsertState && (int)(Time * 3) != (int)(prevTime * 3) )
 	{
 		Insert( typeList, mouseX, mouseY );
 	}
@@ -63,7 +63,7 @@ bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int 
 
 void DXM_MANAGER::Rotation( float X, float Y, float Z, MODELINFO*& model )
 {
-	model->ROT = XMFLOAT3( X, Y, Z );
+	model->ANG = XMFLOAT3( X, Y, Z );
 }
 
 void DXM_MANAGER::Translation( float X, float Y, float Z, MODELINFO*& model )
@@ -83,7 +83,7 @@ void DXM_MANAGER::Create( TYPEINFO*& typeList )
 	typeList->NumIndex = typeList->TYPE * 3;
 	typeList->VERTICES = new VERTEXINFO[ typeList->NumVertex ];
 	typeList->INDICES = new UINT[ typeList->NumIndex ];
-	float radius = 40.0f;
+	float radius = 20.0f;
 
 	for ( int I = 0; I < typeList->NumVertex; I++ )
 	{
@@ -95,7 +95,7 @@ void DXM_MANAGER::Create( TYPEINFO*& typeList )
 		}
 		else
 		{
-			Position = XMFLOAT3( radius * cos( I * 2 * M_PI / typeList->TYPE ), radius * sin( I * 2 * M_PI / typeList->TYPE ), 0.0f );
+			Position = XMFLOAT3( radius * (float)cos( I * 2 * M_PI / typeList->TYPE ), radius * (float)sin( I * 2 * M_PI / typeList->TYPE ), 0.0f );
 		}
 		typeList->VERTICES[ I ].POS = Position;
 		typeList->VERTICES[ I ].COLOR = Color;
@@ -120,5 +120,11 @@ void DXM_MANAGER::Insert( TYPEINFO*& typeList, int mouseX, int mouseY )
 
 	typeList->NumModel++;
 	typeList->MODELS[ typeList->NumModel -1 ].POS = XMFLOAT3( (float)mouseX, (float)mouseY, 0.0f );
-	typeList->MODELS[ typeList->NumModel -1 ].ROT = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	typeList->MODELS[ typeList->NumModel -1 ].ACC = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	typeList->MODELS[ typeList->NumModel -1 ].VEL = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+
+	typeList->MODELS[ typeList->NumModel -1 ].ANGACC = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	typeList->MODELS[ typeList->NumModel -1 ].ANGVEL = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	typeList->MODELS[ typeList->NumModel -1 ].ANG = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	typeList->MODELS[ typeList->NumModel -1 ].MASS = 1.0f;
 }

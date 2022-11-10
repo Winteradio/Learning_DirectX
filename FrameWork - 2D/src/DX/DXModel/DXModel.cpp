@@ -25,6 +25,7 @@ bool DXMODEL::Init( ID3D11Device* Device, const char* IMGfileDIR, const char* MD
 {
 	if ( !LoadTexture( Device, IMGfileDIR ) ) { return false; }
 	if ( !InitDXMMANGER( DXMCIRCLE ) ) { return false; }
+	if ( !InitDXMPHYSICS( -9.81f, 0.0f, 0.0f, 0.0f ) ) { return false; }
 	if ( !InitVertexBuffer( Device, 1 ) ) { return false; }
 	if ( !InitIndexBuffer( Device, 1 ) ) { return false; }
 
@@ -79,11 +80,17 @@ bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 }
 
 
-bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY, int Time, int prevTime )
+bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY, float Time, float prevTime )
 {
 	if ( !m_DXMMANGER ->Frame( m_DXMODELLIST, InsertState, mouseX, mouseY, Time, prevTime ) )
 	{
 		LOG_INFO(" Failed - Frame for DXMODEL \n ");
+		return false;
+	}
+
+	if ( !m_DXMPHYSICS->Frame( m_DXMODELLIST->MODELS, GetNumModel( 1 ), Time - prevTime ) )
+	{
+		LOG_INFO(" Failed -Frame for DXMODEL \n ");
 		return false;
 	}
 	return true;
@@ -196,6 +203,31 @@ bool DXMODEL::InitDXMMANGER( DXMPOLYGON Type )
 	return true;
 }
 
+bool DXMODEL::InitDXMPHYSICS( float gravity, float spring, float demper, float drag )
+{
+	m_DXMPHYSICS = new DXM_PHYSICS;
+	if ( !m_DXMPHYSICS )
+	{
+		LOG_ERROR(" Failed - Create DXM Physics Object \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create DXM Physics Object \n ");
+	}
+
+	if ( !m_DXMPHYSICS->Init( gravity, spring, demper, drag ) )
+	{
+		LOG_ERROR(" Failed - Init DXM Physics Object \n ");
+		return false;
+	}
+	else
+	{
+		LOG_INFO(" Successed - Create DXM Physics Object \n ");
+	}
+	return true;
+}
+
 void DXMODEL::InitPointer()
 {
 	m_VertexBuffer = nullptr;
@@ -203,6 +235,7 @@ void DXMODEL::InitPointer()
 
 	m_DXTEXTURE = nullptr;
 	m_DXMMANGER = nullptr;
+	m_DXMPHYSICS = nullptr;
 
 	m_ModelTXT = nullptr;
 }

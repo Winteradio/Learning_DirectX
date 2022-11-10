@@ -1,0 +1,50 @@
+#ifndef __DXM_COMMON_H__
+#define __DXM_COMMON_H__
+
+#include "DXCommon.h"
+
+typedef enum DXMPOLYGON
+{
+	DXMTRIANGLE = 3,
+	DXMRECTANGLE = 4,
+	DXMPENTAGON = 5,
+	DXMHEXAGON = 6,
+	DXMCIRCLE = 30,
+}DXMPOLYGON;
+
+struct VERTEXINFO
+{
+	XMFLOAT3 POS;
+	XMFLOAT4 COLOR;
+	XMFLOAT3 NORMAL;
+};
+
+struct MODELINFO
+{
+	XMFLOAT3 ACC;
+	XMFLOAT3 VEL;
+	XMFLOAT3 POS;
+
+	XMFLOAT3 ANGACC;
+	XMFLOAT3 ANGVEL;
+	XMFLOAT3 ANG;
+
+	float MASS;
+};
+
+struct TYPEINFO
+{
+	DXMPOLYGON TYPE;
+
+	int NumModel;
+	int MaxModel;
+	MODELINFO* MODELS;
+
+	int NumVertex;
+	VERTEXINFO* VERTICES;
+
+	int NumIndex;
+	UINT* INDICES;
+};
+
+#endif
