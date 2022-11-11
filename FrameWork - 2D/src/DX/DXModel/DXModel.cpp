@@ -21,11 +21,11 @@ DXMODEL::DXMODEL( const DXMODEL* Other )
 DXMODEL::~DXMODEL(){};
 
 
-bool DXMODEL::Init( ID3D11Device* Device, const char* IMGfileDIR, const char* MDfileDIR )
+bool DXMODEL::Init( int Width, int Height, ID3D11Device* Device, const char* IMGfileDIR, const char* MDfileDIR )
 {
 	if ( !LoadTexture( Device, IMGfileDIR ) ) { return false; }
 	if ( !InitDXMMANGER( DXMCIRCLE ) ) { return false; }
-	if ( !InitDXMPHYSICS( -9.81f, 0.0f, 0.0f, 0.0f ) ) { return false; }
+	if ( !InitDXMPHYSICS( Width, Height, -9.81f, 0.0f, 0.0f, 0.2f, 0.2f ) ) { return false; }
 	if ( !InitVertexBuffer( Device, 1 ) ) { return false; }
 	if ( !InitIndexBuffer( Device, 1 ) ) { return false; }
 
@@ -178,8 +178,6 @@ bool DXMODEL::InitIndexBuffer( ID3D11Device* Device, int Num )
 
 bool DXMODEL::InitDXMMANGER( DXMPOLYGON Type )
 {
-	m_MaxCount = 4000;
-
 	m_DXMMANGER = new DXM_MANAGER;
 	if ( !m_DXMMANGER )
 	{
@@ -191,7 +189,7 @@ bool DXMODEL::InitDXMMANGER( DXMPOLYGON Type )
 		LOG_INFO(" Successed - Create DXM Manager Object \n ");
 	}
 
-	if ( !m_DXMMANGER->Init( m_DXMODELLIST, m_MaxCount, Type ) )
+	if ( !m_DXMMANGER->Init( m_DXMODELLIST, Type ) )
 	{
 		LOG_ERROR(" Failed - Init DXM Magner Object \n ");
 		return false;
@@ -203,7 +201,7 @@ bool DXMODEL::InitDXMMANGER( DXMPOLYGON Type )
 	return true;
 }
 
-bool DXMODEL::InitDXMPHYSICS( float gravity, float spring, float demper, float drag )
+bool DXMODEL::InitDXMPHYSICS( int Width, int Height, float gravity, float spring, float demper, float drag, float friction )
 {
 	m_DXMPHYSICS = new DXM_PHYSICS;
 	if ( !m_DXMPHYSICS )
@@ -216,7 +214,7 @@ bool DXMODEL::InitDXMPHYSICS( float gravity, float spring, float demper, float d
 		LOG_INFO(" Successed - Create DXM Physics Object \n ");
 	}
 
-	if ( !m_DXMPHYSICS->Init( gravity, spring, demper, drag ) )
+	if ( !m_DXMPHYSICS->Init( Width, Height, gravity, spring, demper, drag, friction ) )
 	{
 		LOG_ERROR(" Failed - Init DXM Physics Object \n ");
 		return false;

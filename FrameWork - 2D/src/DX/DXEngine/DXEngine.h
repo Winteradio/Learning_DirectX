@@ -41,7 +41,7 @@ class DXENGINE
 		bool InitDXD3D( int, int, bool, HWND, float, float );
 		bool InitDXCAMERA();
 		bool InitDXLIGHT( const char*, const char* );
-		bool InitDXMODEL( const char*, const char* );
+		bool InitDXMODEL( int, int, const char*, const char* );
 		bool InitDXTEXT( int, int, const char*, const char*, const char*, const char* );
 
 	// Functions - Render for each frames
@@ -79,6 +79,8 @@ class DXENGINE
 		const char* m_TPSfileDIR;
 		const char* m_TFontfileDIR;
 		const char* m_TDDSfileDIR;
+
+		bool m_FPSCheck;
 };
 
 #endif __DXENGINE_H__

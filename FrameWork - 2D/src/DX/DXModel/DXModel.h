@@ -18,7 +18,7 @@ class DXMODEL
 	// Functions - Init, Release Object and Render
 	public :
 
-		bool Init( ID3D11Device*, const char*, const char* );
+		bool Init( int, int, ID3D11Device*, const char*, const char* );
 		void Release();
 		void Render( ID3D11DeviceContext* );
 		bool Update( ID3D11DeviceContext* );
@@ -28,7 +28,7 @@ class DXMODEL
 	private :
 
 		bool InitDXMMANGER( DXMPOLYGON );
-		bool InitDXMPHYSICS( float, float, float, float );
+		bool InitDXMPHYSICS( int, int, float, float, float, float, float );
 		bool InitVertexBuffer( ID3D11Device*, int );
 		bool InitIndexBuffer( ID3D11Device*, int );
 		void InitPointer();
@@ -50,8 +50,6 @@ class DXMODEL
 
 		ID3D11Buffer* m_VertexBuffer;
 		ID3D11Buffer* m_IndexBuffer;
-
-		int m_MaxCount;
 
 		ModelTXT* m_ModelTXT;
 

@@ -37,7 +37,7 @@ struct TYPEINFO
 	DXMPOLYGON TYPE;
 
 	int NumModel;
-	int MaxModel;
+	int Length;
 	MODELINFO* MODELS;
 
 	int NumVertex;

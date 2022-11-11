@@ -21,4 +21,8 @@ inline bool DXCOMP( XMFLOAT2 Num1, XMFLOAT2 Num2 ) { return Num1.x == Num2.x && 
 inline bool DXCOMP( XMFLOAT3 Num1, XMFLOAT3 Num2 ) { return Num1.x == Num2.x && Num1.y == Num2.y && Num1.z == Num2.z; }
 inline bool DXCOMP( XMFLOAT4 Num1, XMFLOAT4 Num2 ) { return Num1.x == Num2.x && Num1.y == Num2.y && Num1.z == Num2.z && Num1.w == Num2.w; }
 
+inline float DXDOT( XMFLOAT2 Num1, XMFLOAT2 Num2 ) { return Num1.x * Num2.x + Num1.y * Num2.y; }
+inline float DXDOT( XMFLOAT3 Num1, XMFLOAT3 Num2 ) { return Num1.x * Num2.x + Num1.y * Num2.y + Num1.z * Num2.z; }
+inline float DXDOT( XMFLOAT4 Num1, XMFLOAT4 Num2 ) { return Num1.x * Num2.x + Num1.y * Num2.y + Num1.z * Num2.z + Num1.w * Num2.w; }
+
 #endif

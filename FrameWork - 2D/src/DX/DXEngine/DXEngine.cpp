@@ -23,12 +23,14 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 	if ( !InitDXD3D( Width, Height, VSYNC_ENABLED, hWnd, SCREEN_DEPTH, SCREEN_NEAR ) ) { return false; }
 	if ( !InitDXCAMERA() ) { return false; }
 	if ( !InitDXLIGHT( m_LCVSfileDIR, m_LCPSfileDIR ) ) { return true; }
-	if ( !InitDXMODEL( m_LIMGfileDIR, m_MDfileDIR ) ) { return false; }
+	if ( !InitDXMODEL( Width, Height, m_LIMGfileDIR, m_MDfileDIR ) ) { return false; }
 	if ( !InitDXTEXT( Width, Height, m_TFontfileDIR, m_TDDSfileDIR, m_TVSfileDIR, m_TPSfileDIR ) ) { return false; }
 
 	rotation = 0.0f;
 	move = 0.0f;
 	move_temp = 0.02f;
+
+	m_FPSCheck = false;
 
 	return true;
 }
@@ -36,6 +38,9 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 
 bool DXENGINE::Frame( int FPS, int CPU, float Time, MOUSEINFO* Mouse, bool wireFrame, bool Insert )
 {
+	if ( FPS >= 100 ) { m_FPSCheck = true; }
+	if ( m_FPSCheck && FPS <= 60 ) { system("pause"); }
+
 	if ( !m_DXMODEL->Frame( Insert, Mouse->PosX, Mouse->PosY, Time, prevTime ) )
 	{
 		LOG_ERROR(" Failed - Insert New Model \n ");
@@ -280,7 +285,7 @@ bool DXENGINE::InitDXLIGHT( const char* VSfileDIR, const char* PSfileDIR )
 }
 
 
-bool DXENGINE::InitDXMODEL( const char* TexfileDIR, const char* MDfileDIR )
+bool DXENGINE::InitDXMODEL( int Width, int Height, const char* TexfileDIR, const char* MDfileDIR )
 {
 	// Create DXMODEL Object
 	m_DXMODEL = new DXMODEL;
@@ -296,7 +301,7 @@ bool DXENGINE::InitDXMODEL( const char* TexfileDIR, const char* MDfileDIR )
 	}
 
 	// Init DXMODEL Object
-	if ( !m_DXMODEL->Init( m_DXD3D->GetDevice(), TexfileDIR, MDfileDIR ) )
+	if ( !m_DXMODEL->Init( Width, Height, m_DXD3D->GetDevice(), TexfileDIR, MDfileDIR ) )
 	{
 		LOG_ERROR(" Failed - Init DXMODEL \n ");
 		return false;

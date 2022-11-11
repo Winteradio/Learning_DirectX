@@ -12,7 +12,7 @@ DXM_MANAGER::DXM_MANAGER( const DXM_MANAGER* Other )
 
 DXM_MANAGER::~DXM_MANAGER() {}
 
-bool DXM_MANAGER::Init( TYPEINFO*& typeList, const int MaxCount, DXMPOLYGON Type )
+bool DXM_MANAGER::Init( TYPEINFO*& typeList, DXMPOLYGON Type )
 {
 	typeList = new TYPEINFO;
 	if ( !typeList )
@@ -27,9 +27,9 @@ bool DXM_MANAGER::Init( TYPEINFO*& typeList, const int MaxCount, DXMPOLYGON Type
 
 	typeList->TYPE = Type;
 	typeList->NumModel = 0;
-	typeList->MaxModel = MaxCount;
+	typeList->Length = 1;
 
-	typeList->MODELS = new MODELINFO[ MaxCount ];
+	typeList->MODELS = new MODELINFO[ typeList->Length ];
 	if ( !typeList->MODELS )
 	{
 		LOG_ERROR(" Failed - Create Model List \n ");
@@ -54,7 +54,7 @@ void DXM_MANAGER::Release( TYPEINFO*& typeList )
 
 bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int mouseY, float Time, float prevTime )
 {
-	if ( InsertState && (int)(Time * 3) != (int)(prevTime * 3) )
+	if ( InsertState && (int)(Time * 5000) != (int)(prevTime * 5000) )
 	{
 		Insert( typeList, mouseX, mouseY );
 	}
@@ -83,7 +83,7 @@ void DXM_MANAGER::Create( TYPEINFO*& typeList )
 	typeList->NumIndex = typeList->TYPE * 3;
 	typeList->VERTICES = new VERTEXINFO[ typeList->NumVertex ];
 	typeList->INDICES = new UINT[ typeList->NumIndex ];
-	float radius = 20.0f;
+	float radius = 10.0f;
 
 	for ( int I = 0; I < typeList->NumVertex; I++ )
 	{
@@ -113,9 +113,17 @@ void DXM_MANAGER::Create( TYPEINFO*& typeList )
 
 void DXM_MANAGER::Insert( TYPEINFO*& typeList, int mouseX, int mouseY )
 {
-	if ( typeList->NumModel + 1 > typeList->MaxModel )
+	if ( typeList->NumModel + 1 > typeList->Length )
 	{
-		return;
+		MODELINFO* Temp = new MODELINFO[ 2 * typeList->Length ];
+		for ( int I = 0; I < typeList->NumModel; I++ )
+		{
+			Temp[ I ] = typeList->MODELS[ I ];
+		}
+		delete[] typeList->MODELS;
+		typeList->MODELS = Temp;
+
+		typeList->Length *= 2;
 	}
 
 	typeList->NumModel++;

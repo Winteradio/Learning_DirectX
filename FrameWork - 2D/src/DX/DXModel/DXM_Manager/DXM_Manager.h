@@ -14,7 +14,7 @@ class DXM_MANAGER
 
 	public :
 
-		bool Init( TYPEINFO*&, const int, DXMPOLYGON );
+		bool Init( TYPEINFO*&, DXMPOLYGON );
 		void Release( TYPEINFO*& );
 		bool Frame( TYPEINFO*&, bool, int, int, float, float );
 
