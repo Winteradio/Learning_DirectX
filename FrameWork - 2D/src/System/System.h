@@ -62,6 +62,8 @@ class SYSTEM
 		SUBFPS* m_SUBFPS;
 		SUBINPUT* m_SUBINPUT;
 		SUBTIMER* m_SUBTIMER;
+
+		double prevTime;
 };
 
 static LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );

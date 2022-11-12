@@ -14,37 +14,37 @@ typedef enum DXMPOLYGON
 
 struct VERTEXINFO
 {
-	XMFLOAT3 POS;
-	XMFLOAT4 COLOR;
-	XMFLOAT3 NORMAL;
+	XMFLOAT3 POS  = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	XMFLOAT4 COLOR  = XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f );
+	XMFLOAT3 NORMAL = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 };
 
 struct MODELINFO
 {
-	XMFLOAT3 ACC;
-	XMFLOAT3 VEL;
-	XMFLOAT3 POS;
+	XMFLOAT3 ACC = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	XMFLOAT3 VEL = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	XMFLOAT3 POS = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 
-	XMFLOAT3 ANGACC;
-	XMFLOAT3 ANGVEL;
-	XMFLOAT3 ANG;
+	XMFLOAT3 ANGACC = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	XMFLOAT3 ANGVEL = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	XMFLOAT3 ANG = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 
-	float MASS;
+	float MASS = 0.0f;
 };
 
 struct TYPEINFO
 {
 	DXMPOLYGON TYPE;
 
-	int NumModel;
-	int Length;
-	MODELINFO* MODELS;
+	int NumModel = 0;
+	int Length = 0;
+	MODELINFO* MODELS = nullptr;
 
-	int NumVertex;
-	VERTEXINFO* VERTICES;
+	int NumVertex = 0;
+	VERTEXINFO* VERTICES = nullptr;
 
-	int NumIndex;
-	UINT* INDICES;
+	int NumIndex = 0;
+	UINT* INDICES = nullptr;
 };
 
 #endif

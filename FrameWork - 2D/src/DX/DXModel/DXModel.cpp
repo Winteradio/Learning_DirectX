@@ -25,7 +25,7 @@ bool DXMODEL::Init( int Width, int Height, ID3D11Device* Device, const char* IMG
 {
 	if ( !LoadTexture( Device, IMGfileDIR ) ) { return false; }
 	if ( !InitDXMMANGER( DXMCIRCLE ) ) { return false; }
-	if ( !InitDXMPHYSICS( Width, Height, -9.81f, 0.0f, 0.0f, 0.2f, 0.2f ) ) { return false; }
+	if ( !InitDXMPHYSICS( Width, Height, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.9f ) ) { return false; }
 	if ( !InitVertexBuffer( Device, 1 ) ) { return false; }
 	if ( !InitIndexBuffer( Device, 1 ) ) { return false; }
 
@@ -80,7 +80,7 @@ bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 }
 
 
-bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY, float Time, float prevTime )
+bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY, double Time, double prevTime )
 {
 	if ( !m_DXMMANGER ->Frame( m_DXMODELLIST, InsertState, mouseX, mouseY, Time, prevTime ) )
 	{
@@ -201,7 +201,7 @@ bool DXMODEL::InitDXMMANGER( DXMPOLYGON Type )
 	return true;
 }
 
-bool DXMODEL::InitDXMPHYSICS( int Width, int Height, float gravity, float spring, float demper, float drag, float friction )
+bool DXMODEL::InitDXMPHYSICS( int Width, int Height, float gravity, float spring, float demper, float drag, float friction, float collision )
 {
 	m_DXMPHYSICS = new DXM_PHYSICS;
 	if ( !m_DXMPHYSICS )
@@ -214,7 +214,7 @@ bool DXMODEL::InitDXMPHYSICS( int Width, int Height, float gravity, float spring
 		LOG_INFO(" Successed - Create DXM Physics Object \n ");
 	}
 
-	if ( !m_DXMPHYSICS->Init( Width, Height, gravity, spring, demper, drag, friction ) )
+	if ( !m_DXMPHYSICS->Init( Width, Height, gravity, spring, demper, drag, friction, collision ) )
 	{
 		LOG_ERROR(" Failed - Init DXM Physics Object \n ");
 		return false;

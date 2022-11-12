@@ -36,10 +36,10 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 }
 
 
-bool DXENGINE::Frame( int FPS, int CPU, float Time, MOUSEINFO* Mouse, bool wireFrame, bool Insert )
+bool DXENGINE::Frame( int FPS, int CPU, double Time, double prevTime, MOUSEINFO* Mouse, bool wireFrame, bool Insert )
 {
 	if ( FPS >= 100 ) { m_FPSCheck = true; }
-	if ( m_FPSCheck && FPS <= 60 ) { system("pause"); }
+	if ( m_FPSCheck && FPS <= 60 ) {}
 
 	if ( !m_DXMODEL->Frame( Insert, Mouse->PosX, Mouse->PosY, Time, prevTime ) )
 	{
@@ -70,8 +70,6 @@ bool DXENGINE::Frame( int FPS, int CPU, float Time, MOUSEINFO* Mouse, bool wireF
 	{
 		move_temp *= -1.0f;
 	}
-
-	prevTime = Time;
 
 	return Render( rotation, wireFrame );
 }

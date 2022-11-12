@@ -16,7 +16,7 @@ class SUBTIMER
 		bool Init();
 		void Frame();
 
-		float GetTime();
+		double GetTime();
 
 	private :
 
@@ -24,7 +24,7 @@ class SUBTIMER
 		float m_TicksPerMS;
 		DWORD m_StateTime;
 		DWORD m_FinishTime;
-		float m_Time;
+		double m_Time;
 };
 
 #endif

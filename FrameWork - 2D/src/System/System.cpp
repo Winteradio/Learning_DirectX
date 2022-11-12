@@ -109,12 +109,22 @@ bool SYSTEM::Frame()
 	m_SUBFPS->Frame();
 	m_SUBTIMER->Frame();
 	m_SUBINPUT->Frame();
+	int CPU = m_SUBCPU->GetCPUPercent();
+	double Time = m_SUBTIMER->GetTime();
+	MOUSEINFO* Mouse = m_SUBINPUT->GetMouse();
+	bool rasterState = m_SUBINPUT->GetRasterizerState();
+	bool insertState = m_SUBINPUT->GetInsertState();
 
-	if ( !m_DXENGINE->Frame( m_SUBFPS->GetFPS(), m_SUBCPU->GetCPUPercent(), m_SUBTIMER->GetTime(), m_SUBINPUT->GetMouse(), m_SUBINPUT->GetRasterizerState(), m_SUBINPUT->GetInsertState() ) )
+	if ( Time > prevTime )
 	{
-		LOG_ERROR(" Failed - Frame DXENGINE \n ");
-		return false;
+		if ( !m_DXENGINE->Frame( m_SUBFPS->GetFPS(), CPU, Time, prevTime, Mouse, rasterState, insertState ) )
+		{
+			LOG_ERROR(" Failed - Frame DXENGINE \n ");
+			return false;
+		}
 	}
+
+	prevTime = Time;
 
 	return true;
 }
@@ -310,6 +320,8 @@ bool SYSTEM::InitSUBTIMER()
 	{
 		LOG_INFO(" Successed - Init SUBTIMER \n ");
 	}
+
+	prevTime = 0.00001f;
 
 	return true;
 }

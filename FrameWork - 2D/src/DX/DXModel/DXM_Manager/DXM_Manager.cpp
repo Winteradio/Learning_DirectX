@@ -47,6 +47,12 @@ void DXM_MANAGER::Release( TYPEINFO*& typeList )
 {
 	if ( typeList )
 	{
+		delete[] typeList->MODELS;
+		typeList->MODELS = nullptr;
+		delete[] typeList->VERTICES;
+		typeList->VERTICES = nullptr;
+		delete[] typeList->INDICES;
+		typeList->INDICES = nullptr;
 		delete[] typeList;
 		typeList = nullptr;
 	}
@@ -54,7 +60,7 @@ void DXM_MANAGER::Release( TYPEINFO*& typeList )
 
 bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int mouseY, float Time, float prevTime )
 {
-	if ( InsertState && (int)(Time * 5000) != (int)(prevTime * 5000) )
+	if ( InsertState && (int)(Time * 1) != (int)(prevTime * 1) )
 	{
 		Insert( typeList, mouseX, mouseY );
 	}
@@ -127,9 +133,9 @@ void DXM_MANAGER::Insert( TYPEINFO*& typeList, int mouseX, int mouseY )
 	}
 
 	typeList->NumModel++;
-	typeList->MODELS[ typeList->NumModel -1 ].POS = XMFLOAT3( (float)mouseX, (float)mouseY, 0.0f );
 	typeList->MODELS[ typeList->NumModel -1 ].ACC = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 	typeList->MODELS[ typeList->NumModel -1 ].VEL = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	typeList->MODELS[ typeList->NumModel -1 ].POS = XMFLOAT3( (float)mouseX, (float)mouseY, 0.0f );
 
 	typeList->MODELS[ typeList->NumModel -1 ].ANGACC = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 	typeList->MODELS[ typeList->NumModel -1 ].ANGVEL = XMFLOAT3( 0.0f, 0.0f, 0.0f );
