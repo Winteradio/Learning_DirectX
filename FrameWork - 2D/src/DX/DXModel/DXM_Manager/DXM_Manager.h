@@ -29,6 +29,8 @@ class DXM_MANAGER
 		void Destory( const int );
 		void Create( TYPEINFO*& );
 		void Insert( TYPEINFO*&, int, int );
+
+		int m_InsertSpeed;
 };
 
 #endif

@@ -40,6 +40,8 @@ bool DXM_MANAGER::Init( TYPEINFO*& typeList, DXMPOLYGON Type )
 		Create( typeList );
 	}
 
+	m_InsertSpeed = 2;
+
 	return true;
 }
 
@@ -48,34 +50,29 @@ void DXM_MANAGER::Release( TYPEINFO*& typeList )
 	if ( typeList )
 	{
 		delete[] typeList->MODELS;
-		typeList->MODELS = nullptr;
 		delete[] typeList->VERTICES;
-		typeList->VERTICES = nullptr;
 		delete[] typeList->INDICES;
-		typeList->INDICES = nullptr;
 		delete[] typeList;
+
+		typeList->VERTICES = nullptr;
+		typeList->MODELS = nullptr;
+		typeList->INDICES = nullptr;
 		typeList = nullptr;
 	}
 }
 
 bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int mouseY, float Time, float prevTime )
 {
-	if ( InsertState && (int)(Time * 1) != (int)(prevTime * 1) )
+	if ( InsertState && (int)(Time * m_InsertSpeed ) != (int)(prevTime * m_InsertSpeed ) )
 	{
 		Insert( typeList, mouseX, mouseY );
 	}
 	return true;
 }
 
-void DXM_MANAGER::Rotation( float X, float Y, float Z, MODELINFO*& model )
-{
-	model->ANG = XMFLOAT3( X, Y, Z );
-}
+void DXM_MANAGER::Rotation( float X, float Y, float Z, MODELINFO*& model ) { model->ANG = XMFLOAT3( X, Y, Z ); }
 
-void DXM_MANAGER::Translation( float X, float Y, float Z, MODELINFO*& model )
-{
-	model->POS = XMFLOAT3( X, Y, Z );
-}
+void DXM_MANAGER::Translation( float X, float Y, float Z, MODELINFO*& model ) { model->POS = XMFLOAT3( X, Y, Z ); }
 
 void DXM_MANAGER::Scale( float X, float Y, float Z ) {}
 
@@ -103,9 +100,11 @@ void DXM_MANAGER::Create( TYPEINFO*& typeList )
 		{
 			Position = XMFLOAT3( radius * (float)cos( I * 2 * M_PI / typeList->TYPE ), radius * (float)sin( I * 2 * M_PI / typeList->TYPE ), 0.0f );
 		}
+
 		typeList->VERTICES[ I ].POS = Position;
 		typeList->VERTICES[ I ].COLOR = Color;
 		typeList->VERTICES[ I ].NORMAL = XMFLOAT3( 0.0f, 0.0f, 1.0f );
+
 		if ( I >= 1 )
 		{
 			int Temp = I + 1;
@@ -116,6 +115,8 @@ void DXM_MANAGER::Create( TYPEINFO*& typeList )
 		}
 	}
 }
+
+
 
 void DXM_MANAGER::Insert( TYPEINFO*& typeList, int mouseX, int mouseY )
 {

@@ -28,7 +28,7 @@ class DXMODEL
 	private :
 
 		bool InitDXMMANGER( DXMPOLYGON );
-		bool InitDXMPHYSICS( int, int, float, float, float, float, float, float );
+		bool InitDXMPHYSICS( int, int  );
 		bool InitVertexBuffer( ID3D11Device*, int );
 		bool InitIndexBuffer( ID3D11Device*, int );
 		void InitPointer();
