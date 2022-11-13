@@ -24,26 +24,19 @@ bool DXM_PHYSICS::Init( int Width, int Height, float gravity, float spring, floa
 	m_Fence[0].Range = 10.0f;
 	m_Fence[0].Outer = (float)Height/2;
 	m_Fence[0].InNOR = XMFLOAT3( 0.0f, 1.0f, 0.0f );
-	m_Fence[0].OutNOR.x = - m_Fence[0].InNOR.x * m_Fence[0].Outer;
-	m_Fence[0].OutNOR.y = - m_Fence[0].InNOR.y * m_Fence[0].Outer;
-	m_Fence[0].OutNOR.z = - m_Fence[0].InNOR.z * m_Fence[0].Outer;
+	m_Fence[0].OutNOR = DXMULTIPLY( m_Fence[0].InNOR, -1.0f * m_Fence[0].Outer );
 	// Left
 	m_Fence[1].Range = 10.0f;
 	m_Fence[1].Outer = (float)Width/2;
 	m_Fence[1].InNOR = XMFLOAT3( 1.0f, 0.0f, 0.0f );
-	m_Fence[1].OutNOR.x = - m_Fence[1].InNOR.x * m_Fence[1].Outer;
-	m_Fence[1].OutNOR.y = - m_Fence[1].InNOR.y * m_Fence[1].Outer;
-	m_Fence[1].OutNOR.z = - m_Fence[1].InNOR.z * m_Fence[1].Outer;
+	m_Fence[1].OutNOR = DXMULTIPLY( m_Fence[1].InNOR, -1.0f * m_Fence[1].Outer );
 	// Right
 	m_Fence[2].Range = 10.0f;
 	m_Fence[2].Outer = (float)Width/2;
 	m_Fence[2].InNOR = XMFLOAT3( -1.0f, 0.0f, 0.0f );
-	m_Fence[2].OutNOR.x = - m_Fence[2].InNOR.x * m_Fence[2].Outer;
-	m_Fence[2].OutNOR.y = - m_Fence[2].InNOR.y * m_Fence[2].Outer;
-	m_Fence[2].OutNOR.z = - m_Fence[2].InNOR.z * m_Fence[2].Outer;
+	m_Fence[2].OutNOR = DXMULTIPLY( m_Fence[1].InNOR, -1.0f * m_Fence[1].Outer );
 
-	m_ERROR = 0.001f;
-
+	m_ERROR = 10.0f;
 	return true;
 }
 
@@ -66,15 +59,14 @@ bool DXM_PHYSICS::CalEulerMethod( MODELINFO*& modelList, int numModel, double ti
 	if ( !CalAccelerate( modelList, numModel, timeStep ) ) { return false; }
 	if ( !CalAngAccelerate( modelList, numModel, timeStep ) ) { return false; }
 
+	if ( !CalVelocity( modelList, numModel, timeStep ) ) { return false; }
+	if ( !CalAngVelocity( modelList, numModel, timeStep ) ) { return false; }
+
 	for (int I = 0; I < numModel; I++ )
 	{
 		CalCollisionFence( modelList[ I ], timeStep );
 		CalCollisionModel( modelList, modelList[ I ] , numModel, I, timeStep );
 	}
-
-
-	if ( !CalVelocity( modelList, numModel, timeStep ) ) { return false; }
-	if ( !CalAngVelocity( modelList, numModel, timeStep ) ) { return false; }
 
 	if ( !CalPosition( modelList, numModel, timeStep ) ) { return false; }
 	if ( !CalAngle( modelList, numModel, timeStep ) ) { return false; }
@@ -194,7 +186,7 @@ void DXM_PHYSICS::InitForce( MODELINFO*& modelList, int numModel )
 
 void DXM_PHYSICS::SetGravityForce( XMFLOAT3& Force, double timeStep )
 {
-	XMFLOAT3 Gravity = XMFLOAT3( 0.0f, 1.0f, 0.0f );
+	XMFLOAT3 Gravity = XMFLOAT3( 1.0f, 0.0f, 0.0f );
 	Force = DXADD( Force, DXMULTIPLY( Gravity, m_GravityConstant ) );
 }
 
@@ -210,49 +202,31 @@ void DXM_PHYSICS::SetFrictionForce( XMFLOAT3& Force, XMFLOAT3 NorForce, double t
 
 void DXM_PHYSICS::SetCollisionForce( MODELINFO& model1, MODELINFO& model2, double timeStep )
 {
+	double Constant = model1.MASS * model2.MASS * ( m_CollisionConstant + 1 ) /  ( ( model1.MASS + model2.MASS ) * timeStep );
+
 	XMFLOAT3 unitForce1 = DXUNIT( DXSUBTRACT( model1.POS, model2.POS ) );
 	XMFLOAT3 unitForce2 = DXUNIT( DXSUBTRACT( model2.POS, model1.POS ) );
-	XMFLOAT3 unitNor1 = XMFLOAT3( 0.0f, 0.0f, -1.0f );
-	XMFLOAT3 unitNor2 = XMFLOAT3( 0.0f, 0.0f, 1.0f );
-	XMFLOAT3 unitLin1 = DXUNIT( DXCROSS( unitNor1, unitForce1 ) );
-	XMFLOAT3 unitLin2 = DXUNIT( DXCROSS( unitNor2, unitForce2 ) );
 
-	double Constant = model1.MASS * model2.MASS * ( m_CollisionConstant + 1 ) /  ( ( model1.MASS + model2.MASS ) * timeStep );
 	XMFLOAT3 norForce1 = DXMULTIPLY( unitForce1, Constant * DXDOT( DXSUBTRACT( model2.VEL, model1.VEL ), unitForce1 ) );
 	XMFLOAT3 norForce2 = DXMULTIPLY( unitForce2, Constant * DXDOT( DXSUBTRACT( model1.VEL, model2.VEL ), unitForce2 ) );
 
-	XMFLOAT3 fricForce1 = DXMULTIPLY( unitLin1, -1.0f * m_FrictionConstant * sqrt( DXDOT( norForce1, norForce1 ) ) );
-	XMFLOAT3 fricForce2 = DXMULTIPLY( unitLin2, -1.0f * m_FrictionConstant * sqrt( DXDOT( norForce2, norForce2 ) ) );
-
-	if ( DXDOT( unitForce1, norForce1 ) > 0  && DXDOT( unitForce2, norForce2 ) > 0 )
+	if ( DXDOT( unitForce1, model1.VEL ) < 0 || DXDOT( unitForce2, model2.VEL ) < 0 )
 	{
-		if ( abs( DXDOT( unitForce1, model1.VEL ) ) <= m_ERROR && abs( DXDOT( unitForce2, model2.VEL ) ) <= m_ERROR )
-		{
-			XMFLOAT3 norVEL1 = DXADD( model1.VEL, DXMULTIPLY( unitForce1, -1.0f * DXDOT( model1.VEL, unitForce1) ) );
-			XMFLOAT3 norVEL2 = DXADD( model2.VEL, DXMULTIPLY( unitForce2, -1.0f * DXDOT( model2.VEL, unitForce2) ) );
-			model1.ACC = DXDIVIDE( DXSUBTRACT( norVEL1, model1.VEL ), timeStep );
-			model2.ACC = DXDIVIDE( DXSUBTRACT( norVEL2, model2.VEL ), timeStep );
-		}
-		else
-		{
-			model1.ACC = DXADD( DXMULTIPLY( model1.ACC, -1.0f ), DXDIVIDE( norForce1, model1.MASS ) );
-			model2.ACC = DXADD( DXMULTIPLY( model2.ACC, -1.0f ), DXDIVIDE( norForce2, model2.MASS ) );
-		}
-		/*
 		XMFLOAT3 linVEL1 = DXADD( model1.VEL, DXMULTIPLY( unitForce1, -1.0f * DXDOT( model1.VEL, unitForce1) ) );
 		XMFLOAT3 linVEL2 = DXADD( model2.VEL, DXMULTIPLY( unitForce2, -1.0f * DXDOT( model2.VEL, unitForce2) ) );
 		XMFLOAT3 norVEL1 = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 		XMFLOAT3 norVEL2 = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 
-		if ( abs( DXDOT( unitForce1, model1.VEL ) ) > m_ERROR && abs( DXDOT( unitForce2, model2.VEL ) ) > m_ERROR )
+		if ( abs( DXDOT( unitForce1, model1.VEL ) ) >= m_ERROR || abs( DXDOT( unitForce2, model2.VEL ) ) >= m_ERROR  )
 		{
-			norVEL1 =
-			norVEL2 =
+			XMFLOAT3 tempVEL1 = DXMULTIPLY( unitForce1, DXDOT( unitForce1, model1.VEL ) );
+			XMFLOAT3 tempVEL2 = DXMULTIPLY( unitForce2, DXDOT( unitForce2, model2.VEL ) );
+			norVEL1 = DXADD( DXMULTIPLY( tempVEL1, ( model1.MASS - m_CollisionConstant * model2.MASS ) / ( model1.MASS + model2.MASS ) ), DXMULTIPLY( tempVEL2, ( 1 + m_CollisionConstant ) * model2.MASS / ( model1.MASS + model2.MASS ) ) );
+			norVEL2 = DXADD( DXMULTIPLY( tempVEL1, ( 1 + m_CollisionConstant ) * model1.MASS / ( model1.MASS + model2.MASS ) ), DXMULTIPLY( tempVEL2, ( model2.MASS - m_CollisionConstant * model1.MASS ) / ( model1.MASS + model2.MASS ) ) );
 		}
 
 		model1.VEL = DXADD( linVEL1, norVEL1 );
 		model2.VEL = DXADD( linVEL2, norVEL2 );
-		*/
 	}
 }
 
