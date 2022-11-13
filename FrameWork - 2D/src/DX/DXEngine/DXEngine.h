@@ -30,7 +30,7 @@ class DXENGINE
 
 		bool Init( int, int, HWND );
 
-		bool Frame( int, int, double, double, MOUSEINFO*, bool, bool, bool );
+		bool Frame( int, int, float, float, MOUSEINFO*, bool, bool, bool );
 		void Release();
 
 	// Functions - Divide Init Functions
@@ -66,10 +66,8 @@ class DXENGINE
 
 		const char* m_LTVSfileDIR;
 		const char* m_LTPSfileDIR;
-
 		const char* m_LCVSfileDIR;
 		const char* m_LCPSfileDIR;
-
 		const char* m_LIMGfileDIR;
 
 		const char* m_MDfileDIR;

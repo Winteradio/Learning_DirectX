@@ -31,7 +31,7 @@ void SUBTIMER::Frame()
 	m_Time = ( m_FinishTime - m_StateTime ) / 1000.0f;
 }
 
-double SUBTIMER::GetTime()
+float SUBTIMER::GetTime()
 {
 	return m_Time;
 }

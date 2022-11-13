@@ -109,21 +109,23 @@ bool SYSTEM::Frame()
 	m_SUBFPS->Frame();
 	m_SUBTIMER->Frame();
 	m_SUBINPUT->Frame();
-	int FPS = m_SUBFPS->GetFPS();
-	int CPU = m_SUBCPU->GetCPUPercent();
-	double Time = m_SUBTIMER->GetTime();
-	MOUSEINFO* Mouse = m_SUBINPUT->GetMouse();
-	bool rasterState = m_SUBINPUT->GetRasterizerState();
-	bool insertState = m_SUBINPUT->GetInsertState();
-	bool playState = m_SUBINPUT->GetPlayState();
 
-	if ( !m_DXENGINE->Frame( FPS, CPU, Time, prevTime, Mouse, rasterState, insertState, playState ) )
+	// Update Value related State and time
+	m_FPS = m_SUBFPS->GetFPS();
+	m_CPU = m_SUBCPU->GetCPUPercent();
+	m_nowTime = m_SUBTIMER->GetTime();
+	m_Mouse = m_SUBINPUT->GetMouse();
+	m_rasterState = m_SUBINPUT->GetRasterizerState();
+	m_insertState = m_SUBINPUT->GetInsertState();
+	m_playState = m_SUBINPUT->GetPlayState();
+
+	if ( !m_DXENGINE->Frame( m_FPS, m_CPU, m_nowTime, m_prevTime, m_Mouse, m_rasterState, m_insertState, m_playState ) )
 	{
 		LOG_ERROR(" Failed - Frame DXENGINE \n ");
 		return false;
 	}
 
-	prevTime = Time;
+	m_prevTime = m_nowTime;
 
 	return true;
 }
@@ -319,8 +321,6 @@ bool SYSTEM::InitSUBTIMER()
 	{
 		LOG_INFO(" Successed - Init SUBTIMER \n ");
 	}
-
-	prevTime = 0.00001f;
 
 	return true;
 }

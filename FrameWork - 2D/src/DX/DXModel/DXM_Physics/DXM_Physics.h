@@ -25,30 +25,28 @@ class DXM_PHYSICS
 	public :
 
 		bool Init( int, int, float, float, float, float, float, float );
-		bool Frame( MODELINFO*&, int, double );
+		bool Frame( MODELINFO*&, int, float );
 		void Release();
 
 	private :
 
-		bool CalEulerMethod( MODELINFO*&, int, double );
+		bool CalEulerMethod( MODELINFO*&, int, float );
 
-		bool CalAccelerate( MODELINFO*&, int, double );
-		bool CalVelocity( MODELINFO*&, int, double );
-		bool CalPosition( MODELINFO*&, int, double );
-		bool CalAngAccelerate( MODELINFO*&, int, double );
-		bool CalAngVelocity( MODELINFO*&, int, double );
-		bool CalAngle( MODELINFO*&, int, double );
+		bool CalAccelerate( MODELINFO*&, int, float );
+		bool CalVelocity( MODELINFO*&, int, float );
+		bool CalPosition( MODELINFO*&, int, float );
+		bool CalAngAccelerate( MODELINFO*&, int, float );
+		bool CalAngVelocity( MODELINFO*&, int, float );
+		bool CalAngle( MODELINFO*&, int, float );
 
-		bool CalCollisionFence( MODELINFO&, double );
-		bool CalCollisionModel( MODELINFO*&, MODELINFO&, int, int, double );
-		bool CalFenceOut( MODELINFO, MODELINFO, double, float );
+		bool CalCollisionFence( MODELINFO&, float );
+		bool CalCollisionModel( MODELINFO*&, MODELINFO&, int, int, float );
+		bool CalFenceOut( MODELINFO, MODELINFO, float, float );
 
 		void InitForce( MODELINFO*&, int );
-		void SetGravityForce( XMFLOAT3&, double );
-		void SetDragForce( XMFLOAT3&, XMFLOAT3, double );
-		void SetFrictionForce( XMFLOAT3&, XMFLOAT3, double );
-		void SetCollisionForce( MODELINFO&, MODELINFO&, double );
-		void SetCollisionVelocity( XMFLOAT3&, double );
+		void SetGravityForce( XMFLOAT3&, float );
+		void SetDragForce( XMFLOAT3&, XMFLOAT3, float );
+		void SetCollisionVelocity( MODELINFO&, MODELINFO&, float );
 
 		float m_GravityConstant;
 		float m_SpringConstant;

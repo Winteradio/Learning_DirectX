@@ -56,14 +56,22 @@ class SYSTEM
 		// Setting for FullScreen
 		bool m_FullScreen;
 
+		// Update value using SUB object
+		int m_FPS;
+		int m_CPU;
+		float m_nowTime;
+		float m_prevTime;
+		MOUSEINFO* m_Mouse;
+		bool m_rasterState;
+		bool m_insertState;
+		bool m_playState;
+
 		DXENGINE* m_DXENGINE;
 
 		SUBCPU* m_SUBCPU;
 		SUBFPS* m_SUBFPS;
 		SUBINPUT* m_SUBINPUT;
 		SUBTIMER* m_SUBTIMER;
-
-		double prevTime;
 };
 
 static LRESULT CALLBACK WndProc( HWND, UINT, WPARAM, LPARAM );

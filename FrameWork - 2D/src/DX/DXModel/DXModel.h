@@ -22,7 +22,7 @@ class DXMODEL
 		void Release();
 		void Render( ID3D11DeviceContext* );
 		bool Update( ID3D11DeviceContext* );
-		bool Frame( bool, int, int, double, double );
+		bool Frame( bool, int, int, float, float );
 
 	// Functions - Divide Init Function
 	private :

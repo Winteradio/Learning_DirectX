@@ -36,7 +36,7 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 }
 
 
-bool DXENGINE::Frame( int FPS, int CPU, double Time, double prevTime, MOUSEINFO* Mouse, bool wireFrame, bool Insert, bool Play )
+bool DXENGINE::Frame( int FPS, int CPU, float Time, float prevTime, MOUSEINFO* Mouse, bool wireFrame, bool Insert, bool Play )
 {
 	if ( Play )
 	{
@@ -63,12 +63,6 @@ bool DXENGINE::Frame( int FPS, int CPU, double Time, double prevTime, MOUSEINFO*
 	if ( rotation > 360.0f )
 	{
 		rotation -= 360.0f;
-	}
-
-	move += move_temp;
-	if ( move <= -100.0f || move >= 100.0f )
-	{
-		move_temp *= -1.0f;
 	}
 
 	return Render( rotation, wireFrame );
@@ -107,9 +101,6 @@ bool DXENGINE::Render( float rotation, bool wireFrame )
 	m_DXD3D->GetWorldMatrix( worldMatrix );
 	m_DXCAMERA->GetViewMatrix( viewMatrix );
 	m_DXCAMERA->GetOrthoMatrix( orthoMatrix );
-
-
-	//worldMatrix = XMMatrixTranslation( move, 0.0f, 0.0f );
 
 	// Ready for Drawing tha need Model Vertex and Index buffer for Graphics pipeline
 	m_DXMODEL->Render( m_DXD3D->GetDeviceContext() );
@@ -177,15 +168,14 @@ void DXENGINE::InitPointer()
 {
 	m_DXD3D = nullptr;
 	m_DXCAMERA = nullptr;
-	m_DXLIGHT= nullptr;
-	m_DXMODEL= nullptr;
-
-	m_LCVSfileDIR = nullptr;
-	m_LCPSfileDIR = nullptr;
+	m_DXLIGHT = nullptr;
+	m_DXMODEL = nullptr;
+	m_DXTEXT = nullptr;
 
 	m_LTVSfileDIR = nullptr;
 	m_LTPSfileDIR = nullptr;
-
+	m_LCVSfileDIR = nullptr;
+	m_LCPSfileDIR = nullptr;
 	m_LIMGfileDIR = nullptr;
 
 	m_MDfileDIR = nullptr;

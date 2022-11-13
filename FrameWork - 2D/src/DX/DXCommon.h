@@ -36,6 +36,10 @@ inline XMFLOAT3 DXSUBTRACT( XMFLOAT3 Num1, XMFLOAT3 Num2 ) { return XMFLOAT3( Nu
 inline XMFLOAT3 DXMULTIPLY( XMFLOAT3 Num, float Value ) { return XMFLOAT3( Num.x * Value, Num.y * Value, Num.z * Value); }
 inline XMFLOAT3 DXDIVIDE( XMFLOAT3 Num, float Value ) { return XMFLOAT3( Num.x / Value, Num.y / Value, Num.z / Value); }
 
-inline XMFLOAT3 DXUNIT( XMFLOAT3 Num ) { return DXDIVIDE( Num, sqrt( DXDOT( Num, Num ) ) ); }
+inline XMFLOAT3 DXUNIT( XMFLOAT3 Num )
+{
+	if ( DXDOT( Num, Num ) > 0.0f ) { return DXDIVIDE( Num, sqrt( DXDOT( Num, Num ) ) ); }
+	else { return XMFLOAT3( 0.0f, 0.0f, 0.0f ); }
+}
 
 #endif

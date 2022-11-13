@@ -80,7 +80,7 @@ bool DXMODEL::Update( ID3D11DeviceContext* DevContext )
 }
 
 
-bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY, double Time, double prevTime )
+bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY, float Time, float prevTime )
 {
 	if ( !m_DXMMANGER ->Frame( m_DXMODELLIST, InsertState, mouseX, mouseY, Time, prevTime ) )
 	{
