@@ -60,7 +60,7 @@ void DXM_MANAGER::Release( TYPEINFO*& typeList )
 
 bool DXM_MANAGER::Frame( TYPEINFO*& typeList, bool InsertState, int mouseX, int mouseY, float Time, float prevTime )
 {
-	if ( InsertState && (int)(Time * 1) != (int)(prevTime * 1) )
+	if ( InsertState && (int)(Time * 4) != (int)(prevTime * 4) )
 	{
 		Insert( typeList, mouseX, mouseY );
 	}

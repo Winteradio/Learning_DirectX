@@ -30,20 +30,21 @@ class DXM_PHYSICS
 
 	private :
 
-		bool CalEulerMethod( MODELINFO&, double );
+		bool CalEulerMethod( MODELINFO*&, MODELINFO&, int, int, double );
 
-		bool CalAccelerate( MODELINFO&, double );
+		bool CalAccelerate( MODELINFO*&, MODELINFO&, int, int, double );
 		bool CalVelocity( MODELINFO&, double );
 		bool CalPosition( MODELINFO&, double );
 		bool CalAngAccelerate( MODELINFO&, double );
 		bool CalAngVelocity( MODELINFO&, double );
 		bool CalAngle( MODELINFO&, double );
 
-		bool CalCollision( MODELINFO&, double );
+		bool CalCollisionFence( MODELINFO&, double );
+		bool CalCollisionModel( MODELINFO*&, MODELINFO&, int, int, double );
 		bool CalContact( MODELINFO&, double );
 		bool CalFenceOut( MODELINFO, MODELINFO, double, float );
 
-		void InitForce( XMFLOAT3& Force );
+		void InitForce( MODELINFO*&, int );
 		void SetGravityForce( XMFLOAT3&, double );
 		void SetDragForce( XMFLOAT3&, XMFLOAT3, double );
 		void SetFrictionForce( XMFLOAT3&, XMFLOAT3, double );

@@ -30,7 +30,7 @@ class DXENGINE
 
 		bool Init( int, int, HWND );
 
-		bool Frame( int, int, double, double, MOUSEINFO*, bool, bool );
+		bool Frame( int, int, double, double, MOUSEINFO*, bool, bool, bool );
 		void Release();
 
 	// Functions - Divide Init Functions

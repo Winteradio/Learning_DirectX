@@ -21,6 +21,7 @@ bool SUBINPUT::Init( int screenWidth,int screenHeight )
 
 	m_WireFrame = false;
 	m_Insert = false;
+	m_Play = true;
 	return true;
 }
 
@@ -32,6 +33,7 @@ bool SUBINPUT::Frame()
 MOUSEINFO* SUBINPUT::GetMouse() { return m_Mouse; }
 bool SUBINPUT::GetRasterizerState() { return m_WireFrame; }
 bool SUBINPUT::GetInsertState() { return m_Insert; }
+bool SUBINPUT::GetPlayState() { return m_Play; }
 
 
 LRESULT CALLBACK SUBINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
@@ -67,8 +69,7 @@ LRESULT CALLBACK SUBINPUT::MessageHandler( HWND hWnd, UINT message, WPARAM wPara
 
 				case VK_SPACE :
 				{
-					LOG_INFO(" Stop \n ");
-					system("pause");
+					SetPlayState( m_Play );
 					return 0;
 				}
 
@@ -223,5 +224,19 @@ void SUBINPUT::SetInsertState( bool& InsertState )
 	{
 		LOG_INFO(" Turn on Insert \n ");
 		InsertState = true;
+	}
+}
+
+void SUBINPUT::SetPlayState( bool& PlayState )
+{
+	if ( PlayState == true )
+	{
+		LOG_INFO(" Stop Physics \n ");
+		PlayState = false;
+	}
+	else
+	{
+		LOG_INFO(" Start Physics \n ");
+		PlayState = true;
 	}
 }

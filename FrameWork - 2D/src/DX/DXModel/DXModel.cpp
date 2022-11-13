@@ -25,7 +25,7 @@ bool DXMODEL::Init( int Width, int Height, ID3D11Device* Device, const char* IMG
 {
 	if ( !LoadTexture( Device, IMGfileDIR ) ) { return false; }
 	if ( !InitDXMMANGER( DXMCIRCLE ) ) { return false; }
-	if ( !InitDXMPHYSICS( Width, Height, -100.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.9f ) ) { return false; }
+	if ( !InitDXMPHYSICS( Width, Height, -40.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f ) ) { return false; }
 	if ( !InitVertexBuffer( Device, 1 ) ) { return false; }
 	if ( !InitIndexBuffer( Device, 1 ) ) { return false; }
 
@@ -88,10 +88,13 @@ bool DXMODEL::Frame( bool InsertState, int mouseX, int mouseY, double Time, doub
 		return false;
 	}
 
-	if ( !m_DXMPHYSICS->Frame( m_DXMODELLIST->MODELS, GetNumModel( 1 ), Time - prevTime ) )
+	if ( Time > prevTime )
 	{
-		LOG_INFO(" Failed -Frame for DXMODEL \n ");
-		return false;
+		if ( !m_DXMPHYSICS->Frame( m_DXMODELLIST->MODELS, GetNumModel( 1 ), Time - prevTime ) )
+		{
+			LOG_INFO(" Failed -Frame for DXMODEL \n ");
+			return false;
+		}
 	}
 	return true;
 }

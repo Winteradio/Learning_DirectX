@@ -109,19 +109,18 @@ bool SYSTEM::Frame()
 	m_SUBFPS->Frame();
 	m_SUBTIMER->Frame();
 	m_SUBINPUT->Frame();
+	int FPS = m_SUBFPS->GetFPS();
 	int CPU = m_SUBCPU->GetCPUPercent();
 	double Time = m_SUBTIMER->GetTime();
 	MOUSEINFO* Mouse = m_SUBINPUT->GetMouse();
 	bool rasterState = m_SUBINPUT->GetRasterizerState();
 	bool insertState = m_SUBINPUT->GetInsertState();
+	bool playState = m_SUBINPUT->GetPlayState();
 
-	if ( Time > prevTime )
+	if ( !m_DXENGINE->Frame( FPS, CPU, Time, prevTime, Mouse, rasterState, insertState, playState ) )
 	{
-		if ( !m_DXENGINE->Frame( m_SUBFPS->GetFPS(), CPU, Time, prevTime, Mouse, rasterState, insertState ) )
-		{
-			LOG_ERROR(" Failed - Frame DXENGINE \n ");
-			return false;
-		}
+		LOG_ERROR(" Failed - Frame DXENGINE \n ");
+		return false;
 	}
 
 	prevTime = Time;

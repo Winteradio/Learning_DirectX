@@ -36,15 +36,15 @@ bool DXENGINE::Init( int Width, int Height, HWND hWnd )
 }
 
 
-bool DXENGINE::Frame( int FPS, int CPU, double Time, double prevTime, MOUSEINFO* Mouse, bool wireFrame, bool Insert )
+bool DXENGINE::Frame( int FPS, int CPU, double Time, double prevTime, MOUSEINFO* Mouse, bool wireFrame, bool Insert, bool Play )
 {
-	if ( FPS >= 100 ) { m_FPSCheck = true; }
-	if ( m_FPSCheck && FPS <= 60 ) {}
-
-	if ( !m_DXMODEL->Frame( Insert, Mouse->PosX, Mouse->PosY, Time, prevTime ) )
+	if ( Play )
 	{
-		LOG_ERROR(" Failed - Insert New Model \n ");
-		return false;
+		if ( !m_DXMODEL->Frame( Insert, Mouse->PosX, Mouse->PosY, Time, prevTime ) )
+		{
+			LOG_ERROR(" Failed - Insert New Model \n ");
+			return false;
+		}
 	}
 
 	if ( !m_DXCAMERA->Frame( Mouse->LeftButton, Mouse->ScreenWidth, Mouse->ScreenHeight, Mouse->PosX, Mouse->PosY, Mouse->PrevPosX, Mouse->PrevPosY, Mouse->WheelDir, SCREEN_NEAR, SCREEN_DEPTH ) )
