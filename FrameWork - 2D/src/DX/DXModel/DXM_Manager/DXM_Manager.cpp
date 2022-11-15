@@ -40,7 +40,7 @@ bool DXM_MANAGER::Init( TYPEINFO*& typeList, DXMPOLYGON Type )
 		Create( typeList );
 	}
 
-	m_InsertSpeed = 2;
+	m_InsertSpeed = 10;
 
 	return true;
 }

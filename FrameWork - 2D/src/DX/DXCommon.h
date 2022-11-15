@@ -42,4 +42,8 @@ inline XMFLOAT3 DXUNIT( XMFLOAT3 Num )
 	else { return XMFLOAT3( 0.0f, 0.0f, 0.0f ); }
 }
 
+inline void LOG_DX( XMFLOAT2 Num ) { LOG_INFO(" ( %f, %f ) \n ", Num.x, Num.y ); }
+inline void LOG_DX( XMFLOAT3 Num ) { LOG_INFO(" ( %f, %f, %f ) \n ", Num.x, Num.y, Num.z ); }
+inline void LOG_DX( XMFLOAT4 Num ) { LOG_INFO(" ( %f, %f, %f, %f ) \n ", Num.x, Num.y, Num.z, Num.w ); }
+
 #endif

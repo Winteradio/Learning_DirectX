@@ -12,3 +12,5 @@
 
 # Videos
 -> 진행했던 내용들 구현 동영상 파일들
+-> 용량문제로 깃허브에 올리지 못함
+	Youtube : https://www.youtube.com/channel/UCYJsJGEZ5vKCHcMOXOznQHQ/videos

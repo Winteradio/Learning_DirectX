@@ -113,7 +113,7 @@ bool DXENGINE::Render( float rotation, bool wireFrame )
 	for ( int I = 0; I < m_DXMODEL->GetNumModel( 1 ); I++ )
 	{
 		XMFLOAT3 POS = m_DXMODEL->GetPosition( 1 , I );
-		worldMatrix = XMMatrixRotationZ( rotation ) * XMMatrixTranslation( POS.x, POS.y, POS.z );
+		worldMatrix = XMMatrixTranslation( POS.x, POS.y, POS.z );
 
 		// Render using Shader
 		hr = m_DXLIGHT->Render( m_DXD3D->GetDeviceContext(), m_DXMODEL->GetIndexCount( 1 ),

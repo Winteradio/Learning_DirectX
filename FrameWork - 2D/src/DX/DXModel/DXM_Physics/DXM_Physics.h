@@ -36,18 +36,21 @@ class DXM_PHYSICS
 		void CalCollisionFence( MODELINFO&, float );
 		void CalCollisionModel( MODELINFO*&, MODELINFO&, int, int, float );
 
-		void CalAccelerate( MODELINFO*&, int, float );
-		void CalAngAccelerate( MODELINFO*&, int, float );
+		void CalAccelerate( MODELINFO&, float );
+		void CalAngAccelerate( MODELINFO&, float );
 
-		void CalVelocity( MODELINFO*&, int, float );
-		void CalAngVelocity( MODELINFO*&, int, float );
+		void CalVelocity( MODELINFO&, float );
+		void CalAngVelocity( MODELINFO&, float );
 
-		void CalPosition( MODELINFO*&, int, float );
-		void CalAngle( MODELINFO*&, int, float );
+		void CalPosition( MODELINFO&, float );
+		void CalAngle( MODELINFO&, float );
 
-		void InitForce( MODELINFO*&, int );
+		void CalLength( FENCE& fence, MODELINFO& model );
+		void NextFrame( MODELINFO& model, float timeStep );
+
 		void SetGravityForce( XMFLOAT3&, float );
 		void SetDragForce( XMFLOAT3&, XMFLOAT3, float );
+		void SetSpringForce( MODELINFO&, MODELINFO& );
 		void SetCollisionVelocity( MODELINFO&, MODELINFO&, float );
 
 		float m_GravityConstant;
