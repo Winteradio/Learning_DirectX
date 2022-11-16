@@ -14,13 +14,13 @@ DXM_PHYSICS::~DXM_PHYSICS() {}
 bool DXM_PHYSICS::Init( int Width, int Height )
 {
 	// Set Constant
-	m_GravityConstant = 10.0f;
+	m_GravityConstant = 20.0f;
 	m_SpringConstant = 100.0f;
 	m_DemperConstant = 0.0f;
-	m_DragConstant = 0.3f;
+	m_DragConstant = 0.1f;
 	m_CollisionConstant = 0.5f;
 
-	m_ERROR = 0.1f;
+	m_ERROR = 0.01f;
 
 	m_NumFence = 3;
 	m_Fence = new FENCE[ m_NumFence ];
@@ -101,36 +101,24 @@ void DXM_PHYSICS::CalCollisionFence( MODELINFO& model, float timeStep )
 		CalLength( m_Fence[ I ], model );
 		m_Fence[ I ].MODEL.MASS = 10000.0f * model.MASS;
 		XMFLOAT3 Length = DXSUBTRACT( m_Fence[ I ].MODEL.POS, model.POS );
+
 		if ( DXDOT( Length, Length ) <= 4 * 100.0f )
 		{
 			SetCollisionVelocity( model, m_Fence[ I ].MODEL, Time );
 			SetSpringForce( model, m_Fence[ I ].MODEL );
 		}
-		/*
 		else
 		{
 			MODELINFO tempModel = model;
 			NextFrame( tempModel, Time );
 			CalLength( m_Fence[ I ], tempModel );
 			XMFLOAT3 tempLength = DXSUBTRACT( m_Fence[ I ].MODEL.POS, tempModel.POS );
-			if ( DXDOT( Length, tempLength ) < 0 )
+			if ( DXDOT( Length, tempLength ) <= 0 )
 			{
-				while ( true )
-				{
-					Time /= 2;
-					tempModel = model;
-					NextFrame( tempModel, Time );
-					CalLength( m_Fence[ I ], tempModel );
-					tempLength = DXSUBTRACT( m_Fence[ I ].MODEL.POS, tempModel.POS );
-					if ( DXDOT( Length, tempLength ) > 0 )
-					{
-						NextFrame( model, Time );
-						break;
-					}
-				}
+				SetCollisionVelocity( model, m_Fence[ I ].MODEL, Time );
+				SetSpringForce( model, m_Fence[ I ].MODEL );
 			}
 		}
-		*/
 	}
 }
 
@@ -140,7 +128,6 @@ void DXM_PHYSICS::CalLength( FENCE& fence, MODELINFO& model )
 	temp =  DXMULTIPLY( temp, DXDOT( temp, DXSUBTRACT( fence.MODEL.POS, model.POS ) ) );
 	fence.MODEL.POS = DXADD( temp, model.POS );
 }
-
 
 void DXM_PHYSICS::NextFrame( MODELINFO& model, float timeStep )
 {
@@ -152,18 +139,19 @@ void DXM_PHYSICS::NextFrame( MODELINFO& model, float timeStep )
 	CalAngle( model, timeStep );
 }
 
+
 void DXM_PHYSICS::CalCollisionModel( MODELINFO*& modelList, MODELINFO& model, int numModel, int index, float timeStep )
 {
 	for ( int I = index + 1; I < numModel; I++ )
 	{
 		float Time = timeStep;
 		XMFLOAT3 Length = DXSUBTRACT( modelList[ I ].POS, model.POS );
+
 		if ( DXDOT( Length, Length ) <= 4 * 100.0f )
 		{
 			SetCollisionVelocity( model, modelList[ I ], Time );
 			SetSpringForce( model, modelList[ I ] );
 		}
-		/*
 		else
 		{
 			MODELINFO tempModel1 = model;
@@ -171,27 +159,13 @@ void DXM_PHYSICS::CalCollisionModel( MODELINFO*& modelList, MODELINFO& model, in
 			NextFrame( tempModel1, Time );
 			NextFrame( tempModel2, Time );
 			XMFLOAT3 tempLength = DXSUBTRACT( tempModel2.POS, tempModel1.POS );
-			if ( DXDOT( Length, tempLength ) < 0 )
-			{
-				while ( true )
-				{
-					Time /= 2;
-					tempModel1 = model;
-					tempModel2 = modelList[ I ];
-					NextFrame( tempModel1, Time );
-					NextFrame( tempModel2, Time );
-					tempLength = DXSUBTRACT( tempModel2.POS, tempModel1.POS );
-					if ( DXDOT( Length, tempLength ) > 0 )
-					{
-						NextFrame( model, Time );
-						NextFrame( modelList[ I ], Time );
-						break;
-					}
 
-				}
+			if ( DXDOT( Length, tempLength ) <= 0 )
+			{
+				SetCollisionVelocity( model, modelList[ I ], Time );
+				SetSpringForce( model, modelList[ I ] );
 			}
 		}
-		*/
 	}
 }
 
@@ -227,7 +201,7 @@ void DXM_PHYSICS::SetSpringForce( MODELINFO& model1, MODELINFO& model2 )
 	XMFLOAT3 unitForce1 = DXUNIT( DXSUBTRACT( model1.POS, model2.POS ) );
 	XMFLOAT3 unitForce2 = DXUNIT( DXSUBTRACT( model2.POS, model1.POS ) );
 
-	float Constant = 2.0f * 10.0f - sqrt( DXDOT( Temp, Temp ) );
+	float Constant = 2.0f * 10.0f * 1.1f - sqrt( DXDOT( Temp, Temp ) );
 	if ( Constant <= 0.0f )
 	{
 		Constant = 0.0f;
@@ -250,6 +224,7 @@ void DXM_PHYSICS::SetCollisionVelocity( MODELINFO& model1, MODELINFO& model2, fl
 	XMFLOAT3 norForce2 = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 	float Constant;
 
+	/*
 	if ( DXDOT( unitForce1, Temp ) <= m_ERROR && DXDOT( unitForce1, Temp ) >= 0.0f )
 	{
 		Constant = 1 / timeStep;
@@ -263,7 +238,8 @@ void DXM_PHYSICS::SetCollisionVelocity( MODELINFO& model1, MODELINFO& model2, fl
 		model1.VEL = DXADD( model1.VEL, norVEL1 );
 		model2.VEL = DXADD( model2.VEL, norVEL2 );
 	}
-	else if( DXDOT( unitForce1, Temp ) > m_ERROR )
+	*/
+	if( DXDOT( unitForce1, Temp ) >= 0.0f )
 	{
 		Constant = model1.MASS * model2.MASS * ( m_CollisionConstant + 1 ) /  ( ( model1.MASS + model2.MASS ) * timeStep );
 		norForce1 = DXMULTIPLY( unitForce1, Constant * DXDOT( DXSUBTRACT( model2.VEL, model1.VEL ), unitForce1 ) );

@@ -46,12 +46,13 @@ class DXM_PHYSICS
 		void CalAngle( MODELINFO&, float );
 
 		void CalLength( FENCE& fence, MODELINFO& model );
-		void NextFrame( MODELINFO& model, float timeStep );
 
 		void SetGravityForce( XMFLOAT3&, float );
 		void SetDragForce( XMFLOAT3&, XMFLOAT3, float );
 		void SetSpringForce( MODELINFO&, MODELINFO& );
 		void SetCollisionVelocity( MODELINFO&, MODELINFO&, float );
+
+		void NextFrame( MODELINFO& model, float timeStep );
 
 		float m_GravityConstant;
 		float m_SpringConstant;
