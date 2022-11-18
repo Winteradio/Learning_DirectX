@@ -14,11 +14,11 @@ DXM_PHYSICS::~DXM_PHYSICS() {}
 bool DXM_PHYSICS::Init( int Width, int Height )
 {
 	// Set Constant
-	m_GravityConstant = 20.0f;
-	m_SpringConstant = 100.0f;
-	m_DemperConstant = 0.0f;
-	m_DragConstant = 0.1f;
-	m_CollisionConstant = 0.5f;
+	m_GravityConstant = 100.0f;
+	m_SpringConstant = 1000.0f;
+	m_DemperConstant = 5.0f;
+	m_DragConstant = 0.5f;
+	m_CollisionConstant = 0.2f;
 
 	m_ERROR = 0.01f;
 
@@ -69,8 +69,8 @@ void DXM_PHYSICS::CalEulerMethod( MODELINFO*& modelList, int numModel, float tim
 
 	for (int I = 0; I < numModel; I++ )
 	{
-		CalCollisionFence( modelList[ I ], timeStep );
 		CalCollisionModel( modelList, modelList[ I ] , numModel, I, timeStep );
+		CalCollisionFence( modelList[ I ], timeStep );
 	}
 
 	for ( int I = 0; I < numModel; I++ )
@@ -107,18 +107,6 @@ void DXM_PHYSICS::CalCollisionFence( MODELINFO& model, float timeStep )
 			SetCollisionVelocity( model, m_Fence[ I ].MODEL, Time );
 			SetSpringForce( model, m_Fence[ I ].MODEL );
 		}
-		else
-		{
-			MODELINFO tempModel = model;
-			NextFrame( tempModel, Time );
-			CalLength( m_Fence[ I ], tempModel );
-			XMFLOAT3 tempLength = DXSUBTRACT( m_Fence[ I ].MODEL.POS, tempModel.POS );
-			if ( DXDOT( Length, tempLength ) <= 0 )
-			{
-				SetCollisionVelocity( model, m_Fence[ I ].MODEL, Time );
-				SetSpringForce( model, m_Fence[ I ].MODEL );
-			}
-		}
 	}
 }
 
@@ -146,25 +134,10 @@ void DXM_PHYSICS::CalCollisionModel( MODELINFO*& modelList, MODELINFO& model, in
 	{
 		float Time = timeStep;
 		XMFLOAT3 Length = DXSUBTRACT( modelList[ I ].POS, model.POS );
-
 		if ( DXDOT( Length, Length ) <= 4 * 100.0f )
 		{
 			SetCollisionVelocity( model, modelList[ I ], Time );
 			SetSpringForce( model, modelList[ I ] );
-		}
-		else
-		{
-			MODELINFO tempModel1 = model;
-			MODELINFO tempModel2 = modelList[ I ];
-			NextFrame( tempModel1, Time );
-			NextFrame( tempModel2, Time );
-			XMFLOAT3 tempLength = DXSUBTRACT( tempModel2.POS, tempModel1.POS );
-
-			if ( DXDOT( Length, tempLength ) <= 0 )
-			{
-				SetCollisionVelocity( model, modelList[ I ], Time );
-				SetSpringForce( model, modelList[ I ] );
-			}
 		}
 	}
 }
@@ -201,13 +174,16 @@ void DXM_PHYSICS::SetSpringForce( MODELINFO& model1, MODELINFO& model2 )
 	XMFLOAT3 unitForce1 = DXUNIT( DXSUBTRACT( model1.POS, model2.POS ) );
 	XMFLOAT3 unitForce2 = DXUNIT( DXSUBTRACT( model2.POS, model1.POS ) );
 
-	float Constant = 2.0f * 10.0f * 1.1f - sqrt( DXDOT( Temp, Temp ) );
+	float Constant = 2.0f * 10.0f - sqrt( DXDOT( Temp, Temp ) );
 	if ( Constant <= 0.0f )
 	{
 		Constant = 0.0f;
 	}
 	XMFLOAT3 springForce1 = DXMULTIPLY( unitForce1, m_SpringConstant * Constant );
 	XMFLOAT3 springForce2 = DXMULTIPLY( unitForce2, m_SpringConstant * Constant );
+
+	springForce1 = DXADD( springForce1, DXMULTIPLY( unitForce1, -1.0f * m_DemperConstant * DXDOT( DXSUBTRACT( model2.VEL, model1.VEL ), unitForce1 ) ) );
+	springForce2 = DXADD( springForce2, DXMULTIPLY( unitForce2, -1.0f * m_DemperConstant * DXDOT( DXSUBTRACT( model1.VEL, model2.VEL ), unitForce2 ) ) );
 
 	model1.ACC = DXADD( model1.ACC, springForce1 );
 	model2.ACC = DXADD( model2.ACC, springForce2 );
@@ -222,23 +198,9 @@ void DXM_PHYSICS::SetCollisionVelocity( MODELINFO& model1, MODELINFO& model2, fl
 	XMFLOAT3 Temp = DXSUBTRACT( model2.VEL, model1.VEL );
 	XMFLOAT3 norForce1 = XMFLOAT3( 0.0f, 0.0f, 0.0f );
 	XMFLOAT3 norForce2 = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+
 	float Constant;
 
-	/*
-	if ( DXDOT( unitForce1, Temp ) <= m_ERROR && DXDOT( unitForce1, Temp ) >= 0.0f )
-	{
-		Constant = 1 / timeStep;
-		XMFLOAT3 Zero = XMFLOAT3( 0.0f, 0.0f, 0.0f );
-		norForce1 = DXMULTIPLY( unitForce1, -1.0f * DXDOT( unitForce1, model1.ACC ) );
-		norForce2 = DXMULTIPLY( unitForce2, -1.0f * DXDOT( unitForce2, model2.ACC ) );
-
-		XMFLOAT3 norVEL1, norVEL2;
-		norVEL1 = DXMULTIPLY( unitForce1, -1.0f * DXDOT( unitForce1, model1.VEL ) );
-		norVEL2 = DXMULTIPLY( unitForce2, -1.0f * DXDOT( unitForce2, model2.VEL ) );
-		model1.VEL = DXADD( model1.VEL, norVEL1 );
-		model2.VEL = DXADD( model2.VEL, norVEL2 );
-	}
-	*/
 	if( DXDOT( unitForce1, Temp ) >= 0.0f )
 	{
 		Constant = model1.MASS * model2.MASS * ( m_CollisionConstant + 1 ) /  ( ( model1.MASS + model2.MASS ) * timeStep );
